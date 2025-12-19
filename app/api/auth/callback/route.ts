@@ -4,7 +4,6 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 
 const SPOTIFY_TOKEN_URL = 'https://accounts.spotify.com/api/token';
 
@@ -64,25 +63,15 @@ export async function GET(request: NextRequest) {
 
     const tokenData: SpotifyTokenResponse = await tokenResponse.json();
 
-    // Store tokens in HTTP-only cookies
-    const cookieStore = await cookies();
+    console.log('[OAuth Callback] Token received, access_token length:', tokenData.access_token.length);
 
-    cookieStore.set('spotify_access_token', tokenData.access_token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: tokenData.expires_in,
-    });
+    // Redirect to store-tokens route which will set cookies and redirect to /results
+    const storeUrl = new URL('/api/auth/store-tokens', request.url);
+    storeUrl.searchParams.set('access_token', tokenData.access_token);
+    storeUrl.searchParams.set('refresh_token', tokenData.refresh_token);
+    storeUrl.searchParams.set('expires_in', tokenData.expires_in.toString());
 
-    cookieStore.set('spotify_refresh_token', tokenData.refresh_token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 30, // 30 days
-    });
-
-    // Redirect to results page
-    return NextResponse.redirect(new URL('/results', request.url));
+    return NextResponse.redirect(storeUrl);
   } catch (error) {
     console.error('OAuth callback error:', error);
     return NextResponse.redirect(

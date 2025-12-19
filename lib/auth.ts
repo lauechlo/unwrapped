@@ -18,7 +18,9 @@ interface TokenRefreshResponse {
  */
 export async function getAccessToken(): Promise<string | null> {
   const cookieStore = await cookies();
-  return cookieStore.get('spotify_access_token')?.value || null;
+  const token = cookieStore.get('spotify_access_token')?.value || null;
+  console.log('[Auth] getAccessToken:', token ? `Found (${token.length} chars)` : 'Not found');
+  return token;
 }
 
 /**

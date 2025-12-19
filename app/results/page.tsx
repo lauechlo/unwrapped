@@ -3,13 +3,18 @@
  * Placeholder for now, will implement in Phase 4
  */
 
-import { getValidAccessToken } from '@/lib/auth';
+import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 export default async function ResultsPage() {
-  const accessToken = await getValidAccessToken();
+  // Check if we have a valid access token in cookies
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get('spotify_access_token')?.value;
+
+  console.log('[Results Page] Access token from cookies:', accessToken ? 'Found' : 'Not found');
 
   if (!accessToken) {
+    console.log('[Results Page] Redirecting - no access token');
     redirect('/?error=not_authenticated');
   }
 
