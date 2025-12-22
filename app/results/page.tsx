@@ -327,9 +327,10 @@ export default async function ResultsPage() {
                       'Time Capsule', 'Comfort Rotation', 'Album Devotee', 'Genre Purist', 'The Curator',
                       'One-Track Wonder', 'The 2AM Song', 'Emotional Bookender', 'The Binge Listener',
                       'Sunday Ritual', 'Coping Song', 'The Rediscovery', 'The Genre Hopper',
-                      'The Day/Night Persona', 'The Momentum Builder', 'The Skip-Proof Track',
-                      'The Transition Ritual', 'The Featured Artist Hunter', 'The First Verse Addict',
-                      'The Perfectionist', 'The Late Bloomer'
+                      'The Day/Night Persona', 'The Morning Person', 'The Night Owl', 'The Momentum Builder',
+                      'The Skip-Proof Track', 'The Transition Ritual', 'The Featured Artist Hunter',
+                      'The First Verse Addict', 'The Perfectionist', 'The Late Bloomer', 'The Climber',
+                      'The Fader', 'The Consistency Champion', 'The Genre Shapeshifter', 'The Vault Track Hunter'
                     ];
 
                     const detectedSet = new Set(detectedPatterns.map(p => p.patternName));

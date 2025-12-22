@@ -35,3 +35,8 @@ export { detectTheFeaturedArtistHunter } from './theFeaturedArtistHunter';
 export { detectTheFirstVerseAddict } from './theFirstVerseAddict';
 export { detectThePerfectionist } from './thePerfectionist';
 export { detectTheLateBloomer } from './theLateBloomer';
+export { detectTheClimber } from './theClimber';
+export { detectTheFader } from './theFader';
+export { detectTheConsistencyChampion } from './theConsistencyChampion';
+export { detectTheGenreShapeshifter } from './theGenreShapeshifter';
+export { detectTheVaultTrackHunter } from './theVaultTrackHunter';

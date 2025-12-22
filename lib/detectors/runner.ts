@@ -188,6 +188,11 @@ function getAllDetectors(): DetectorFunction[] {
     detectTheFirstVerseAddict,
     detectThePerfectionist,
     detectTheLateBloomer,
+    detectTheClimber,
+    detectTheFader,
+    detectTheConsistencyChampion,
+    detectTheGenreShapeshifter,
+    detectTheVaultTrackHunter,
     // Additional detectors will be imported as they're implemented
   } = require('./patterns');
 
@@ -222,6 +227,11 @@ function getAllDetectors(): DetectorFunction[] {
     detectTheFirstVerseAddict,
     detectThePerfectionist,
     detectTheLateBloomer,
+    detectTheClimber,
+    detectTheFader,
+    detectTheConsistencyChampion,
+    detectTheGenreShapeshifter,
+    detectTheVaultTrackHunter,
     // Add new detectors here as they're built
   ];
 
