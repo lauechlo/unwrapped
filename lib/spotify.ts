@@ -11,6 +11,8 @@ import {
   TopTracksResponse,
   TopArtistsResponse,
   RecentlyPlayedResponse,
+  AudioFeatures,
+  AudioFeaturesResponse,
   TimeRange,
   UserData,
   SpotifyError,
@@ -117,6 +119,31 @@ const RecentlyPlayedResponseSchema = z.object({
   }),
   limit: z.number(),
   href: z.string(),
+});
+
+const AudioFeaturesSchema = z.object({
+  id: z.string(),
+  acousticness: z.number(),
+  danceability: z.number(),
+  energy: z.number(),
+  instrumentalness: z.number(),
+  key: z.number(),
+  liveness: z.number(),
+  loudness: z.number(),
+  mode: z.number(),
+  speechiness: z.number(),
+  tempo: z.number(),
+  time_signature: z.number(),
+  valence: z.number(),
+  duration_ms: z.number(),
+  analysis_url: z.string(),
+  track_href: z.string(),
+  type: z.literal('audio_features'),
+  uri: z.string(),
+});
+
+const AudioFeaturesResponseSchema = z.object({
+  audio_features: z.array(AudioFeaturesSchema.nullable()),
 });
 
 /**
@@ -275,23 +302,103 @@ export async function getRecentlyPlayed(
 }
 
 /**
+ * Get user's saved (liked) tracks
+ */
+export async function getSavedTracks(
+  accessToken: string,
+  limit: number = 50
+): Promise<SpotifyTrack[]> {
+  const getData = async () => {
+    const data = await makeSpotifyRequest<any>(
+      '/me/tracks',
+      accessToken,
+      { limit }
+    );
+
+    // Spotify returns { items: [{ track: SpotifyTrack, added_at: string }] }
+    return data.items.map((item: any) => item.track);
+  };
+
+  return retryWithBackoff(getData);
+}
+
+/**
+ * Get audio features for multiple tracks
+ * Batches requests to handle up to 100 tracks at once
+ */
+export async function getAudioFeatures(
+  accessToken: string,
+  trackIds: string[]
+): Promise<Map<string, AudioFeatures>> {
+  if (trackIds.length === 0) {
+    return new Map();
+  }
+
+  const getData = async () => {
+    const features = new Map<string, AudioFeatures>();
+
+    // Spotify allows up to 100 track IDs per request
+    const batchSize = 100;
+    for (let i = 0; i < trackIds.length; i += batchSize) {
+      const batch = trackIds.slice(i, i + batchSize);
+      const ids = batch.join(',');
+
+      const data = await makeSpotifyRequest<AudioFeaturesResponse>(
+        '/audio-features',
+        accessToken,
+        { ids }
+      );
+
+      const validated = AudioFeaturesResponseSchema.parse(data);
+
+      // Map non-null features by track ID
+      validated.audio_features.forEach((feature) => {
+        if (feature) {
+          features.set(feature.id, feature);
+        }
+      });
+    }
+
+    return features;
+  };
+
+  return retryWithBackoff(getData);
+}
+
+/**
  * Fetch all user data in parallel
  */
 export async function fetchUserData(accessToken: string): Promise<UserData> {
   try {
+    console.log('[Spotify API] Fetching user data...');
+
+    // Fetch all base data in parallel
     const [
       topTracksShort,
       topTracksMedium,
       topTracksLong,
       topArtistsShort,
+      topArtistsMedium,
+      topArtistsLong,
       recentlyPlayed,
+      savedTracks,
     ] = await Promise.all([
       getTopTracks(accessToken, 'short_term', 50),
       getTopTracks(accessToken, 'medium_term', 50),
       getTopTracks(accessToken, 'long_term', 50),
       getTopArtists(accessToken, 'short_term', 50),
+      getTopArtists(accessToken, 'medium_term', 50),
+      getTopArtists(accessToken, 'long_term', 50),
       getRecentlyPlayed(accessToken, 50),
+      getSavedTracks(accessToken, 50),
     ]);
+
+    console.log('[Spotify API] Data fetched successfully');
+    console.log(`  - Top Tracks: ${topTracksShort.length} short, ${topTracksMedium.length} medium, ${topTracksLong.length} long`);
+    console.log(`  - Top Artists: ${topArtistsShort.length} short, ${topArtistsMedium.length} medium, ${topArtistsLong.length} long`);
+    console.log(`  - Recently Played: ${recentlyPlayed.length} tracks`);
+    console.log(`  - Saved Tracks: ${savedTracks.length} tracks`);
+    console.log(`  - Audio features: unavailable (deprecated by Spotify Nov 2024)`);
 
     return {
       topTracks: {
@@ -299,8 +406,14 @@ export async function fetchUserData(accessToken: string): Promise<UserData> {
         medium: topTracksMedium,
         long: topTracksLong,
       },
-      topArtists: topArtistsShort,
+      topArtists: {
+        short: topArtistsShort,
+        medium: topArtistsMedium,
+        long: topArtistsLong,
+      },
       recentlyPlayed,
+      savedTracks,
+      // audioFeatures removed: deprecated by Spotify Nov 27, 2024
     };
   } catch (error) {
     if (error instanceof SpotifyAPIError) {

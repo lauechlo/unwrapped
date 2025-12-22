@@ -10,6 +10,7 @@ const SPOTIFY_AUTH_URL = 'https://accounts.spotify.com/authorize';
 const REQUIRED_SCOPES = [
   'user-top-read',
   'user-read-recently-played',
+  'user-library-read',
 ];
 
 export async function GET(request: NextRequest) {

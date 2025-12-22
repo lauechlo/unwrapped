@@ -113,12 +113,43 @@ export interface SpotifyError {
   };
 }
 
+export interface AudioFeatures {
+  id: string;
+  acousticness: number;        // 0.0 to 1.0
+  danceability: number;        // 0.0 to 1.0
+  energy: number;              // 0.0 to 1.0
+  instrumentalness: number;    // 0.0 to 1.0
+  key: number;                 // -1 to 11 (pitch class notation)
+  liveness: number;            // 0.0 to 1.0
+  loudness: number;            // -60 to 0 dB
+  mode: number;                // 0 = minor, 1 = major
+  speechiness: number;         // 0.0 to 1.0
+  tempo: number;               // BPM
+  time_signature: number;      // 3 to 7 (beats per measure)
+  valence: number;             // 0.0 to 1.0 (musical positiveness)
+  duration_ms: number;
+  analysis_url: string;
+  track_href: string;
+  type: 'audio_features';
+  uri: string;
+}
+
+export interface AudioFeaturesResponse {
+  audio_features: (AudioFeatures | null)[];
+}
+
 export interface UserData {
   topTracks: {
     short: SpotifyTrack[];
     medium: SpotifyTrack[];
     long: SpotifyTrack[];
   };
-  topArtists: SpotifyArtist[];
+  topArtists: {
+    short: SpotifyArtist[];
+    medium: SpotifyArtist[];
+    long: SpotifyArtist[];
+  };
   recentlyPlayed: PlayHistory[];
+  savedTracks: SpotifyTrack[];
+  // audioFeatures removed: deprecated by Spotify API November 27, 2024
 }
