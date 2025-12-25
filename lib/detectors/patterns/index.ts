@@ -40,3 +40,7 @@ export { detectTheFader } from './theFader';
 export { detectTheConsistencyChampion } from './theConsistencyChampion';
 export { detectTheGenreShapeshifter } from './theGenreShapeshifter';
 export { detectTheVaultTrackHunter } from './theVaultTrackHunter';
+export { detectTheMorningPerson } from './theMorningPerson';
+// export { detectTheWickedObsession } from './theWickedObsession'; // REPLACED by The Franchise Fan (more general)
+export { detectTheSeasonalShifter } from './theSeasonalShifter';
+export { detectTheFranchiseFan } from './theFranchiseFan';

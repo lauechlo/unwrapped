@@ -17,8 +17,8 @@ import type { UserListeningData, DetectionResult, Evidence } from '../types';
  * Configuration for trendy detection
  */
 const CONFIG = {
-  MIN_NEW_TRACKS_RATIO: 0.6,    // 60%+ of top 10 must be new
-  HIGH_NEW_TRACKS_RATIO: 0.8,   // 80%+ = very trendy
+  MIN_NEW_TRACKS_RATIO: 0.5,    // 50%+ of top 10 must be new (adjusted from 60% based on real data)
+  HIGH_NEW_TRACKS_RATIO: 0.75,  // 75%+ = very trendy (adjusted from 80%)
   ANALYZE_TOP_N: 10,            // Check top 10 tracks
 };
 

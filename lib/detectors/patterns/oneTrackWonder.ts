@@ -17,9 +17,9 @@ import type { UserListeningData, DetectionResult, Evidence } from '../types';
  * Configuration for one-track wonder detection
  */
 const CONFIG = {
-  MIN_RECENT_PLAY_RATIO: 0.15,  // 15%+ of recent plays must be same track
-  HIGH_OBSESSION_RATIO: 0.25,   // 25%+ = extreme obsession
-  MIN_PLAYS: 8,                 // Need at least 8 plays
+  MIN_RECENT_PLAY_RATIO: 0.08,  // 8%+ of recent plays must be same track (adjusted from 15% based on limited data window)
+  HIGH_OBSESSION_RATIO: 0.20,   // 20%+ = extreme obsession (adjusted from 25%)
+  MIN_PLAYS: 4,                 // Need at least 4 plays (adjusted from 8 - given ~3 day window)
 };
 
 /**
@@ -114,6 +114,10 @@ export async function detectOneTrackWonder(
     confidence = Math.min(confidence + 0.1, 1.0);
   }
 
+  // CONFIDENCE PENALTY: Limited data window (~3 days of recent plays)
+  // This pattern may not represent long-term behavior
+  confidence *= 0.7;
+
   // Build evidence
   const evidence: Evidence[] = [
     {
@@ -130,6 +134,11 @@ export async function detectOneTrackWonder(
       type: 'ratio',
       value: dominant.playRatio,
       humanReadable: `${Math.round(dominant.playRatio * 100)}% of your recent listening is this ONE track`
+    },
+    {
+      type: 'timestamp',
+      value: 'limited-data',
+      humanReadable: `⚠️ Based on ~3 days of recent play data - may not represent long-term pattern`
     }
   ];
 

@@ -1,0 +1,449 @@
+[dotenv@17.2.3] injecting env (5) from .env.local -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops
+
+🧪 CLAUDE SYNTHESIS STABILITY TESTING - BATCH 1
+================================================================================
+
+This will run 3 test cases × 5 iterations = 15 total runs
+Estimated cost: ~$0.30
+Estimated time: ~2-3 minutes
+
+Ready to start Batch 1? (y/n): 
+🚀 Starting tests...
+
+
+================================================================================
+TEST CASE: Heavy Looper + Multiple Identity Patterns
+Description: User with strong The Looper + The Loyalist + The Wicked Fan
+================================================================================
+
+Running 5 iterations...
+
+  Run 1: 5820ms, 1050→205 tokens, $0.0062
+  Run 2: 5850ms, 1050→173 tokens, $0.0057
+  Run 3: 6386ms, 1050→210 tokens, $0.0063
+  Run 4: 5688ms, 1050→180 tokens, $0.0059
+  Run 5: 6847ms, 1050→202 tokens, $0.0062
+
+✓ Batch complete - Total cost: $0.0303
+
+────────────────────────────────────────────────────────────────────────────────
+📋 MANUAL REVIEW SECTION
+────────────────────────────────────────────────────────────────────────────────
+
+🔍 OUTPUT COMPARISON:
+
+────────────────────────────────────────────────────────────────────────────────
+Run 1/5:
+────────────────────────────────────────────────────────────────────────────────
+PATTERN: Obsessive Loyalist
+├─ PRIMARY: Sabrina Carpenter "Make It To Christmas" ranked 2.7 average across all periods (Looper, 1.0)
+├─ SECONDARY: 6 artists span all timeframes + 6 Wicked tracks in top 20 (Loyalist + Fan, 1.0)
+└─ FRAMEWORK: Saarikallio's Solace Strategy + High Conscientiousness
+
+INTERPRETATION: Pathological consistency - one track averages #2.7 ranking across current/6-month/all-time while maintaining identical core artist roster (Ariana Grande, Sabrina Carpenter, PinkPantheress, Cynthia Erivo, Taylor Swift, Clairo). The Wicked saturation (6/20 tracks) reveals event-driven but still repetitive consumption patterns.
+
+────────────────────────────────────────────────────────────────────────────────
+Run 2/5:
+────────────────────────────────────────────────────────────────────────────────
+PATTERN: Ritual Loyalist
+├─ PRIMARY: "Make It To Christmas" ranks 1st/2nd/5th across timeframes (Looper, 1.0)
+├─ SECONDARY: 6 core artists persist all periods + 6 Wicked tracks in top 20 (Loyalist + Fan, 1.0)
+└─ FRAMEWORK: Saarikallio's Solace + Social Identity Theory
+
+INTERPRETATION: Average rank 2.7 for single track demonstrates compulsive repetition patterns - clinical-level emotional regulation through musical anchoring. Six-artist constancy (Ariana Grande through Clairo) plus Wicked saturation indicates identity crystallization through parasocial attachment and cultural moment participation.
+
+────────────────────────────────────────────────────────────────────────────────
+Run 3/5:
+────────────────────────────────────────────────────────────────────────────────
+PATTERN: Fixated Loyalist
+├─ PRIMARY: "Make It To Christmas" ranks 1st, 2nd, 5th across periods (Looper, 1.0)
+├─ SECONDARY: 6 artists span all timeframes + 6 Wicked tracks in top 20 (Loyalist/Fan, 1.0)
+└─ FRAMEWORK: Saarikallio's solace + identity consolidation
+
+INTERPRETATION: Peak repetition compulsion with 2.7 average rank consistency on single track. Six-artist core (Ariana Grande, Sabrina Carpenter, PinkPantheress, Cynthia Erivo, Taylor Swift, Clairo) plus cultural moment absorption (30% of top 20 = Wicked soundtrack). Textbook emotional self-soothing through controlled repetition - not exploration anxiety, but active comfort-seeking behavior.
+
+────────────────────────────────────────────────────────────────────────────────
+Run 4/5:
+────────────────────────────────────────────────────────────────────────────────
+PATTERN: Compulsive Devotee
+├─ PRIMARY: "Make It To Christmas" ranks 2.7 average across all periods (Looper, 1.0)
+├─ SECONDARY: 6 artists spanning all timeframes + 6 Wicked tracks in top 20 (Loyalist/Fan, 1.0)
+└─ FRAMEWORK: Saarikallio's Revival + Identity Reinforcement
+
+INTERPRETATION: Sabrina Carpenter track maintains 2.7 rank consistency while 6 core artists (Ariana Grande, Taylor Swift, Clairo) anchor all listening periods. The 6 Wicked tracks infiltrating top 20 reveals systematic cultural absorption - not casual fandom but deliberate identity integration through repetitive emotional regulation.
+
+────────────────────────────────────────────────────────────────────────────────
+Run 5/5:
+────────────────────────────────────────────────────────────────────────────────
+PATTERN: Anchored Obsessive
+├─ PRIMARY: "Make It To Christmas" ranks 1st, 2nd, 5th across periods (Looper, 1.0)
+├─ SECONDARY: 6 artists span all timeframes + 6 Wicked tracks in top 20 (Loyalist + Fan, 1.0)
+└─ FRAMEWORK: Saarikallio's Solace + Strong Musical Identity (Rentfrow-Gosling)
+
+INTERPRETATION: Extreme repetition compulsion with 2.7 average rank consistency on single track, stabilized by core artist constellation (Ariana Grande, Sabrina Carpenter, PinkPantheress, Cynthia Erivo, Taylor Swift, Clairo). Cultural moment capture via Wicked saturation demonstrates identity alignment through shared experience while maintaining rigid comfort patterns.
+
+────────────────────────────────────────────────────────────────────────────────
+🔢 NUMBERS EXTRACTED (verify against expected):
+
+Expected: 2.7, 6 artists, 6 tracks, #1, #2, #5
+
+⚠️ Run 1: 20 tracks, 6 artists, #2, 2.7, 1.0
+⚠️ Run 2: 1.0, 2.7
+⚠️ Run 3: 30%, 6 artists, 1.0, 2.7
+⚠️ Run 4: 6 artists, 2.7, 1.0
+⚠️ Run 5: 6 artists, 1.0, 2.7
+
+────────────────────────────────────────────────────────────────────────────────
+🎵 TRACKS/ARTISTS EXTRACTED:
+
+Expected tracks: Make It To Christmas, No Good Deed, As Long As You're Mine, For Good
+Expected artists: Sabrina Carpenter, Ariana Grande, PinkPantheress
+
+Run 1:
+  Tracks: "Make It To Christmas"
+  Artists: none
+Run 2:
+  Tracks: "Make It To Christmas"
+  Artists: none
+Run 3:
+  Tracks: "Make It To Christmas"
+  Artists: none
+Run 4:
+  Tracks: "Make It To Christmas"
+  Artists: none
+Run 5:
+  Tracks: "Make It To Christmas"
+  Artists: none
+
+────────────────────────────────────────────────────────────────────────────────
+⚠️  AUTOMATED CHECKS:
+
+❌ Run 1: 0 critical, 6 warnings:
+   ⚠️  Missing expected number: "6 tracks"
+   ⚠️  Missing expected number: "#1"
+   ⚠️  Missing expected number: "#5"
+   ⚠️  Missing expected track: "No Good Deed"
+   ⚠️  Missing expected track: "As Long As You're Mine"
+   ⚠️  Missing expected track: "For Good"
+❌ Run 2: 0 critical, 8 warnings:
+   ⚠️  Missing expected number: "6 artists"
+   ⚠️  Missing expected number: "6 tracks"
+   ⚠️  Missing expected number: "#1"
+   ⚠️  Missing expected number: "#2"
+   ⚠️  Missing expected number: "#5"
+   ⚠️  Missing expected track: "No Good Deed"
+   ⚠️  Missing expected track: "As Long As You're Mine"
+   ⚠️  Missing expected track: "For Good"
+❌ Run 3: 0 critical, 7 warnings:
+   ⚠️  Missing expected number: "6 tracks"
+   ⚠️  Missing expected number: "#1"
+   ⚠️  Missing expected number: "#2"
+   ⚠️  Missing expected number: "#5"
+   ⚠️  Missing expected track: "No Good Deed"
+   ⚠️  Missing expected track: "As Long As You're Mine"
+   ⚠️  Missing expected track: "For Good"
+❌ Run 4: 0 critical, 7 warnings:
+   ⚠️  Missing expected number: "6 tracks"
+   ⚠️  Missing expected number: "#1"
+   ⚠️  Missing expected number: "#2"
+   ⚠️  Missing expected number: "#5"
+   ⚠️  Missing expected track: "No Good Deed"
+   ⚠️  Missing expected track: "As Long As You're Mine"
+   ⚠️  Missing expected track: "For Good"
+❌ Run 5: 0 critical, 7 warnings:
+   ⚠️  Missing expected number: "6 tracks"
+   ⚠️  Missing expected number: "#1"
+   ⚠️  Missing expected number: "#2"
+   ⚠️  Missing expected number: "#5"
+   ⚠️  Missing expected track: "No Good Deed"
+   ⚠️  Missing expected track: "As Long As You're Mine"
+   ⚠️  Missing expected track: "For Good"
+
+================================================================================
+
+
+================================================================================
+TEST CASE: Mixed Confidence - Stability + Exploration
+Description: The Loyalist (1.0) + The Trendy (0.75) + Sunday Ritual (0.70 with warning)
+================================================================================
+
+Running 5 iterations...
+
+  Run 1: 5071ms, 1066→196 tokens, $0.0061
+  Run 2: 4548ms, 1066→178 tokens, $0.0059
+  Run 3: 4919ms, 1066→188 tokens, $0.0060
+  Run 4: 5471ms, 1066→197 tokens, $0.0062
+  Run 5: 5306ms, 1066→230 tokens, $0.0066
+
+✓ Batch complete - Total cost: $0.0308
+
+────────────────────────────────────────────────────────────────────────────────
+📋 MANUAL REVIEW SECTION
+────────────────────────────────────────────────────────────────────────────────
+
+🔍 OUTPUT COMPARISON:
+
+────────────────────────────────────────────────────────────────────────────────
+Run 1/5:
+────────────────────────────────────────────────────────────────────────────────
+PATTERN: Ritualized Loyalty
+├─ PRIMARY: 6 artists across all time ranges (Loyalist, 1.0)
+├─ SECONDARY: 50% current top 10 are new tracks (Trendy, 0.75)
+└─ FRAMEWORK: Identity maintenance + controlled novelty seeking
+
+INTERPRETATION: Strong identity anchors (Ariana Grande, Sabrina Carpenter, PinkPantheress, Cynthia Erivo, Taylor Swift, Clairo) maintained across timeframes while 5 new tracks infiltrate current rotation. "Obsessed" by Riar Saab shows 100% Sunday clustering (4/4 plays) suggesting temporal regulation patterns, though ⚠️ only 3 days observed. Classic high-conscientiousness listening - core self preserved while sampling cultural zeitgeist.
+
+────────────────────────────────────────────────────────────────────────────────
+Run 2/5:
+────────────────────────────────────────────────────────────────────────────────
+PATTERN: Ritualized Loyalist
+├─ PRIMARY: 6 artists across all time ranges (Loyalist, 1.0)
+├─ SECONDARY: "Obsessed" played 4/4 times on Sunday (Sunday Ritual, 0.7)
+└─ FRAMEWORK: High Conscientiousness + Openness to Experience (MUSIC model)
+
+INTERPRETATION: Ariana Grande, Sabrina Carpenter, PinkPantheress, Cynthia Erivo, Taylor Swift, Clairo form stable core identity markers while 50% discovery rate maintains novelty exposure. "Obsessed" shows temporal conditioning despite ⚠️ limited 3-day sample - suggests preference for structured emotional regulation through familiar anchors plus controlled exploration.
+
+────────────────────────────────────────────────────────────────────────────────
+Run 3/5:
+────────────────────────────────────────────────────────────────────────────────
+PATTERN: Ritualized Discovery
+├─ PRIMARY: 6 artists across all time ranges (Loyalist, 1.0)
+├─ SECONDARY: 50% current top 10 are new tracks (Trendy, 0.75)
+└─ FRAMEWORK: Saarikallio's solace + stimulation regulation
+
+INTERPRETATION: Strong core identity anchored by Ariana Grande, Sabrina Carpenter, PinkPantheress, Cynthia Erivo, Taylor Swift, Clairo while maintaining 50% novelty rate in current rotation. "Obsessed" by Riar Saab shows 100% Sunday plays (4/4) - controlled temporal compartmentalization for discovery within stable framework.
+
+⚠️ Sunday ritual based on 3-day sample requires validation.
+
+────────────────────────────────────────────────────────────────────────────────
+Run 4/5:
+────────────────────────────────────────────────────────────────────────────────
+PATTERN: Anchored Trendsetter
+├─ PRIMARY: 6 core artists across all timeframes (Loyalist, 1.0)
+├─ SECONDARY: 50% current top 10 are brand new tracks (Trendy, 0.75)
+└─ FRAMEWORK: High Openness + Conscientiousness (MUSIC model)
+
+INTERPRETATION: Ariana Grande, Sabrina Carpenter, PinkPantheress, Cynthia Erivo, Taylor Swift, and Clairo form unwavering foundation while 5 fresh tracks infiltrate current rotation. "Obsessed" by Riar Saab shows potential Sunday ritualization (4/4 plays) though data span too brief for certainty. Classic identity anchoring with aggressive trend adoption - Saarikallio's revival function meeting social conformity drive.
+
+────────────────────────────────────────────────────────────────────────────────
+Run 5/5:
+────────────────────────────────────────────────────────────────────────────────
+PATTERN: Ritual Trendsetter
+├─ PRIMARY: 6 core artists across all time ranges (Loyalist, 1.0)
+├─ SECONDARY: 50% current top 10 are new tracks (Trendy, 0.75)
+├─ TERTIARY: "Obsessed" exclusively on Sundays - 4/4 plays (Ritual, 0.7)
+└─ FRAMEWORK: High Openness + Structured Routine (Saarikallio)
+
+INTERPRETATION: Identity anchored in 6 artists (Ariana Grande, Sabrina Carpenter, PinkPantheress, Cynthia Erivo, Taylor Swift, Clairo) while maintaining 50% discovery rate in current rotation. Emerging temporal control with "Obsessed" by Riar Saab as Sunday-exclusive listening (100% Sunday occurrence). ⚠️ Ritual pattern based on 3 days data - needs verification over longer periods.
+
+────────────────────────────────────────────────────────────────────────────────
+🔢 NUMBERS EXTRACTED (verify against expected):
+
+Expected: 6 artists, 50%, 5 tracks, 100%, 4 out of 4
+
+⚠️ Run 1: 50%, 100%, 6 artists, 1.0, 0.75
+⚠️ Run 2: 50%, 6 artists, 1.0, 0.7
+⚠️ Run 3: 50%, 100%, 6 artists, 1.0, 0.75
+⚠️ Run 4: 50%, 1.0, 0.75
+⚠️ Run 5: 50%, 100%, 6 artists, 1.0, 0.75, 0.7
+
+────────────────────────────────────────────────────────────────────────────────
+🎵 TRACKS/ARTISTS EXTRACTED:
+
+Expected tracks: Obsessed
+Expected artists: Riar Saab, Ariana Grande
+
+Run 1:
+  Tracks: "Obsessed"
+  Artists: Riar Saab
+Run 2:
+  Tracks: "Obsessed"
+  Artists: none
+Run 3:
+  Tracks: "Obsessed"
+  Artists: Ariana Grande, Riar Saab
+Run 4:
+  Tracks: "Obsessed"
+  Artists: Riar Saab
+Run 5:
+  Tracks: "Obsessed"
+  Artists: Riar Saab
+
+────────────────────────────────────────────────────────────────────────────────
+⚠️  AUTOMATED CHECKS:
+
+❌ Run 1: 0 critical, 2 warnings:
+   ⚠️  Missing expected number: "5 tracks"
+   ⚠️  Missing expected number: "4 out of 4"
+❌ Run 2: 0 critical, 3 warnings:
+   ⚠️  Missing expected number: "5 tracks"
+   ⚠️  Missing expected number: "100%"
+   ⚠️  Missing expected number: "4 out of 4"
+❌ Run 3: 0 critical, 2 warnings:
+   ⚠️  Missing expected number: "5 tracks"
+   ⚠️  Missing expected number: "4 out of 4"
+❌ Run 4: 0 critical, 4 warnings:
+   ⚠️  Missing expected number: "6 artists"
+   ⚠️  Missing expected number: "5 tracks"
+   ⚠️  Missing expected number: "100%"
+   ⚠️  Missing expected number: "4 out of 4"
+❌ Run 5: 0 critical, 2 warnings:
+   ⚠️  Missing expected number: "5 tracks"
+   ⚠️  Missing expected number: "4 out of 4"
+
+================================================================================
+
+
+================================================================================
+TEST CASE: Single Strong Pattern - The Vault Track Hunter
+Description: Only one pattern detected, high confidence
+================================================================================
+
+Running 5 iterations...
+
+  Run 1: 4985ms, 763→125 tokens, $0.0042
+  Run 2: 5357ms, 763→134 tokens, $0.0043
+  Run 3: 4413ms, 763→142 tokens, $0.0044
+  Run 4: 5551ms, 763→142 tokens, $0.0044
+  Run 5: 5463ms, 763→130 tokens, $0.0042
+
+✓ Batch complete - Total cost: $0.0215
+
+────────────────────────────────────────────────────────────────────────────────
+📋 MANUAL REVIEW SECTION
+────────────────────────────────────────────────────────────────────────────────
+
+🔍 OUTPUT COMPARISON:
+
+────────────────────────────────────────────────────────────────────────────────
+Run 1/5:
+────────────────────────────────────────────────────────────────────────────────
+PATTERN: Vault Track Hunter
+├─ PRIMARY: 17/20 all-time favorites absent from current rotation (0.95)
+├─ SECONDARY: "Guilty as Sin?" #1 all-time → completely dropped
+└─ FRAMEWORK: Identity consolidation through selective forgetting
+
+INTERPRETATION: Extreme pattern of abandoning peak attachments - #1 all-time track completely absent from current listening. 85% vault rate indicates active identity curation, not passive drift. Classic psychological compartmentalization of musical selves across time periods.
+
+────────────────────────────────────────────────────────────────────────────────
+Run 2/5:
+────────────────────────────────────────────────────────────────────────────────
+PATTERN: Memory Curator
+├─ PRIMARY: 17/20 all-time favorites absent from current rotation (Vault Hunter, 0.95)
+├─ SECONDARY: "Guilty as Sin?" (#1 all-time) completely vaulted
+└─ FRAMEWORK: Nostalgia regulation + Identity maintenance (Saarikallio)
+
+INTERPRETATION: Systematic archiving behavior - 85% of historical top tracks deliberately removed from active listening. Peak attachment ("Guilty as Sin?" at #1) now completely avoided, indicating protective emotional distancing rather than natural fade patterns.
+
+────────────────────────────────────────────────────────────────────────────────
+Run 3/5:
+────────────────────────────────────────────────────────────────────────────────
+PATTERN: Vault Hunter
+├─ PRIMARY: 17 all-time top 20 tracks absent from current (0.95)
+├─ SECONDARY: "Guilty as Sin?" #1 all-time but vaulted
+└─ FRAMEWORK: Nostalgia regulation (Saarikallio)
+
+INTERPRETATION: 85% rotation abandonment rate with #1 track "Guilty as Sin?" completely absent from current listening. 9 recent fades vs 8 long-term vaults indicates active curation rather than natural drift - intentional emotional archaeology through selective retrieval of past musical identities.
+
+────────────────────────────────────────────────────────────────────────────────
+Run 4/5:
+────────────────────────────────────────────────────────────────────────────────
+PATTERN: Archive Curator
+├─ PRIMARY: 17 vault tracks from all-time top 20 (Vault Hunter, 0.95)
+├─ SECONDARY: 9 recent fades vs 8 long-term vaults - active curation
+└─ FRAMEWORK: Saarikallio's memory-triggered emotional regulation
+
+INTERPRETATION: "Guilty as Sin?" holds #1 all-time status but disappeared from current rotation - 85% of historical favorites are deliberately vaulted. This isn't abandonment but strategic emotional curation, using musical nostalgia as controlled access to past identity states.
+
+────────────────────────────────────────────────────────────────────────────────
+Run 5/5:
+────────────────────────────────────────────────────────────────────────────────
+PATTERN: Archive Curator
+├─ PRIMARY: 17/20 all-time favorites absent from current rotation (Vault Hunter, 0.95)
+├─ SECONDARY: "Guilty as Sin?" #1 all-time but completely dormant
+└─ FRAMEWORK: Identity maintenance through selective retrieval
+
+INTERPRETATION: Systematic compartmentalization - 85% of historical preferences stored but inactive. "Guilty as Sin?" as #1 vault track indicates deliberate emotional archaeology rather than passive drift. Classic Saarikallio discharge regulation through temporal gatekeeping.
+
+────────────────────────────────────────────────────────────────────────────────
+🔢 NUMBERS EXTRACTED (verify against expected):
+
+Expected: 17 tracks, 9 tracks, 8 tracks, #1
+
+⚠️ Run 1: 85%, #1, 0.95
+⚠️ Run 2: 85%, #1, 0.95
+⚠️ Run 3: 85%, 20 tracks, 1 track, #1, 0.95
+⚠️ Run 4: 85%, #1, 0.95
+⚠️ Run 5: 85%, #1, 0.95
+
+────────────────────────────────────────────────────────────────────────────────
+🎵 TRACKS/ARTISTS EXTRACTED:
+
+Expected tracks: Guilty as Sin?
+Expected artists: 
+
+Run 1:
+  Tracks: "Guilty as Sin?"
+  Artists: none
+Run 2:
+  Tracks: "Guilty as Sin?"
+  Artists: none
+Run 3:
+  Tracks: "Guilty as Sin?"
+  Artists: none
+Run 4:
+  Tracks: "Guilty as Sin?"
+  Artists: none
+Run 5:
+  Tracks: "Guilty as Sin?"
+  Artists: none
+
+────────────────────────────────────────────────────────────────────────────────
+⚠️  AUTOMATED CHECKS:
+
+❌ Run 1: 0 critical, 3 warnings:
+   ⚠️  Missing expected number: "17 tracks"
+   ⚠️  Missing expected number: "9 tracks"
+   ⚠️  Missing expected number: "8 tracks"
+❌ Run 2: 0 critical, 3 warnings:
+   ⚠️  Missing expected number: "17 tracks"
+   ⚠️  Missing expected number: "9 tracks"
+   ⚠️  Missing expected number: "8 tracks"
+❌ Run 3: 0 critical, 3 warnings:
+   ⚠️  Missing expected number: "17 tracks"
+   ⚠️  Missing expected number: "9 tracks"
+   ⚠️  Missing expected number: "8 tracks"
+❌ Run 4: 0 critical, 3 warnings:
+   ⚠️  Missing expected number: "17 tracks"
+   ⚠️  Missing expected number: "9 tracks"
+   ⚠️  Missing expected number: "8 tracks"
+❌ Run 5: 0 critical, 3 warnings:
+   ⚠️  Missing expected number: "17 tracks"
+   ⚠️  Missing expected number: "9 tracks"
+   ⚠️  Missing expected number: "8 tracks"
+
+================================================================================
+
+
+================================================================================
+📊 FINAL SUMMARY - BATCH 1
+================================================================================
+
+Total runs: 15
+Total cost: $0.0827
+
+Issues found:
+  🚨 Critical: 0
+  ⚠️  Warnings: 63
+  Total: 63
+
+✅ NO CRITICAL ISSUES FOUND!
+
+Next steps:
+  1. Review the outputs above for tone/quality
+  2. Verify all numbers match expected evidence
+  3. Check if diagnostic framing works for card display
+  4. If satisfied, proceed to Batch 2 (hallucination tests)
+
+================================================================================
+

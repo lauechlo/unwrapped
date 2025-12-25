@@ -10,7 +10,6 @@ import type { UserListeningData, DetectionResult, DetectorFunction } from './typ
  */
 const CONFIG = {
   MIN_CONFIDENCE: 0.6,        // Minimum confidence to include result
-  MAX_RESULTS: 10,            // Maximum patterns to return
   SPECIFICITY_WEIGHT: 0.8,    // Weight for evidence specificity in scoring
 };
 
@@ -88,8 +87,8 @@ export async function runAllDetectors(
       (a, b) => b.insightPotential - a.insightPotential
     );
 
-    // Return top N results
-    const topResults = sortedResults.slice(0, CONFIG.MAX_RESULTS);
+    // Return all results (no limit - show all valid patterns)
+    const topResults = sortedResults;
 
     if (topResults.length > 0) {
       console.log('[Detection Runner] Top patterns:',
@@ -158,9 +157,16 @@ export function getDetectionStats(results: DetectionResult[]) {
 function getAllDetectors(): DetectorFunction[] {
   // Import all detectors from patterns registry
   const {
-    detectNightOwlProcessor,
-    detectEarlyBirdProcessor,
-    detectWeekendWarrior,
+    // DISABLED: Invalid temporal detectors (only 3.6 days of timestamp data - statistically unsound)
+    // detectNightOwlProcessor,
+    // detectEarlyBirdProcessor,
+    // detectWeekendWarrior,
+    // detectThe2amSong,
+    // detectEmotionalBookender,
+    // detectTheDayNightPersona,
+    // detectTheMorningPerson,
+    // Re-enable when: User imports Spotify privacy export with 12 months of timestamped data
+
     detectTheLooper,
     detectGhostArtist,
     detectPhaseShifter,
@@ -173,14 +179,11 @@ function getAllDetectors(): DetectorFunction[] {
     detectGenrePurist,
     detectTheCurator,
     detectOneTrackWonder,
-    detectThe2amSong,
-    detectEmotionalBookender,
     detectBingeListener,
     detectSundayRitual,
     detectCopingSong,
     detectTheRediscovery,
     detectTheGenreHopper,
-    detectTheDayNightPersona,
     detectTheMomentumBuilder,
     detectTheSkipProofTrack,
     detectTheTransitionRitual,
@@ -193,13 +196,22 @@ function getAllDetectors(): DetectorFunction[] {
     detectTheConsistencyChampion,
     detectTheGenreShapeshifter,
     detectTheVaultTrackHunter,
+    // detectTheWickedObsession, // REPLACED by The Franchise Fan (more general)
+    detectTheSeasonalShifter,
+    detectTheFranchiseFan,
     // Additional detectors will be imported as they're implemented
   } = require('./patterns');
 
   const detectors: DetectorFunction[] = [
-    detectNightOwlProcessor,
-    detectEarlyBirdProcessor,
-    detectWeekendWarrior,
+    // DISABLED: Invalid temporal detectors (see import section above)
+    // detectNightOwlProcessor,
+    // detectEarlyBirdProcessor,
+    // detectWeekendWarrior,
+    // detectThe2amSong,
+    // detectEmotionalBookender,
+    // detectTheDayNightPersona,
+    // detectTheMorningPerson,
+
     detectTheLooper,
     detectGhostArtist,
     detectPhaseShifter,
@@ -212,14 +224,11 @@ function getAllDetectors(): DetectorFunction[] {
     detectGenrePurist,
     detectTheCurator,
     detectOneTrackWonder,
-    detectThe2amSong,
-    detectEmotionalBookender,
     detectBingeListener,
     detectSundayRitual,
     detectCopingSong,
     detectTheRediscovery,
     detectTheGenreHopper,
-    detectTheDayNightPersona,
     detectTheMomentumBuilder,
     detectTheSkipProofTrack,
     detectTheTransitionRitual,
@@ -232,6 +241,9 @@ function getAllDetectors(): DetectorFunction[] {
     detectTheConsistencyChampion,
     detectTheGenreShapeshifter,
     detectTheVaultTrackHunter,
+    // detectTheWickedObsession, // REPLACED by The Franchise Fan (more general)
+    detectTheSeasonalShifter,
+    detectTheFranchiseFan,
     // Add new detectors here as they're built
   ];
 

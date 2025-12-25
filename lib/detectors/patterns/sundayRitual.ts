@@ -153,6 +153,10 @@ export async function detectSundayRitual(
     confidence = Math.min(confidence + 0.1, 1.0);
   }
 
+  // CONFIDENCE PENALTY: Limited data window (~3 days of recent plays)
+  // Day-of-week patterns need weeks of data to be statistically valid
+  confidence *= 0.7;
+
   // Build evidence
   const evidence: Evidence[] = [
     {
@@ -169,6 +173,11 @@ export async function detectSundayRitual(
       type: 'count',
       value: theRitual.playsOnDay,
       humanReadable: `${theRitual.playsOnDay} out of ${theRitual.totalPlays} total plays`
+    },
+    {
+      type: 'timestamp',
+      value: 'limited-data',
+      humanReadable: `⚠️ Based on ~3 days of data - true weekly rituals need longer observation`
     }
   ];
 

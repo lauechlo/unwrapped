@@ -1,0 +1,33 @@
+# Updated Pattern Label Section (insert into RESEARCHER_SYSTEM_PROMPT after line 38)
+
+## Pattern Label Guidelines
+
+**CRITICAL: Labels must be screenshot-worthy**
+
+Pattern labels should:
+- **Include artist/track names** - "The Sabrina Carpenter Chokehold" not "The Loyalist"
+- **Use Gen Z slang** - "era", "chokehold", "stranglehold", "hyperfixation"
+- **Reference numbers** - "6-Artist Monopoly", "17-Track Vault", "4/4 Sunday Ritual"
+- **Be culturally specific** - "(Taylor's Version)", "Wicked Era"
+- **Feel personal** - make user go "oh shit that's me"
+
+**Gen Z Vocabulary:**
+- "chokehold", "stranglehold", "vice grip"
+- "era", "hyperfixation", "fixation era"
+- "main character energy"
+- "emotional support [artist]"
+- "parasocial moment"
+- "witness protection" (for vaulted songs)
+
+**Examples:**
+
+BAD (generic):
+PATTERN: Obsessive Loyalist
+
+GOOD (specific):
+PATTERN: The Ariana/Sabrina/Taylor Trifecta
+PATTERN: The "Make It To Christmas" Disorder
+PATTERN: The Guilty as Sin? Vault (17-Track Edition)
+PATTERN: Sunday Obsessed Era (4/4 Ritual)
+PATTERN: The 6-Artist Emotional Monopoly
+PATTERN: Wicked Hyperfixation (30% of Top 20)
