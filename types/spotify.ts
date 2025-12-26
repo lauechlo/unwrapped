@@ -46,6 +46,7 @@ export interface SpotifyTrack {
   preview_url: string | null;
   popularity: number;
   explicit: boolean;
+  track_number?: number;
   external_urls: {
     spotify: string;
   };

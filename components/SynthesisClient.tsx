@@ -54,6 +54,16 @@ export function SynthesisClient({ detectedPatterns }: SynthesisClientProps) {
               setShareableCards(cards);
             }
 
+            // Track cached view analytics
+            try {
+              const analytics = JSON.parse(localStorage.getItem('unwrapped_analytics') || '{}');
+              analytics.cacheViews = (analytics.cacheViews || 0) + 1;
+              analytics.lastCacheView = new Date().toISOString();
+              localStorage.setItem('unwrapped_analytics', JSON.stringify(analytics));
+            } catch (e) {
+              console.error('[Analytics] Error tracking cache view:', e);
+            }
+
             setIsLoading(false);
             return;
           } else {
@@ -100,6 +110,26 @@ export function SynthesisClient({ detectedPatterns }: SynthesisClientProps) {
         if (result.patternCards.length > 0) {
           const cards = selectShareableCards(result.patternCards);
           setShareableCards(cards);
+        }
+
+        // Track pattern analytics (for V2 planning)
+        try {
+          const analytics = JSON.parse(localStorage.getItem('unwrapped_analytics') || '{}');
+          analytics.sessions = analytics.sessions || [];
+          analytics.sessions.push({
+            timestamp: new Date().toISOString(),
+            patternsDetected: detectedPatterns.map(p => ({
+              name: p.patternName,
+              confidence: p.confidence,
+              category: p.category
+            })),
+            patternCount: detectedPatterns.length,
+            fromCache: false
+          });
+          localStorage.setItem('unwrapped_analytics', JSON.stringify(analytics));
+          console.log('[Analytics] Pattern detection tracked');
+        } catch (e) {
+          console.error('[Analytics] Error tracking patterns:', e);
         }
 
         setIsLoading(false);

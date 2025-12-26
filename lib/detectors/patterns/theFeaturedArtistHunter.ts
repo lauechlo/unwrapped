@@ -200,7 +200,7 @@ export async function detectTheFeaturedArtistHunter(
     confidence,
     evidence,
     psychologicalDimension: 'discovery and exploration',
-    category: 'variety',
+    category: 'identity',
     insightPotential: 0, // Will be calculated by runner
   };
 }

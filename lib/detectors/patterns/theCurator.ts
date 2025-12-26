@@ -33,7 +33,7 @@ function analyzeCuration(data: UserListeningData): {
 } {
   // Build set of saved track IDs for fast lookup
   const savedTrackIds = new Set<string>();
-  data.savedTracks.forEach(track => {
+  data.savedTracks?.forEach(track => {
     savedTrackIds.add(track.id);
   });
 

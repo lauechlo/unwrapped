@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Claude Synthesis</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        h1 { color: #4CAF50; }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button:disabled {
+            background: #555;
+            cursor: not-allowed;
+        }
+        .loading {
+            color: #ffa726;
+            margin: 20px 0;
+        }
+        .result {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        .error {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #f44336;
+            color: #f44336;
+        }
+        .headline {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #4CAF50;
+        }
+        .subtext {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+        .analysis {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #ddd;
+            white-space: pre-wrap;
+            margin: 20px 0;
+        }
+        .dna {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .dna-item {
+            background: #333;
+            padding: 15px;
+            border-radius: 6px;
+        }
+        .dna-label {
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 8px;
+        }
+        .dna-evidence {
+            font-size: 13px;
+            color: #aaa;
+        }
+        pre {
+            background: #333;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Claude Synthesis Test</h1>
+    <p>This will call your local API at http://localhost:3000/api/synthesis with sample pattern data.</p>
+
+    <button id="testBtn" onclick="runTest()">Run Synthesis Test</button>
+
+    <div id="output"></div>
+
+    <script>
+        const samplePatterns = [
+            {
+                patternId: 50,
+                patternName: "The Vault Track Hunter",
+                confidence: 0.95,
+                evidence: [
+                    { type: "count", value: 17, humanReadable: "17 tracks from all-time top 20 absent from current rotation" },
+                    { type: "track", value: {}, humanReadable: "Highest-ranked vault: 'Guilty as Sin?' (#1 all-time, not in current)" },
+                    { type: "count", value: "mixed", humanReadable: "Mix of recent and long-term vaults - ongoing separation from past" }
+                ],
+                psychologicalDimension: "memory and avoidance",
+                category: "temporal",
+                insightPotential: 0
+            },
+            {
+                patternId: 48,
+                patternName: "The Consistency Champion",
+                confidence: 0.94,
+                evidence: [
+                    { type: "track", value: {}, humanReadable: "Make It To Christmas ranks #1 short-term, #2 medium-term, #5 all-time" },
+                    { type: "count", value: 2.7, humanReadable: "Average rank: 2.7 - sustained emotional attachment" }
+                ],
+                psychologicalDimension: "behavioral consistency",
+                category: "identity",
+                insightPotential: 0
+            },
+            {
+                patternId: 3,
+                patternName: "The Loyalist",
+                confidence: 1.00,
+                evidence: [
+                    { type: "count", value: 6, humanReadable: "6 artists appear in top 10 across ALL time ranges" },
+                    { type: "artist", value: [], humanReadable: "Artists: Ariana Grande, Sabrina Carpenter, PinkPantheress, Lana Del Rey, Taylor Swift, FLETCHER" }
+                ],
+                psychologicalDimension: "identity attachment",
+                category: "identity",
+                insightPotential: 0
+            },
+            {
+                patternId: 47,
+                patternName: "The Fader",
+                confidence: 0.80,
+                evidence: [
+                    { type: "artist", value: {}, humanReadable: "Wallows: all-time #10, not in 6-month, not in current top 50" }
+                ],
+                psychologicalDimension: "identity transition",
+                category: "identity",
+                insightPotential: 0
+            }
+        ];
+
+        async function runTest() {
+            const btn = document.getElementById('testBtn');
+            const output = document.getElementById('output');
+
+            btn.disabled = true;
+            output.innerHTML = '<div class="loading">⏳ Calling synthesis API... (this takes 10-15 seconds)</div>';
+
+            try {
+                const response = await fetch('http://localhost:3000/api/synthesis', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ patterns: samplePatterns })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'API call failed');
+                }
+
+                // Display results
+                output.innerHTML = `
+                    <div class="result">
+                        <h2>✅ Synthesis Successful!</h2>
+
+                        <h3>Hero Insight</h3>
+                        <div class="headline">"${data.heroInsight.headline}"</div>
+                        <div class="subtext">${data.heroInsight.subtext}</div>
+
+                        <h3>Deep Analysis</h3>
+                        <div class="analysis">${data.deepAnalysis}</div>
+
+                        <h3>Listening DNA</h3>
+                        <div class="dna">
+                            <div class="dna-item">
+                                <div class="dna-label">Temporal Pattern</div>
+                                <div>${data.listeningDNA.temporalPattern.label}</div>
+                                <div class="dna-evidence">${data.listeningDNA.temporalPattern.evidence}</div>
+                            </div>
+                            <div class="dna-item">
+                                <div class="dna-label">Emotional Strategy</div>
+                                <div>${data.listeningDNA.emotionalStrategy.label}</div>
+                                <div class="dna-evidence">${data.listeningDNA.emotionalStrategy.evidence}</div>
+                            </div>
+                            <div class="dna-item">
+                                <div class="dna-label">Discovery Mode</div>
+                                <div>${data.listeningDNA.discoveryMode.label}</div>
+                                <div class="dna-evidence">${data.listeningDNA.discoveryMode.evidence}</div>
+                            </div>
+                            <div class="dna-item">
+                                <div class="dna-label">Attachment Style</div>
+                                <div>${data.listeningDNA.attachmentStyle.label}</div>
+                                <div class="dna-evidence">${data.listeningDNA.attachmentStyle.evidence}</div>
+                            </div>
+                        </div>
+
+                        <h3>Metadata</h3>
+                        <pre>${JSON.stringify(data.metadata, null, 2)}</pre>
+                    </div>
+                `;
+
+            } catch (error) {
+                output.innerHTML = `<div class="error"><strong>❌ Error:</strong> ${error.message}</div>`;
+                console.error('Test failed:', error);
+            } finally {
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

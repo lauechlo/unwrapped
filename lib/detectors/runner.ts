@@ -183,7 +183,7 @@ function getAllDetectors(): DetectorFunction[] {
     detectSundayRitual,
     detectCopingSong,
     detectTheRediscovery,
-    detectTheGenreHopper,
+    // detectTheGenreHopper, // DISABLED: Returns only genre counts, no artist/track names for viral synthesis
     detectTheMomentumBuilder,
     detectTheSkipProofTrack,
     detectTheTransitionRitual,
@@ -228,7 +228,7 @@ function getAllDetectors(): DetectorFunction[] {
     detectSundayRitual,
     detectCopingSong,
     detectTheRediscovery,
-    detectTheGenreHopper,
+    // detectTheGenreHopper, // DISABLED: Returns only genre counts, no artist/track names for viral synthesis
     detectTheMomentumBuilder,
     detectTheSkipProofTrack,
     detectTheTransitionRitual,

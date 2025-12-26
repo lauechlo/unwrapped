@@ -48,12 +48,12 @@ function findDominantTrack(data: UserListeningData): {
 
   // Find most played track
   let maxCount = 0;
-  let dominantTrack: { track: any; count: number } | null = null;
+  let dominantTrack: { track: any; count: number } | undefined;
 
-  trackCounts.forEach((data) => {
-    if (data.count > maxCount) {
-      maxCount = data.count;
-      dominantTrack = data;
+  trackCounts.forEach((trackData) => {
+    if (trackData.count > maxCount) {
+      maxCount = trackData.count;
+      dominantTrack = trackData;
     }
   });
 

@@ -30,6 +30,7 @@ export interface ClaudeOptions {
   maxTokens?: number;
   temperature?: number;
   expectJson?: boolean;
+  model?: 'sonnet' | 'haiku'; // Model selection: sonnet (quality) or haiku (cost)
 }
 
 export async function callClaude(
@@ -39,16 +40,22 @@ export async function callClaude(
   const {
     maxTokens = 2000,
     temperature = 0.7,
-    expectJson = false
+    expectJson = false,
+    model = 'sonnet' // Default to Sonnet for quality
   } = options;
 
   try {
-    console.log('[Claude API] Sending request...');
+    // Select model ID based on option
+    const modelId = model === 'haiku'
+      ? 'claude-3-5-haiku-20241022'  // Haiku: fast + cheap
+      : 'claude-sonnet-4-20250514';   // Sonnet: quality
+
+    console.log(`[Claude API] Sending request (model: ${model})...`);
 
     const anthropic = getAnthropicClient();
 
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: modelId,
       max_tokens: maxTokens,
       temperature,
       system: RESEARCHER_SYSTEM_PROMPT,

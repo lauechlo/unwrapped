@@ -252,7 +252,7 @@ export async function detectTheGenreShapeshifter(
     confidence,
     evidence,
     psychologicalDimension: 'identity transition',
-    category: 'variety',
+    category: 'identity',
     insightPotential: 0,
   };
 }

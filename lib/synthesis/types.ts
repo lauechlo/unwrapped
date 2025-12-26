@@ -39,6 +39,8 @@ export interface PatternCard {
   behavior: string;
   callout: string;
   confidence: number;
+  rawEvidence: string[];
+  dimension: string; // Psychological dimension for card selection
 }
 
 export interface HeroInsight {
@@ -60,6 +62,10 @@ export interface ListeningDNA {
     evidence: string;
   };
   attachmentStyle: {
+    label: string;
+    evidence: string;
+  };
+  genreProfile: {
     label: string;
     evidence: string;
   };

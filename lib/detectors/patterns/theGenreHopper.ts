@@ -273,7 +273,7 @@ export async function detectTheGenreHopper(
     confidence,
     evidence,
     psychologicalDimension: 'cognitive style',
-    category: 'variety',
+    category: 'identity',
     insightPotential: 0, // Will be calculated by runner
   };
 }

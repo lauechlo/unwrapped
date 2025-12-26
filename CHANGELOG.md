@@ -1,12 +1,44 @@
-# Changelog
+# Changelog - Technical Implementation Log
+
+> **Note:** This is the technical implementation log for developers. See `/CHANGELOG.md` at project root for user-facing release notes.
 
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
+## [1.0.0] - 2024-12-25
 
-### Added
+### Added (December 25, 2024)
+
+#### 📲 Shareable Image Cards Feature
+- **Instagram Stories-ready cards** (1080×1920 dimensions)
+  - Client-side image generation using html-to-image library
+  - Artist-specific gradient backgrounds (36+ unique color themes)
+  - Neon accent colors matching artist themes
+  - Download all 4 cards or individual cards
+- **Card selection algorithm** - Selects 4 best cards from 6-8 patterns
+  - Ensures dimension diversity (no duplicate psychological dimensions)
+  - Ranks by shareability score (confidence + callout quality)
+- **Visual hierarchy optimized for virality**
+  - 72px pattern label (THE STAR - e.g., "Ariana/PinkPantheress/Sabrina Loyalty Disorder")
+  - 30px proof line (one punchy evidence statement)
+  - 26px behavior badge with emoji (the shareable insight)
+  - "Your Spotify Unwrapped" badge at top
+  - Cute disclaimer: "spotify's api gave us crumbs but we made it cute ✨ don't take this too seriously"
+- **Design polish**
+  - Removed "The" prefix from pattern labels for punchier titles
+  - Removed redundant callout line - behavior badge says it better
+  - Simplified evidence to one impactful line
+  - Neon glow effects on emojis and dividers
+  - Rounded behavior badge with neon border
+  - Larger branding footer ("UNWRAPPED by Chloe")
+
+#### Components Added
+- `ShareCard.tsx` - Main shareable card component with inline styles for image capture
+- `DownloadButton.tsx` - Download UI with background rendering
+- `lib/synthesis/select-shareable.ts` - Card selection logic
+
+### Added (Previous)
 - 30 pattern detectors across 4 categories (temporal, identity, repetition, variety)
 - Data validation and debug console for transparency
   - Complete play history with exact timestamps
@@ -107,4 +139,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
-Last Updated: December 21, 2025
+Last Updated: December 25, 2024

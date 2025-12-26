@@ -92,6 +92,7 @@ export function ExampleCardsSection() {
                     margin: '0 auto',
                     border: `2px solid ${colors.border}`,
                     boxShadow: `0 0 30px ${colors.shadow}, 0 0 60px ${colors.shadow}`,
+                    background: `linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)), radial-gradient(circle at top right, ${colors.border}, transparent 60%)`,
                   }}
                 >
                   <div
