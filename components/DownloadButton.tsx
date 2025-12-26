@@ -43,17 +43,54 @@ export function DownloadButton({ cards }: DownloadButtonProps) {
         },
       });
 
-      // Create and trigger download
-      const link = document.createElement("a");
       const fileName = card.patternLabel
         .toLowerCase()
         .replace(/[^a-z0-9\s]/g, '') // Remove special chars
         .replace(/\s+/g, "-") // Replace spaces with hyphens
         .slice(0, 50); // Limit length
 
-      link.download = `unwrapped-${fileName}.png`;
-      link.href = dataUrl;
-      link.click();
+      // Check if we're on mobile and Web Share API is available
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+      if (isMobile && navigator.share && navigator.canShare) {
+        // Convert data URL to blob for sharing on mobile
+        const blob = await (await fetch(dataUrl)).blob();
+        const file = new File([blob], `unwrapped-${fileName}.png`, { type: 'image/png' });
+
+        // Check if we can share files
+        if (navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              files: [file],
+              title: 'My Unwrapped Result',
+              text: card.patternLabel,
+            });
+            console.log(`[Download] Card ${index + 1} shared successfully`);
+          } catch (shareError: any) {
+            // User cancelled share, or error occurred
+            if (shareError.name !== 'AbortError') {
+              console.error('[Download] Share failed, falling back to download:', shareError);
+              // Fallback to download
+              const link = document.createElement("a");
+              link.download = `unwrapped-${fileName}.png`;
+              link.href = dataUrl;
+              link.click();
+            }
+          }
+        } else {
+          // Fallback to download if can't share files
+          const link = document.createElement("a");
+          link.download = `unwrapped-${fileName}.png`;
+          link.href = dataUrl;
+          link.click();
+        }
+      } else {
+        // Desktop: trigger download
+        const link = document.createElement("a");
+        link.download = `unwrapped-${fileName}.png`;
+        link.href = dataUrl;
+        link.click();
+      }
 
       // Track download
       trackCardDownload(index, card.patternLabel);
@@ -105,24 +142,24 @@ export function DownloadButton({ cards }: DownloadButtonProps) {
 
       {/* Download section */}
       <div className="flex flex-col items-center gap-6 py-8">
-        <h2 className="text-3xl font-bold text-white text-center">
+        <h2 className="text-2xl md:text-3xl font-bold text-white text-center px-4">
           Share Your Results
         </h2>
-        <p className="text-gray-400 text-center max-w-2xl">
-          We've selected your {cards.length} most shareable patterns. Download them for Instagram Stories!
+        <p className="text-sm md:text-base text-gray-400 text-center max-w-2xl px-4">
+          We've selected your {cards.length} most shareable patterns. {/iPhone|iPad|iPod|Android/i.test(typeof navigator !== 'undefined' ? navigator.userAgent : '') ? 'Tap to share or save to Photos!' : 'Download them for Instagram Stories!'}
         </p>
 
-        {/* Download All Button */}
+        {/* Download/Share All Button */}
         <button
           onClick={downloadAll}
           disabled={isGenerating}
-          className="px-8 py-4 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-full
-                     font-semibold text-lg hover:opacity-90 disabled:opacity-50 transition-all
+          className="px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-full
+                     font-semibold text-base md:text-lg hover:opacity-90 disabled:opacity-50 transition-all
                      shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
         >
           {isGenerating
             ? `Generating ${(currentCardIndex ?? 0) + 1}/${cards.length}...`
-            : `Download All ${cards.length} Cards 📲`}
+            : `${/iPhone|iPad|iPod|Android/i.test(typeof navigator !== 'undefined' ? navigator.userAgent : '') ? 'Share' : 'Download'} All ${cards.length} Cards 📲`}
         </button>
 
         <p className="text-sm text-white/60 text-center">
@@ -197,7 +234,7 @@ export function DownloadButton({ cards }: DownloadButtonProps) {
                 >
                   {currentCardIndex === index && isGenerating
                     ? 'Generating...'
-                    : 'Download Card'}
+                    : /iPhone|iPad|iPod|Android/i.test(typeof navigator !== 'undefined' ? navigator.userAgent : '') ? 'Share Card' : 'Download Card'}
                 </button>
               </div>
             </div>

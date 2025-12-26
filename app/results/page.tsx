@@ -10,6 +10,7 @@ import { runAllDetectors, type UserListeningData } from '@/lib/detectors';
 import { UsageTracker } from '@/components/UsageTracker';
 import { DataBreakdown } from '@/components/DataBreakdown';
 import { SynthesisClient } from '@/components/SynthesisClient';
+import { Footer } from '@/components/Footer';
 
 export default async function ResultsPage() {
   // Check authentication
@@ -67,6 +68,9 @@ export default async function ResultsPage() {
         topTracks={userData.topTracks}
         topArtists={userData.topArtists}
       />
+
+      {/* Footer */}
+      <Footer />
 
       {/* Debug section - Hidden for production */}
       {/* Uncomment for debugging: */}

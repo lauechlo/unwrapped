@@ -247,7 +247,7 @@ export function SynthesisClient({ detectedPatterns }: SynthesisClientProps) {
           <div className="inline-block bg-green-500/10 border border-green-500/30 px-4 py-2 md:px-6 md:py-3 rounded-full text-xs md:text-sm text-green-400 mb-6 md:mb-8 backdrop-blur-sm">
             Your Listening DNA
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold mb-6 md:mb-8 leading-tight px-2">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold mb-6 md:mb-8 leading-tight px-2 break-words">
             {synthesis.heroInsight.headline}
           </h1>
           <p className="text-base sm:text-lg md:text-2xl lg:text-3xl text-gray-300 leading-relaxed max-w-3xl mx-auto px-4">
