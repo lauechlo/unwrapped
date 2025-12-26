@@ -7,7 +7,6 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { fetchUserData } from '@/lib/spotify';
 import { runAllDetectors, type UserListeningData } from '@/lib/detectors';
-import { UsageTracker } from '@/components/UsageTracker';
 import { DataBreakdown } from '@/components/DataBreakdown';
 import { SynthesisClient } from '@/components/SynthesisClient';
 import { Footer } from '@/components/Footer';
@@ -45,9 +44,6 @@ export default async function ResultsPage() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Track usage */}
-      <UsageTracker />
-
       {/* Synthesis with client-side caching */}
       {detectedPatterns.length > 0 ? (
         <SynthesisClient detectedPatterns={detectedPatterns} />

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import type { DetectionResult, SynthesisOutput } from '@/lib/synthesis/types';
 import { selectShareableCards } from '@/lib/synthesis/select-shareable';
+import { incrementUsage } from '@/lib/rateLimit';
 import PatternCards from './PatternCards';
 import { DownloadButton } from './DownloadButton';
 import { DisclaimerBanner } from './DisclaimerBanner';
@@ -68,6 +69,10 @@ export function SynthesisClient({ detectedPatterns }: SynthesisClientProps) {
       // No cache - run synthesis via API
       try {
         console.log('[Synthesis] Running fresh synthesis...');
+
+        // Increment usage counter ONLY for new API calls (not cached results)
+        incrementUsage();
+
         const response = await fetch('/api/synthesize', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
