@@ -15,7 +15,7 @@ export function DownloadButton({ cards }: DownloadButtonProps) {
   const [currentCardIndex, setCurrentCardIndex] = useState<number | null>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const downloadCard = async (index: number) => {
+  const downloadCard = async (index: number, forceDownload: boolean = false) => {
     const card = cards[index];
     const element = cardRefs.current[index];
 
@@ -50,15 +50,19 @@ export function DownloadButton({ cards }: DownloadButtonProps) {
         .slice(0, 50); // Limit length
 
       // Check if we're on mobile and Web Share API is available
+      // BUT: only use Web Share for individual cards, not batch downloads
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      const useWebShare = !forceDownload && isMobile && navigator.share;
 
-      if (isMobile && navigator.share && navigator.canShare) {
+      if (useWebShare) {
         // Convert data URL to blob for sharing on mobile
         const blob = await (await fetch(dataUrl)).blob();
         const file = new File([blob], `unwrapped-${fileName}.png`, { type: 'image/png' });
 
-        // Check if we can share files
-        if (navigator.canShare({ files: [file] })) {
+        // Check if we can share files (canShare might not exist in all browsers)
+        const canShareFiles = navigator.canShare && navigator.canShare({ files: [file] });
+
+        if (canShareFiles) {
           try {
             await navigator.share({
               files: [file],
@@ -85,7 +89,7 @@ export function DownloadButton({ cards }: DownloadButtonProps) {
           link.click();
         }
       } else {
-        // Desktop: trigger download
+        // Desktop or batch download: trigger regular download
         const link = document.createElement("a");
         link.download = `unwrapped-${fileName}.png`;
         link.href = dataUrl;
@@ -110,7 +114,9 @@ export function DownloadButton({ cards }: DownloadButtonProps) {
     trackDownloadAll(cards.length);
 
     for (let i = 0; i < cards.length; i++) {
-      await downloadCard(i);
+      // Force download mode - don't use Web Share API for batch downloads
+      // because Web Share can only be triggered once per user gesture
+      await downloadCard(i, true);
       // Small delay between downloads to prevent browser blocking
       if (i < cards.length - 1) {
         await new Promise((r) => setTimeout(r, 500));
@@ -146,10 +152,10 @@ export function DownloadButton({ cards }: DownloadButtonProps) {
           Share Your Results
         </h2>
         <p className="text-sm md:text-base text-gray-400 text-center max-w-2xl px-4">
-          We've selected your {cards.length} most shareable patterns. {/iPhone|iPad|iPod|Android/i.test(typeof navigator !== 'undefined' ? navigator.userAgent : '') ? 'Tap to share or save to Photos!' : 'Download them for Instagram Stories!'}
+          We've selected your {cards.length} most shareable patterns. {/iPhone|iPad|iPod|Android/i.test(typeof navigator !== 'undefined' ? navigator.userAgent : '') ? 'Tap individual cards to share, or download all below!' : 'Download them for Instagram Stories!'}
         </p>
 
-        {/* Download/Share All Button */}
+        {/* Download All Button */}
         <button
           onClick={downloadAll}
           disabled={isGenerating}
@@ -159,7 +165,7 @@ export function DownloadButton({ cards }: DownloadButtonProps) {
         >
           {isGenerating
             ? `Generating ${(currentCardIndex ?? 0) + 1}/${cards.length}...`
-            : `${/iPhone|iPad|iPod|Android/i.test(typeof navigator !== 'undefined' ? navigator.userAgent : '') ? 'Share' : 'Download'} All ${cards.length} Cards 📲`}
+            : `Download All ${cards.length} Cards 📲`}
         </button>
 
         <p className="text-sm text-white/60 text-center">
@@ -225,7 +231,7 @@ export function DownloadButton({ cards }: DownloadButtonProps) {
                   {card.patternLabel.replace(/^The /, '')}
                 </p>
                 <button
-                  onClick={() => downloadCard(index)}
+                  onClick={() => downloadCard(index, false)}
                   disabled={isGenerating}
                   className="w-full px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500
                            text-white text-sm font-semibold rounded-lg
@@ -234,7 +240,7 @@ export function DownloadButton({ cards }: DownloadButtonProps) {
                 >
                   {currentCardIndex === index && isGenerating
                     ? 'Generating...'
-                    : /iPhone|iPad|iPod|Android/i.test(typeof navigator !== 'undefined' ? navigator.userAgent : '') ? 'Share Card' : 'Download Card'}
+                    : 'Share Card'}
                 </button>
               </div>
             </div>

@@ -253,8 +253,25 @@ export function SynthesisClient({ detectedPatterns }: SynthesisClientProps) {
           <p className="text-base sm:text-lg md:text-2xl lg:text-3xl text-gray-300 leading-relaxed max-w-4xl mx-auto px-4 md:px-8">
             {synthesis.heroInsight.subtext}
           </p>
-          <div className="mt-8 md:mt-12 text-gray-500 text-xs md:text-sm">
-            Scroll to see your patterns ↓
+
+          {/* Jump to Share Cards Button */}
+          <div className="mt-8 md:mt-12 flex flex-col items-center gap-4">
+            <button
+              onClick={() => {
+                const element = document.getElementById('share-cards');
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }}
+              className="px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full
+                         font-semibold text-base md:text-lg hover:opacity-90 transition-all
+                         shadow-lg hover:shadow-xl hover:shadow-pink-500/30"
+            >
+              📲 Jump to Share Cards
+            </button>
+            <p className="text-gray-500 text-xs md:text-sm">
+              or scroll to see your patterns ↓
+            </p>
           </div>
         </div>
       </section>
@@ -361,7 +378,7 @@ export function SynthesisClient({ detectedPatterns }: SynthesisClientProps) {
 
       {/* Share CTA - Download Cards */}
       {shareableCards.length > 0 && (
-        <section className="py-20 px-8 bg-black">
+        <section id="share-cards" className="py-20 px-8 bg-black scroll-mt-4">
           <div className="max-w-4xl mx-auto">
             <DownloadButton cards={shareableCards} />
           </div>

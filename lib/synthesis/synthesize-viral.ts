@@ -4,8 +4,49 @@
  */
 
 import { callClaude } from '@/lib/claude/api';
-import { groupPatternsByDimension, selectHeroPattern, parsePatternCard, formatPatternForPrompt, formatPatternsForPrompt } from './helpers';
+import { groupPatternsByDimension, selectHeroPattern, parsePatternCard, formatPatternForPrompt, formatPatternsForPrompt, deduplicatePatterns, normalizeSlashes } from './helpers';
 import type { DetectionResult, SynthesisOutput, PatternCard, HeroInsight, ListeningDNA } from './types';
+
+/**
+ * Deduplicate pattern cards based on label similarity
+ * Prevents showing cards with similar viral names like "Make It To Christmas Disorder" and "Make It To Christmas Stranglehold"
+ */
+function deduplicateCardLabels(cards: PatternCard[]): PatternCard[] {
+  const deduplicated: PatternCard[] = [];
+
+  for (const card of cards) {
+    // Extract key phrases from label (track/artist names in quotes or capitalized)
+    const labelLower = card.patternLabel.toLowerCase();
+    const keyPhrases = [
+      ...Array.from(labelLower.matchAll(/"([^"]+)"/g)).map(m => m[1]),
+      ...Array.from(labelLower.matchAll(/the ([a-z\s]+) (?:disorder|syndrome|era|energy|vibes?|phase)/g)).map(m => m[1]),
+    ];
+
+    // Check if this card shares key phrases with existing cards
+    const isDuplicate = deduplicated.some(existing => {
+      const existingLower = existing.patternLabel.toLowerCase();
+      const existingPhrases = [
+        ...Array.from(existingLower.matchAll(/"([^"]+)"/g)).map(m => m[1]),
+        ...Array.from(existingLower.matchAll(/the ([a-z\s]+) (?:disorder|syndrome|era|energy|vibes?|phase)/g)).map(m => m[1]),
+      ];
+
+      // If they share ANY quoted phrase, consider duplicate
+      return keyPhrases.some(phrase =>
+        existingPhrases.some(existing =>
+          phrase.includes(existing) || existing.includes(phrase)
+        )
+      );
+    });
+
+    if (!isDuplicate) {
+      deduplicated.push(card);
+    } else {
+      console.log(`[Label Dedup] Skipping "${card.patternLabel}" (similar to existing card)`);
+    }
+  }
+
+  return deduplicated;
+}
 
 /**
  * Generate viral synthesis from patterns
@@ -25,56 +66,128 @@ export async function synthesizeInsights(
 
   // Select hero pattern and top patterns for context
   const heroPattern = selectHeroPattern(patterns);
-  const topPatterns = patterns
+
+  // Deduplicate patterns with overlapping evidence
+  const deduplicatedPatterns = deduplicatePatterns(patterns);
+
+  const topPatterns = deduplicatedPatterns
     .sort((a, b) => b.confidence - a.confidence)
-    .slice(0, 5);
+    .slice(0, 8); // Show up to 8 cards
 
   console.log(`[Synthesis] Hero pattern: ${heroPattern.patternName}`);
 
   // ========================================
-  // 1. Generate Pattern Cards (viral labels)
+  // 1. Generate Pattern Cards (viral labels) - BATCHED
   // ========================================
-  console.log('[Synthesis] Generating pattern cards with viral labels...');
+  console.log('[Synthesis] Generating pattern cards with viral labels (batched)...');
 
-  const patternCardPromises = topPatterns.map(async (pattern) => {
-    const prompt = `
-Analyze this pattern and create a viral, screenshot-worthy pattern card.
+  // BATCH all pattern cards into ONE API call for efficiency
+  const batchPrompt = `
+Analyze these ${topPatterns.length} patterns and create viral, screenshot-worthy pattern cards for each.
 
-## Pattern Data
+## All Patterns
 
+${topPatterns.map((pattern, i) => `
+### PATTERN ${i + 1}: ${pattern.patternName}
+DIMENSION: ${pattern.psychologicalDimension}
 ${formatPatternForPrompt(pattern)}
+`).join('\n')}
 
-## Requirements
+## Requirements for EACH card
 
-1. **VIRAL LABEL** - Must include artist/track names + Gen Z slang
-2. **CITE 5-7 TRACK/ARTIST NAMES** from the evidence
+1. **VIRAL LABEL** - Make it screenshot-worthy + Gen Z slang
+   - For ARTIST/TRACK patterns → Include specific names (e.g., "The Sabrina Carpenter Chokehold")
+   - For GENRE patterns → Focus on sonic/vibe (e.g., "Pop Girl Autumn Energy")
+   - For TIME patterns → Emphasize when/ritual (e.g., "4AM Sad Girl Hours")
+   - For BEHAVIOR patterns → Highlight the action (e.g., "The Vault Hunter Syndrome")
+   - VARY the style - don't make every label about artists!
+
+2. **CITE SPECIFIC EVIDENCE** - Use track/artist names, numbers, percentages
 3. **EVERY claim needs NUMBERS** from the evidence
 4. **PUNCHY CALLOUT** - Use POV format or relatable Gen Z statement
 
+## Label Style Examples
+
+Artist-focused: "The [Artist] Loyalty Chokehold"
+Track-focused: "The '[Song Title]' Disorder"
+Time-focused: "4AM Sad Girl Hours" or "Weekend Warrior Energy"
+Genre-focused: "Pop Girl Autumn Realness" or "The Hyperpop Escape Pod"
+Behavior-focused: "The Vault Hunter (17-Track Edition)" or "First Verse Addict Era"
+
 ## Output Format
 
-PATTERN: The [Specific Artist/Track] [Viral Phrase]
+For EACH pattern, output:
+
+PATTERN: [Viral Label - MATCH THE PATTERN'S FOCUS]
 ├─ CORE: [Primary finding with specific evidence and numbers]
-├─ SUPPORTING: [Secondary evidence with artist/track names]
+├─ SUPPORTING: [Secondary evidence with details]
 └─ BEHAVIOR: [What this reveals about how they use music]
 
 *[Punchy callout in italics using POV/Gen Z format]*
 
-Example:
+---
+
+Example (Artist-focused):
 PATTERN: The "Make It To Christmas" Disorder
 ├─ CORE: #1 current, #2 six-month, #5 all-time (avg rank 2.7)
 ├─ SUPPORTING: Sabrina Carpenter has you in a complete chokehold
 └─ BEHAVIOR: When one holiday song becomes year-round emotional support
 
 *This is what happens when a song becomes your entire personality*
+
+---
+
+Example (Time-focused):
+PATTERN: 4AM Sad Girl Hours
+├─ CORE: 67% of plays between midnight-4am (34 night vs 16 day plays)
+├─ SUPPORTING: Lana Del Rey, Billie Eilish, and Phoebe Bridgers dominate late-night rotation
+└─ BEHAVIOR: Using music as emotional regulation during peak vulnerability hours
+
+*POV: Sleep is for people who don't have feelings to process*
+
+---
+
+IMPORTANT: Make sure labels are DIVERSE across the ${topPatterns.length} cards. Don't make every single one about artists - vary between artist, genre, time, and behavior patterns!
+
+Generate ${topPatterns.length} pattern cards separated by "---".
 `;
 
-    const response = await callClaude(prompt, { maxTokens: 400 });
-    return parsePatternCard(response, pattern.confidence);
+  // Use SONNET for quality (v1 first impressions matter!)
+  const batchResponse = await callClaude(batchPrompt, {
+    maxTokens: 3000,
+    model: 'sonnet' // Quality over cost for v1
   });
 
-  const patternCards = await Promise.all(patternCardPromises);
-  console.log(`[Synthesis] Generated ${patternCards.length} pattern cards`);
+  // Parse all cards from batched response
+  const cardSections = batchResponse.split('---').filter(s => s.trim());
+  const patternCards = cardSections
+    .map((section, i) => {
+      const pattern = topPatterns[i];
+      if (!pattern) return null;
+
+      return parsePatternCard(
+        section,
+        pattern.confidence,
+        pattern.evidence.map(e => e.humanReadable),
+        pattern.psychologicalDimension
+      );
+    })
+    .filter((card): card is NonNullable<typeof card> => {
+      // Only keep valid cards
+      return card !== null &&
+             !!card.patternLabel &&
+             !!card.core &&
+             !!card.supporting &&
+             !!card.behavior;
+    });
+
+  console.log(`[Synthesis] Generated ${patternCards.length} pattern cards (batched)`);
+
+  // Deduplicate pattern cards based on labels (catch similar viral names)
+  const deduplicatedCards = deduplicateCardLabels(patternCards);
+  if (deduplicatedCards.length < patternCards.length) {
+    console.log(`[Synthesis] Deduplicated ${patternCards.length} cards to ${deduplicatedCards.length} based on labels`);
+  }
 
   // ========================================
   // 2. Generate Hero Insight
@@ -138,8 +251,19 @@ Respond ONLY with valid JSON:
 Do not include any text before or after the JSON.
 `;
 
-  const heroResponse = await callClaude(heroPrompt, { expectJson: true, maxTokens: 500 });
-  const heroInsight: HeroInsight = JSON.parse(heroResponse);
+  // Use SONNET for hero insight (this is the first thing users see - keep quality!)
+  const heroResponse = await callClaude(heroPrompt, {
+    expectJson: true,
+    maxTokens: 500,
+    model: 'sonnet' // Quality matters here!
+  });
+  const rawHeroInsight: HeroInsight = JSON.parse(heroResponse);
+
+  // Normalize slashes for better text wrapping
+  const heroInsight: HeroInsight = {
+    headline: normalizeSlashes(rawHeroInsight.headline),
+    subtext: normalizeSlashes(rawHeroInsight.subtext)
+  };
 
   console.log('[Synthesis] Hero insight generated:', heroInsight.headline);
 
@@ -157,10 +281,11 @@ ${formatPatternsForPrompt(patterns)}
 
 ## Dimensions
 
-1. **Temporal Pattern** - When/how they listen (use viral labels)
+1. **Temporal Pattern** - When/how they listen - NOTE: Data limited to recent 50 tracks only
 2. **Emotional Strategy** - How they use music emotionally (use viral labels)
 3. **Discovery Mode** - Exploration vs. loyalty (use viral labels)
 4. **Attachment Style** - How they relate to artists/tracks (use viral labels)
+5. **Genre Profile** - What sonic worlds they gravitate to (use viral labels with specific genres)
 
 ## Label Requirements
 
@@ -186,6 +311,10 @@ ${formatPatternsForPrompt(patterns)}
   "attachmentStyle": {
     "label": "The Vault Hunter (17-Track Edition)",
     "evidence": "17 tracks from all-time top 20 now in witness protection."
+  },
+  "genreProfile": {
+    "label": "Pop Girl Autumn Realness",
+    "evidence": "Pop dominates 85% of top artists (Ariana, Sabrina, Taylor). Dash of art pop via PinkPantheress."
   }
 }
 
@@ -194,8 +323,37 @@ If no pattern detected for a dimension, use: {"label": "Insufficient Data", "evi
 Respond ONLY with valid JSON. Do not include any text before or after the JSON.
 `;
 
-  const dnaResponse = await callClaude(dnaPrompt, { expectJson: true, maxTokens: 600 });
-  const listeningDNA: ListeningDNA = JSON.parse(dnaResponse);
+  // Use HAIKU for listening DNA (follows template, cost efficiency)
+  const dnaResponse = await callClaude(dnaPrompt, {
+    expectJson: true,
+    maxTokens: 600,
+    model: 'haiku' // Cost efficient for templated output
+  });
+  const rawListeningDNA: ListeningDNA = JSON.parse(dnaResponse);
+
+  // Normalize slashes for better text wrapping
+  const listeningDNA: ListeningDNA = {
+    temporalPattern: {
+      label: normalizeSlashes(rawListeningDNA.temporalPattern.label),
+      evidence: normalizeSlashes(rawListeningDNA.temporalPattern.evidence)
+    },
+    emotionalStrategy: {
+      label: normalizeSlashes(rawListeningDNA.emotionalStrategy.label),
+      evidence: normalizeSlashes(rawListeningDNA.emotionalStrategy.evidence)
+    },
+    discoveryMode: {
+      label: normalizeSlashes(rawListeningDNA.discoveryMode.label),
+      evidence: normalizeSlashes(rawListeningDNA.discoveryMode.evidence)
+    },
+    attachmentStyle: {
+      label: normalizeSlashes(rawListeningDNA.attachmentStyle.label),
+      evidence: normalizeSlashes(rawListeningDNA.attachmentStyle.evidence)
+    },
+    genreProfile: {
+      label: normalizeSlashes(rawListeningDNA.genreProfile.label),
+      evidence: normalizeSlashes(rawListeningDNA.genreProfile.evidence)
+    }
+  };
 
   console.log('[Synthesis] Listening DNA generated');
 
@@ -205,7 +363,7 @@ Respond ONLY with valid JSON. Do not include any text before or after the JSON.
 
   return {
     heroInsight,
-    patternCards,
+    patternCards: deduplicatedCards,
     listeningDNA
   };
 }

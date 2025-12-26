@@ -5,6 +5,47 @@
 import { DetectionResult, PatternGroup } from './types';
 
 /**
+ * Add spaces around forward slashes for better text wrapping
+ * "Artist1/Artist2" → "Artist1 / Artist2"
+ */
+export function normalizeSlashes(text: string): string {
+  return text.replace(/\s*\/\s*/g, ' / ');
+}
+
+/**
+ * Deduplicate patterns that have significant evidence overlap
+ * Prevents showing similar patterns like "Make It To Christmas Disorder" and "Make It To Christmas Stranglehold"
+ */
+export function deduplicatePatterns(patterns: DetectionResult[]): DetectionResult[] {
+  const deduplicated: DetectionResult[] = [];
+
+  for (const pattern of patterns) {
+    // Check if this pattern significantly overlaps with any already selected
+    const isDuplicate = deduplicated.some(existing => {
+      // Get evidence strings for comparison
+      const patternEvidence = pattern.evidence.map(e => e.humanReadable.toLowerCase());
+      const existingEvidence = existing.evidence.map(e => e.humanReadable.toLowerCase());
+
+      // Count overlapping evidence
+      const overlapCount = patternEvidence.filter(p =>
+        existingEvidence.some(e => e.includes(p) || p.includes(e))
+      ).length;
+
+      // If more than 40% of evidence overlaps, consider it a duplicate
+      const overlapRatio = overlapCount / Math.min(patternEvidence.length, existingEvidence.length);
+      return overlapRatio > 0.4;
+    });
+
+    if (!isDuplicate) {
+      deduplicated.push(pattern);
+    }
+  }
+
+  console.log(`[Deduplication] Filtered ${patterns.length} patterns down to ${deduplicated.length} unique patterns`);
+  return deduplicated;
+}
+
+/**
  * Group patterns by psychological dimension and calculate dominance
  */
 export function groupPatternsByDimension(
@@ -119,13 +160,15 @@ export function formatPatternsForPrompt(patterns: DetectionResult[]): string {
  *
  * *[Callout]*
  */
-export function parsePatternCard(output: string, confidence: number): {
+export function parsePatternCard(output: string, confidence: number, rawEvidence: string[], dimension: string): {
   patternLabel: string;
   core: string;
   supporting: string;
   behavior: string;
   callout: string;
   confidence: number;
+  rawEvidence: string[];
+  dimension: string;
 } {
   const lines = output.split('\n').map(l => l.trim()).filter(l => l);
 
@@ -149,12 +192,15 @@ export function parsePatternCard(output: string, confidence: number): {
     }
   }
 
+  // Normalize slashes for better text wrapping
   return {
-    patternLabel,
-    core,
-    supporting,
-    behavior,
-    callout,
-    confidence
+    patternLabel: normalizeSlashes(patternLabel),
+    core: normalizeSlashes(core),
+    supporting: normalizeSlashes(supporting),
+    behavior: normalizeSlashes(behavior),
+    callout: normalizeSlashes(callout),
+    confidence,
+    rawEvidence: rawEvidence.map(normalizeSlashes),
+    dimension
   };
 }
