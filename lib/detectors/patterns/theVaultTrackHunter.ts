@@ -228,7 +228,7 @@ export async function detectTheVaultTrackHunter(
 
   return {
     patternId: 50,
-    patternName: 'The Vault Track Hunter',
+    patternName: 'The Forgotten Favorite',
     confidence,
     evidence,
     psychologicalDimension: 'memory and avoidance',

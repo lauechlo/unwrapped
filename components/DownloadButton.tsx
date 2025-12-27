@@ -113,13 +113,17 @@ export function DownloadButton({ cards }: DownloadButtonProps) {
     // Track download all
     trackDownloadAll(cards.length);
 
+    // Detect mobile - mobile browsers need longer delays to avoid blocking downloads
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const delay = isMobile ? 1000 : 500; // 1s for mobile, 500ms for desktop
+
     for (let i = 0; i < cards.length; i++) {
       // Force download mode - don't use Web Share API for batch downloads
       // because Web Share can only be triggered once per user gesture
       await downloadCard(i, true);
-      // Small delay between downloads to prevent browser blocking
+      // Delay between downloads to prevent browser blocking
       if (i < cards.length - 1) {
-        await new Promise((r) => setTimeout(r, 500));
+        await new Promise((r) => setTimeout(r, delay));
       }
     }
   };
@@ -152,7 +156,7 @@ export function DownloadButton({ cards }: DownloadButtonProps) {
           Share Your Results
         </h2>
         <p className="text-sm md:text-base text-gray-400 text-center max-w-2xl px-4">
-          We've selected your {cards.length} most shareable patterns. {/iPhone|iPad|iPod|Android/i.test(typeof navigator !== 'undefined' ? navigator.userAgent : '') ? 'Tap individual cards to share, or download all below!' : 'Download them for Instagram Stories!'}
+          We've selected your {cards.length} most shareable patterns. {/iPhone|iPad|iPod|Android/i.test(typeof navigator !== 'undefined' ? navigator.userAgent : '') ? 'Tap cards to share. Add Instagram music sticker 🎵 to the square at top!' : 'Download them for Instagram Stories! Add music sticker 🎵 to the square at top.'}
         </p>
 
         {/* Download All Button */}

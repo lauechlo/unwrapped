@@ -129,7 +129,7 @@ PATTERN: [Viral Label - MATCH THE PATTERN'S FOCUS]
 
 Example (Artist-focused):
 PATTERN: The "Make It To Christmas" Disorder
-├─ CORE: #1 current, #2 six-month, #5 all-time (avg rank 2.7)
+├─ CORE: #1 current, #2 six-month, #5 long-term (avg rank 2.7)
 ├─ SUPPORTING: Sabrina Carpenter has you in a complete chokehold
 └─ BEHAVIOR: When one holiday song becomes year-round emotional support
 
@@ -237,7 +237,7 @@ Examples:
 
 **2. SUBTEXT** (2-3 sentences) - MUST include specific tracks, numbers, patterns
 
-Example: "'Make It To Christmas' has you in a chokehold (#1 current, #2 six-month, #5 all-time). Meanwhile 'Guilty as Sin?' sits vaulted alongside 16 other abandoned top-20 tracks. You're capable of sustained attachment - but only to songs that feel safe."
+Example: "'Make It To Christmas' has you in a chokehold (#1 current, #2 six-month, #5 long-term). Meanwhile 'Guilty as Sin?' sits vaulted alongside 16 other abandoned favorites. You're capable of sustained attachment - but only to songs that feel safe."
 
 ## Output Format
 
@@ -302,15 +302,15 @@ ${formatPatternsForPrompt(patterns)}
   },
   "emotionalStrategy": {
     "label": "Sabrina Carpenter Comfort Rotation",
-    "evidence": "'Make It To Christmas' anchors across all periods (#1 current, #2 six-month, #5 all-time)."
+    "evidence": "'Make It To Christmas' anchors across all periods (#1 current, #2 six-month, #5 long-term)."
   },
   "discoveryMode": {
     "label": "The 6-Artist Loyalist",
-    "evidence": "Ariana, Taylor, Sabrina, Lana, PinkPantheress, FLETCHER constant across ALL time ranges."
+    "evidence": "Ariana, Taylor, Sabrina, Lana, PinkPantheress, FLETCHER constant across recent, medium, and long-term periods."
   },
   "attachmentStyle": {
     "label": "The Vault Hunter (17-Track Edition)",
-    "evidence": "17 tracks from all-time top 20 now in witness protection."
+    "evidence": "17 tracks from long-term top 20 now vaulted from current rotation."
   },
   "genreProfile": {
     "label": "Pop Girl Autumn Realness",

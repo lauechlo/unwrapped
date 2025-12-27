@@ -10,7 +10,7 @@ export function ExampleCardsSection() {
   // 3 compelling example cards showcasing different dimensions
   const exampleCards: PatternCard[] = [
     {
-      patternLabel: "The 2am Spiral Soundtrack",
+      patternLabel: "The Phoebe Bridgers 2am Spiral",
       core: "You turn to the same 8 songs when life gets heavy - they're not just music, they're your late-night therapy session.",
       supporting: "Your Repeat Rate on these tracks is 4.2x higher than your overall average, clustering between 11pm-3am on weekdays.",
       behavior: "You listen to Phoebe Bridgers' 'I Know The End' 47 times after midnight",
@@ -24,7 +24,7 @@ export function ExampleCardsSection() {
       dimension: "Emotional Regulation"
     },
     {
-      patternLabel: "The Nostalgia Time Machine",
+      patternLabel: "The Arctic Monkeys Time Machine",
       core: "Your top artists are from 2014-2017 - you're not discovering new music, you're reliving who you used to be.",
       supporting: "87% of your top 50 tracks were released 5+ years ago. You've built a museum, not a playlist.",
       behavior: "You play Arctic Monkeys' 'AM' album like it's still 2013",
@@ -38,10 +38,10 @@ export function ExampleCardsSection() {
       dimension: "Temporal Patterns"
     },
     {
-      patternLabel: "The Genre Commitment-Phobe",
-      core: "You jump from indie folk to hyperpop to classical in the same hour - your vibe is 'controlled chaos'.",
+      patternLabel: "The Taylor Swift / Billie Eilish Oscillation",
+      core: "You jump from pop to alternative in the same hour - your vibe is 'controlled chaos'.",
       supporting: "Your genre variance is in the top 5% of Spotify users. You're curating chaos, not playlists.",
-      behavior: "You go from Sufjan Stevens to 100 gecs to Chopin in 47 minutes",
+      behavior: "You go from Taylor Swift to Billie Eilish to Lana Del Rey in 47 minutes",
       callout: "Your playlist is an identity crisis.",
       confidence: 0.85,
       rawEvidence: [

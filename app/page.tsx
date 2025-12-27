@@ -12,9 +12,17 @@ import { ExampleCardsSection } from '@/components/ExampleCardsSection';
 export default function Home() {
   const [showLimitModal, setShowLimitModal] = useState(false);
   const [hasUsesLeft, setHasUsesLeft] = useState(true);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   useEffect(() => {
     setHasUsesLeft(canMakeRequest());
+
+    // Check for OAuth errors in URL params
+    const params = new URLSearchParams(window.location.search);
+    const error = params.get('error');
+    if (error) {
+      setAuthError(error);
+    }
   }, []);
 
   const handleConnectClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -53,6 +61,29 @@ export default function Home() {
       <div className="min-h-screen bg-black text-white">
         {/* Usage limit banner */}
         <UsageLimitBanner />
+
+        {/* OAuth Error Banner */}
+        {authError && (
+          <div className="bg-red-500/10 border-b border-red-500/30 py-3 px-4">
+            <div className="max-w-4xl mx-auto flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <span className="text-xl">⚠️</span>
+                <p className="text-sm text-red-300">
+                  Authentication failed. Try Chrome or disable Safari's "Prevent Cross-Site Tracking"
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setAuthError(null);
+                  window.history.replaceState({}, '', '/');
+                }}
+                className="text-xs bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full transition-colors whitespace-nowrap"
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        )}
 
       {/* Main content */}
       <div className="flex items-center justify-center px-4 py-16 min-h-[calc(100vh-60px)]">
