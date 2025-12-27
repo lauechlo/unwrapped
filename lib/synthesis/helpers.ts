@@ -183,6 +183,7 @@ export function parsePatternCard(output: string, confidence: number, rawEvidence
   for (const line of lines) {
     if (line.startsWith('PATTERN:')) {
       patternLabel = line.replace('PATTERN:', '').trim();
+      inEvidenceSection = false; // Reset when new pattern starts
     } else if (line.includes('├─ CORE:') || line.includes('CORE:')) {
       core = line.replace(/^.*?CORE:\s*/, '').trim();
     } else if (line.includes('├─ SUPPORTING:') || line.includes('SUPPORTING:')) {
@@ -191,11 +192,14 @@ export function parsePatternCard(output: string, confidence: number, rawEvidence
       behavior = line.replace(/^.*?BEHAVIOR:\s*/, '').trim();
     } else if (line.startsWith('*') && line.endsWith('*')) {
       callout = line.replace(/^\*\s*/, '').replace(/\s*\*$/, '').trim();
-    } else if (line === 'RAW EVIDENCE:') {
+    } else if (line === 'RAW EVIDENCE:' || line.startsWith('RAW EVIDENCE:')) {
       inEvidenceSection = true;
     } else if (inEvidenceSection && line.startsWith('-')) {
       // Extract evidence bullet point
       synthesizedEvidence.push(line.replace(/^-\s*/, '').trim());
+    } else if (line === '---') {
+      // Stop collecting evidence at separator
+      inEvidenceSection = false;
     }
   }
 
