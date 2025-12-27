@@ -177,6 +177,8 @@ export function parsePatternCard(output: string, confidence: number, rawEvidence
   let supporting = '';
   let behavior = '';
   let callout = '';
+  const synthesizedEvidence: string[] = [];
+  let inEvidenceSection = false;
 
   for (const line of lines) {
     if (line.startsWith('PATTERN:')) {
@@ -189,8 +191,16 @@ export function parsePatternCard(output: string, confidence: number, rawEvidence
       behavior = line.replace(/^.*?BEHAVIOR:\s*/, '').trim();
     } else if (line.startsWith('*') && line.endsWith('*')) {
       callout = line.replace(/^\*\s*/, '').replace(/\s*\*$/, '').trim();
+    } else if (line === 'RAW EVIDENCE:') {
+      inEvidenceSection = true;
+    } else if (inEvidenceSection && line.startsWith('-')) {
+      // Extract evidence bullet point
+      synthesizedEvidence.push(line.replace(/^-\s*/, '').trim());
     }
   }
+
+  // Use synthesized evidence from Claude if available, otherwise fall back to detector evidence
+  const finalEvidence = synthesizedEvidence.length > 0 ? synthesizedEvidence : rawEvidence;
 
   // Normalize slashes for better text wrapping
   return {
@@ -200,7 +210,7 @@ export function parsePatternCard(output: string, confidence: number, rawEvidence
     behavior: normalizeSlashes(behavior),
     callout: normalizeSlashes(callout),
     confidence,
-    rawEvidence: rawEvidence.map(normalizeSlashes),
+    rawEvidence: finalEvidence.map(normalizeSlashes),
     dimension
   };
 }

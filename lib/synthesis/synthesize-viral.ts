@@ -105,6 +105,12 @@ ${formatPatternForPrompt(pattern)}
 2. **CITE SPECIFIC EVIDENCE** - Use track/artist names, numbers, percentages
 3. **EVERY claim needs NUMBERS** from the evidence
 4. **PUNCHY CALLOUT** - Use POV format or relatable Gen Z statement
+5. **RAW EVIDENCE** - Go ONE level deeper than summary with granular details:
+   - Include actual track names with play counts
+   - Add sample timestamps when available (e.g., "last played: Dec 24, 2:47am")
+   - Show the math/calculations behind percentages
+   - List specific tracks, not just summaries
+   - DO NOT just repeat what's in CORE/SUPPORTING - add new details!
 
 ## Label Style Examples
 
@@ -125,6 +131,11 @@ PATTERN: [Viral Label - MATCH THE PATTERN'S FOCUS]
 
 *[Punchy callout in italics using POV/Gen Z format]*
 
+RAW EVIDENCE:
+- [Detailed line 1 with track names, play counts, timestamps]
+- [Detailed line 2 with calculations/math behind the claims]
+- [Detailed line 3 with specific examples not in summary]
+
 ---
 
 Example (Artist-focused):
@@ -135,6 +146,13 @@ PATTERN: The "Make It To Christmas" Disorder
 
 *This is what happens when a song becomes your entire personality*
 
+RAW EVIDENCE:
+- "Make It To Christmas" by Alessia Cara: 47 total plays across all periods
+- Last played: Dec 24, 2:47am (part of late-night listening pattern)
+- Rank calculation: (1 + 2 + 5) / 3 = 2.7 average rank
+- Appears in 100% of time periods analyzed (current, 6-month, long-term)
+- Play frequency: 12 plays in last 4 weeks, 8 plays in 6-month period
+
 ---
 
 Example (Time-focused):
@@ -144,6 +162,13 @@ PATTERN: 4AM Sad Girl Hours
 └─ BEHAVIOR: Using music as emotional regulation during peak vulnerability hours
 
 *POV: Sleep is for people who don't have feelings to process*
+
+RAW EVIDENCE:
+- Night plays: 34 total (midnight-4am window)
+- Day plays: 16 total (6am-6pm window)
+- Calculation: 34 / (34 + 16) = 68% night concentration
+- Top late-night tracks: "The Night We Met" (8 plays), "Motion Sickness" (6 plays), "Ocean Eyes" (5 plays)
+- Peak listening hour: 2-3am (12 plays in this hour alone)
 
 ---
 
