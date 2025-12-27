@@ -372,39 +372,26 @@ export async function fetchUserData(accessToken: string): Promise<UserData> {
   try {
     console.log('[Spotify API] Fetching user data...');
 
-    // Fetch all base data in parallel with individual error logging
-    const results = await Promise.allSettled([
-      getTopTracks(accessToken, 'short_term', 50).catch(e => { console.error('[Spotify API] Failed: topTracksShort', e); throw e; }),
-      getTopTracks(accessToken, 'medium_term', 50).catch(e => { console.error('[Spotify API] Failed: topTracksMedium', e); throw e; }),
-      getTopTracks(accessToken, 'long_term', 50).catch(e => { console.error('[Spotify API] Failed: topTracksLong', e); throw e; }),
-      getTopArtists(accessToken, 'short_term', 50).catch(e => { console.error('[Spotify API] Failed: topArtistsShort', e); throw e; }),
-      getTopArtists(accessToken, 'medium_term', 50).catch(e => { console.error('[Spotify API] Failed: topArtistsMedium', e); throw e; }),
-      getTopArtists(accessToken, 'long_term', 50).catch(e => { console.error('[Spotify API] Failed: topArtistsLong', e); throw e; }),
-      getRecentlyPlayed(accessToken, 50).catch(e => { console.error('[Spotify API] Failed: recentlyPlayed', e); throw e; }),
-      getSavedTracks(accessToken, 50).catch(e => { console.error('[Spotify API] Failed: savedTracks', e); throw e; }),
+    // Fetch all base data in parallel
+    const [
+      topTracksShort,
+      topTracksMedium,
+      topTracksLong,
+      topArtistsShort,
+      topArtistsMedium,
+      topArtistsLong,
+      recentlyPlayed,
+      savedTracks,
+    ] = await Promise.all([
+      getTopTracks(accessToken, 'short_term', 50),
+      getTopTracks(accessToken, 'medium_term', 50),
+      getTopTracks(accessToken, 'long_term', 50),
+      getTopArtists(accessToken, 'short_term', 50),
+      getTopArtists(accessToken, 'medium_term', 50),
+      getTopArtists(accessToken, 'long_term', 50),
+      getRecentlyPlayed(accessToken, 50),
+      getSavedTracks(accessToken, 50),
     ]);
-
-    // Check for failures
-    const failures = results.filter(r => r.status === 'rejected');
-    if (failures.length > 0) {
-      console.error(`[Spotify API] ${failures.length} API call(s) failed`);
-      failures.forEach((f, i) => {
-        if (f.status === 'rejected') {
-          console.error(`  - Call ${i}: ${f.reason}`);
-        }
-      });
-      throw new Error(`${failures.length} Spotify API calls failed`);
-    }
-
-    // Extract values with proper typing
-    const topTracksShort = results[0].status === 'fulfilled' ? results[0].value : [];
-    const topTracksMedium = results[1].status === 'fulfilled' ? results[1].value : [];
-    const topTracksLong = results[2].status === 'fulfilled' ? results[2].value : [];
-    const topArtistsShort = results[3].status === 'fulfilled' ? results[3].value : [];
-    const topArtistsMedium = results[4].status === 'fulfilled' ? results[4].value : [];
-    const topArtistsLong = results[5].status === 'fulfilled' ? results[5].value : [];
-    const recentlyPlayed = results[6].status === 'fulfilled' ? results[6].value : [];
-    const savedTracks = results[7].status === 'fulfilled' ? results[7].value : [];
 
     console.log('[Spotify API] Data fetched successfully');
     console.log(`  - Top Tracks: ${topTracksShort.length} short, ${topTracksMedium.length} medium, ${topTracksLong.length} long`);
