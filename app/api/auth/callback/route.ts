@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
 
     console.log('[OAuth Callback] Token received, access_token length:', tokenData.access_token.length);
 
-    // Redirect to store-tokens route which will set cookies and redirect to /results
+    // Redirect to store-tokens which will handle the cookie race condition
     const storeUrl = new URL('/api/auth/store-tokens', request.url);
     storeUrl.searchParams.set('access_token', tokenData.access_token);
     storeUrl.searchParams.set('refresh_token', tokenData.refresh_token);

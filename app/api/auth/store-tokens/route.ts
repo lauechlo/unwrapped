@@ -15,29 +15,23 @@ export async function GET(request: NextRequest) {
   }
 
   console.log('[Store Tokens] Storing tokens in cookies');
-  console.log('[Store Tokens] Access token length:', accessToken.length);
-  console.log('[Store Tokens] Expires in:', expiresIn, 'seconds');
 
   // Create redirect response
   const response = NextResponse.redirect(new URL('/results', request.url));
-  console.log('[Store Tokens] Redirect URL:', new URL('/results', request.url).toString());
 
   // Store tokens as cookies
-  // Note: sameSite 'none' requires secure: true
-  const isProduction = process.env.NODE_ENV === 'production';
-
   response.cookies.set('spotify_access_token', accessToken, {
     httpOnly: true,
-    secure: true, // Always true (required for sameSite: 'none')
-    sameSite: isProduction ? 'none' : 'lax', // 'none' for production cross-site, 'lax' for localhost
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
     maxAge: parseInt(expiresIn),
     path: '/',
   });
 
   response.cookies.set('spotify_refresh_token', refreshToken, {
     httpOnly: true,
-    secure: true, // Always true (required for sameSite: 'none')
-    sameSite: isProduction ? 'none' : 'lax', // 'none' for production cross-site, 'lax' for localhost
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
     maxAge: 60 * 60 * 24 * 30, // 30 days
     path: '/',
   });
