@@ -32,6 +32,8 @@ export function SynthesisClient({ detectedPatterns }: SynthesisClientProps) {
   const [isFromCache, setIsFromCache] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loadingScreen, setLoadingScreen] = useState(0);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   useEffect(() => {
     async function loadSynthesis() {
@@ -155,15 +157,61 @@ export function SynthesisClient({ detectedPatterns }: SynthesisClientProps) {
     };
   }, [isLoading]);
 
+  // Swipe gesture handlers
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe && loadingScreen < 2) {
+      setLoadingScreen(loadingScreen + 1);
+    }
+    if (isRightSwipe && loadingScreen > 0) {
+      setLoadingScreen(loadingScreen - 1);
+    }
+  };
+
   // Loading state with progressive screens
   if (isLoading) {
+    // Calculate progress percentage (0-100%)
+    const progressPercentage = ((loadingScreen + 1) / 3) * 100;
 
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900/20 via-black to-black p-8">
-        <div className="max-w-2xl text-center">
+      <div className="min-h-screen bg-gradient-to-br from-purple-900/20 via-black to-black">
+        {/* Progress Bar at Top */}
+        <div className="w-full h-2 bg-gray-800">
+          <div
+            className="h-full bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 transition-all duration-500 ease-out"
+            style={{ width: `${progressPercentage}%` }}
+          />
+        </div>
+
+        {/* Main Loading Content */}
+        <div
+          className="flex flex-col items-center pt-20 md:pt-32 px-8 pb-8"
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+        >
+          <div className="max-w-2xl text-center">
           {/* Screen 1: Origin Story */}
           {loadingScreen === 0 && (
             <div className="animate-fadeIn">
+              {/* Step Indicator */}
+              <div className="text-sm text-gray-500 mb-4 font-semibold">Step 1 of 3</div>
               <div className="text-6xl mb-6 animate-pulse">🎵</div>
               <h2 className="text-2xl md:text-3xl font-bold text-white mb-6 px-4">
                 Analyzing your musical fingerprint...
@@ -186,6 +234,8 @@ export function SynthesisClient({ detectedPatterns }: SynthesisClientProps) {
           {/* Screen 2: Research Methods */}
           {loadingScreen === 1 && (
             <div className="animate-fadeIn">
+              {/* Step Indicator */}
+              <div className="text-sm text-gray-500 mb-4 font-semibold">Step 2 of 3</div>
               <div className="text-6xl mb-6 animate-pulse">🧬</div>
               <h2 className="text-2xl md:text-3xl font-bold text-white mb-6 px-4">
                 Decoding 7 psychological dimensions...
@@ -217,6 +267,8 @@ export function SynthesisClient({ detectedPatterns }: SynthesisClientProps) {
           {/* Screen 3: AI Synthesis */}
           {loadingScreen === 2 && (
             <div className="animate-fadeIn">
+              {/* Step Indicator */}
+              <div className="text-sm text-gray-500 mb-4 font-semibold">Step 3 of 3</div>
               <div className="text-6xl mb-6 animate-pulse">✨</div>
               <h2 className="text-2xl md:text-3xl font-bold text-white mb-6 px-4">
                 Generating your viral callouts...
@@ -239,11 +291,50 @@ export function SynthesisClient({ detectedPatterns }: SynthesisClientProps) {
             </div>
           )}
 
-          {/* Progress dots */}
-          <div className="flex justify-center gap-2 mt-8">
-            <div className={`w-2 h-2 rounded-full ${loadingScreen === 0 ? 'bg-purple-400' : 'bg-gray-600'}`} />
-            <div className={`w-2 h-2 rounded-full ${loadingScreen === 1 ? 'bg-purple-400' : 'bg-gray-600'}`} />
-            <div className={`w-2 h-2 rounded-full ${loadingScreen === 2 ? 'bg-purple-400' : 'bg-gray-600'}`} />
+          {/* Navigation Controls: Arrows + Clickable Dots */}
+          <div className="flex items-center justify-center gap-6 mt-8">
+            {/* Previous Arrow */}
+            <button
+              onClick={() => setLoadingScreen(Math.max(0, loadingScreen - 1))}
+              disabled={loadingScreen === 0}
+              className={`text-2xl ${loadingScreen === 0 ? 'text-gray-700 cursor-not-allowed' : 'text-purple-400 hover:text-purple-300 cursor-pointer'}`}
+              aria-label="Previous screen"
+            >
+              ←
+            </button>
+
+            {/* Clickable Progress Dots */}
+            <div className="flex gap-2">
+              <button
+                onClick={() => setLoadingScreen(0)}
+                className={`w-3 h-3 rounded-full transition-all cursor-pointer ${loadingScreen === 0 ? 'bg-purple-400 scale-125' : 'bg-gray-600 hover:bg-gray-500'}`}
+                aria-label="Go to step 1"
+              />
+              <button
+                onClick={() => setLoadingScreen(1)}
+                className={`w-3 h-3 rounded-full transition-all cursor-pointer ${loadingScreen === 1 ? 'bg-purple-400 scale-125' : 'bg-gray-600 hover:bg-gray-500'}`}
+                aria-label="Go to step 2"
+              />
+              <button
+                onClick={() => setLoadingScreen(2)}
+                className={`w-3 h-3 rounded-full transition-all cursor-pointer ${loadingScreen === 2 ? 'bg-purple-400 scale-125' : 'bg-gray-600 hover:bg-gray-500'}`}
+                aria-label="Go to step 3"
+              />
+            </div>
+
+            {/* Next Arrow */}
+            <button
+              onClick={() => setLoadingScreen(Math.min(2, loadingScreen + 1))}
+              disabled={loadingScreen === 2}
+              className={`text-2xl ${loadingScreen === 2 ? 'text-gray-700 cursor-not-allowed' : 'text-purple-400 hover:text-purple-300 cursor-pointer'}`}
+              aria-label="Next screen"
+            >
+              →
+            </button>
+          </div>
+
+          {/* Helper Text */}
+          <p className="text-xs text-gray-600 mt-4">Use arrows or swipe to navigate • Auto-advancing while processing</p>
           </div>
         </div>
       </div>

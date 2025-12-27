@@ -168,10 +168,10 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           style={{
             position: 'absolute',
             top: '60px',
-            fontSize: '20px',
+            fontSize: '26px',
             fontWeight: 600,
             color: badgeTextColor,
-            padding: '10px 24px',
+            padding: '12px 28px',
             borderRadius: '100px',
             border: `1.5px solid ${badgeBorderColor}`,
             backgroundColor: badgeBgColor,
@@ -286,7 +286,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
         {/* Core - One punchy proof line */}
         <div
           style={{
-            fontSize: '30px',
+            fontSize: '36px',
             fontWeight: 500,
             color: textColor,
             textAlign: 'center',
@@ -302,10 +302,10 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
         {/* Listening Habit Badge - Describes the behavior */}
         <div
           style={{
-            fontSize: '26px',
+            fontSize: '32px',
             fontWeight: 500,
             color: neonColorForMode,
-            padding: '18px 40px',
+            padding: '20px 44px',
             borderRadius: '24px',
             border: `2px solid ${neonColorForMode}`,
             backgroundColor: `${neonColorForMode}10`,
@@ -344,7 +344,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           </div>
           <div
             style={{
-              fontSize: '18px',
+              fontSize: '24px',
               color: subtleTextColor,
               fontWeight: 300,
               textShadow: lightMode ? '0 1px 3px rgba(0,0,0,0.3)' : 'none',
@@ -354,12 +354,12 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           </div>
           <div
             style={{
-              fontSize: '11px',
+              fontSize: '18px',
               color: subtleTextColor,
               fontWeight: 300,
               textAlign: 'center',
-              maxWidth: '600px',
-              lineHeight: 1.4,
+              maxWidth: '700px',
+              lineHeight: 1.5,
               textShadow: lightMode ? '0 1px 3px rgba(0,0,0,0.3)' : 'none',
             }}
           >
@@ -367,13 +367,14 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           </div>
           <div
             style={{
-              fontSize: '10px',
-              color: 'rgba(255, 255, 255, 0.4)',
+              fontSize: '16px',
+              color: 'rgba(255, 255, 255, 0.5)',
               fontWeight: 300,
               textAlign: 'center',
-              maxWidth: '600px',
-              marginTop: '4px',
+              maxWidth: '650px',
+              marginTop: '6px',
               fontStyle: 'italic',
+              lineHeight: 1.4,
               textShadow: lightMode ? '0 1px 3px rgba(0,0,0,0.3)' : 'none',
             }}
           >
