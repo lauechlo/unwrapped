@@ -12,6 +12,31 @@ export interface ArtistTheme {
 }
 
 const artistThemes: Record<string, ArtistTheme> = {
+  // EXAMPLE CARDS - Bright gradients for homepage previews (full opacity for visibility)
+  'phoebe bridgers 2am spiral': {
+    gradient: 'from-pink-700 via-rose-800 to-pink-900', // Bright pink gradient
+    border: 'border-pink-400/50 hover:border-rose-400/70',
+    badge: 'bg-pink-500/20 border-pink-400/50 text-pink-300',
+    accent: 'text-pink-300',
+    neonAccent: '#ec4899' // Pink neon
+  },
+
+  'arctic monkeys time machine': {
+    gradient: 'from-purple-700 via-violet-800 to-purple-900', // Bright purple gradient
+    border: 'border-purple-400/50 hover:border-violet-400/70',
+    badge: 'bg-purple-500/20 border-purple-400/50 text-purple-300',
+    accent: 'text-purple-300',
+    neonAccent: '#a855f7' // Purple neon
+  },
+
+  'taylor swift / billie eilish oscillation': {
+    gradient: 'from-blue-700 via-cyan-800 to-blue-900', // Bright blue gradient
+    border: 'border-blue-400/50 hover:border-cyan-400/70',
+    badge: 'bg-blue-500/20 border-blue-400/50 text-blue-300',
+    accent: 'text-blue-300',
+    neonAccent: '#3b82f6' // Blue neon
+  },
+
   // Wicked
   'wicked': {
     gradient: 'from-green-900/40 via-pink-900/40 to-black',
