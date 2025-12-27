@@ -396,16 +396,15 @@ export async function fetchUserData(accessToken: string): Promise<UserData> {
       throw new Error(`${failures.length} Spotify API calls failed`);
     }
 
-    const [
-      topTracksShort,
-      topTracksMedium,
-      topTracksLong,
-      topArtistsShort,
-      topArtistsMedium,
-      topArtistsLong,
-      recentlyPlayed,
-      savedTracks,
-    ] = results.map(r => r.status === 'fulfilled' ? r.value : []);
+    // Extract values with proper typing
+    const topTracksShort = results[0].status === 'fulfilled' ? results[0].value : [];
+    const topTracksMedium = results[1].status === 'fulfilled' ? results[1].value : [];
+    const topTracksLong = results[2].status === 'fulfilled' ? results[2].value : [];
+    const topArtistsShort = results[3].status === 'fulfilled' ? results[3].value : [];
+    const topArtistsMedium = results[4].status === 'fulfilled' ? results[4].value : [];
+    const topArtistsLong = results[5].status === 'fulfilled' ? results[5].value : [];
+    const recentlyPlayed = results[6].status === 'fulfilled' ? results[6].value : [];
+    const savedTracks = results[7].status === 'fulfilled' ? results[7].value : [];
 
     console.log('[Spotify API] Data fetched successfully');
     console.log(`  - Top Tracks: ${topTracksShort.length} short, ${topTracksMedium.length} medium, ${topTracksLong.length} long`);
