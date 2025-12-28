@@ -104,17 +104,18 @@ export async function detectTheLoyalist(
     confidence = Math.min(confidence + 0.1, 1.0);
   }
 
-  // Build evidence
+  // Build evidence - use top 3 for cleaner Instagram cards
+  const topLoyalArtists = loyalArtists.slice(0, 3);
+
   const evidence: Evidence[] = [
     {
       type: 'count',
-      value: loyalArtists.length,
-      humanReadable: `${loyalArtists.length} artists appear in your top 10 across ALL time ranges`
+      value: topLoyalArtists.length,
+      humanReadable: `${topLoyalArtists.length} artists appear in your top 10 across ALL time ranges`
     }
   ];
 
-  // Show the loyal artists
-  const topLoyalArtists = loyalArtists.slice(0, 3);
+  // Show top 3 loyal artists with their ranks
   topLoyalArtists.forEach(loyal => {
     evidence.push({
       type: 'artist',
@@ -124,11 +125,11 @@ export async function detectTheLoyalist(
   });
 
   // Add interpretation based on loyalty count
-  if (loyalArtists.length >= CONFIG.HIGH_LOYALTY_COUNT) {
+  if (topLoyalArtists.length >= CONFIG.HIGH_LOYALTY_COUNT) {
     evidence.push({
       type: 'timestamp',
       value: 'high',
-      humanReadable: `${loyalArtists.length} consistent artists shows exceptionally stable musical identity`
+      humanReadable: `${topLoyalArtists.length} consistent artists shows exceptionally stable musical identity`
     });
   } else {
     evidence.push({

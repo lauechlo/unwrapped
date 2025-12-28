@@ -25,7 +25,7 @@ export function DisclaimerBanner() {
               A Note from Chloe
             </h3>
             <p className="text-sm md:text-base text-gray-300 leading-relaxed">
-              Built as a <span className="text-blue-400 font-semibold">fun side project</span> at Princeton using{' '}
+              I built this as a <span className="text-blue-400 font-semibold">fun side project</span> using{' '}
               <span className="text-pink-400 font-semibold">music psychology research</span>. These "diagnoses" are{' '}
               <span className="text-purple-400 font-semibold">playful roasts</span>, not clinical assessments.
               Think of it as data art, not therapy! ✨

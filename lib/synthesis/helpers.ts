@@ -184,12 +184,12 @@ export function parsePatternCard(output: string, confidence: number, rawEvidence
     if (line.startsWith('PATTERN:')) {
       patternLabel = line.replace('PATTERN:', '').trim();
       inEvidenceSection = false; // Reset when new pattern starts
-    } else if (line.includes('├─ CORE:') || line.includes('CORE:')) {
-      core = line.replace(/^.*?CORE:\s*/, '').trim();
-    } else if (line.includes('├─ SUPPORTING:') || line.includes('SUPPORTING:')) {
-      supporting = line.replace(/^.*?SUPPORTING:\s*/, '').trim();
-    } else if (line.includes('└─ BEHAVIOR:') || line.includes('BEHAVIOR:')) {
-      behavior = line.replace(/^.*?BEHAVIOR:\s*/, '').trim();
+    } else if (line.includes('├─ KEY FINDING:') || line.includes('KEY FINDING:')) {
+      core = line.replace(/^.*?KEY FINDING:\s*/, '').trim();
+    } else if (line.includes('├─ WHY:') || line.includes('WHY:')) {
+      supporting = line.replace(/^.*?WHY:\s*/, '').trim();
+    } else if (line.includes('└─ WHAT IT MEANS:') || line.includes('WHAT IT MEANS:')) {
+      behavior = line.replace(/^.*?WHAT IT MEANS:\s*/, '').trim();
     } else if (line.startsWith('*') && line.endsWith('*')) {
       callout = line.replace(/^\*\s*/, '').replace(/\s*\*$/, '').trim();
     } else if (line === 'RAW EVIDENCE:' || line.startsWith('RAW EVIDENCE:')) {

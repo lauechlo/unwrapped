@@ -133,7 +133,24 @@ export function incrementUsage(): boolean {
 
   // Get usage map
   const usageMapStr = localStorage.getItem(STORAGE_KEY);
-  const usageMap: Record<string, number> = usageMapStr ? JSON.parse(usageMapStr) : {};
+  let usageMap: Record<string, number> = {};
+
+  if (usageMapStr) {
+    try {
+      const parsed = JSON.parse(usageMapStr);
+      // Validate it's an object, not a number (from old format)
+      if (typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)) {
+        usageMap = parsed;
+      } else {
+        // Old format detected, clear it
+        console.log('[Rate Limit] Migrating from old storage format');
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    } catch (e) {
+      console.error('[Rate Limit] Error parsing usage map:', e);
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  }
 
   // Increment count for this fingerprint
   const newCount = count + 1;

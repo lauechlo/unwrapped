@@ -965,6 +965,7 @@ export function getArtistTheme(patternLabel: string): ArtistTheme {
     return generateDynamicTheme(extractedArtist);
   }
 
-  // Return default theme if no artist detected
-  return artistThemes.default;
+  // No artist detected - generate color based on full pattern label
+  // This ensures every pattern gets a unique color, even without artist names
+  return generateDynamicTheme(patternLabel);
 }

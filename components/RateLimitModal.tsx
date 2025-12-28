@@ -45,18 +45,34 @@ export function RateLimitModal({ isOpen, onClose }: RateLimitModalProps) {
             </p>
           </div>
 
+          {/* Waitlist CTA */}
+          <a
+            href="https://forms.gle/djCs4NFUBnwFCLBr7"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full py-3 px-6 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold rounded-lg
+                     hover:opacity-90 transition-all shadow-lg hover:shadow-pink-500/50 mb-3 text-center"
+          >
+            🎉 Join the v2 Waitlist
+          </a>
+
           <button
             onClick={onClose}
-            className="w-full py-3 px-6 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold rounded-lg
-                     hover:opacity-90 transition-all shadow-lg hover:shadow-pink-500/50"
+            className="w-full py-3 px-6 bg-zinc-800 text-white font-semibold rounded-lg
+                     hover:bg-zinc-700 transition-all"
           >
-            Got it!
+            Close
           </button>
 
           <p className="text-xs text-white/40 mt-4">
-            Want unlimited access now? Email{' '}
-            <a href="mailto:hello@unwrapped.com" className="text-pink-400 hover:text-pink-300">
-              hello@unwrapped.com
+            Got feedback?{' '}
+            <a
+              href="https://forms.gle/bo1K5tWekj2uPTow8"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-pink-400 hover:text-pink-300"
+            >
+              Share here
             </a>
           </p>
         </div>

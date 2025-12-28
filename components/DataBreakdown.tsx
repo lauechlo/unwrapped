@@ -224,46 +224,50 @@ export function DataBreakdown({ detectedPatterns, topTracks, topArtists }: DataB
               </div>
             </div>
 
+            {/* Privacy Note - Make this MOST prominent */}
+            <div className="bg-green-500/10 border-2 border-green-500/40 rounded-xl p-6">
+              <h3 className="text-lg font-bold text-green-400 mb-2 flex items-center gap-2">
+                <span>🔒</span>
+                Your Data Never Leaves Your Device
+              </h3>
+              <p className="text-sm text-gray-300 text-center">
+                All analysis happens in your browser. We don't store, track, or save ANY of your listening data on our servers.
+                When you close this page, it's gone forever.
+              </p>
+            </div>
+
             {/* API Limitations - Transparency */}
             <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-6">
               <h3 className="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2">
                 <span>⚠️</span>
-                What Spotify's API Gives Us (Data Limitations)
+                What Spotify's API Gives Us
               </h3>
               <p className="text-sm text-gray-300 mb-4">
-                Full transparency: Spotify's API doesn't give us your complete listening history.
-                Here's exactly what we can access:
+                Spotify's API provides a snapshot, not your complete listening history:
               </p>
-              <div className="grid md:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <div className="text-green-400 font-semibold mb-2">✅ What We Have:</div>
-                  <ul className="space-y-1 text-gray-300">
-                    <li>• Top 50 tracks (3 time periods = ~150 tracks)</li>
-                    <li>• Top 50 artists (3 time periods = ~150 artists)</li>
-                    <li>• Last 50 recently played songs</li>
-                    <li>• Your saved (liked) tracks</li>
-                  </ul>
-                </div>
-                <div>
-                  <div className="text-red-400 font-semibold mb-2">❌ What We Don't Have:</div>
-                  <ul className="space-y-1 text-gray-300">
-                    <li>• Your full listening history</li>
-                    <li>• Exact play counts</li>
-                    <li>• Complete timestamps</li>
-                    <li>• All your playlists</li>
-                  </ul>
-                </div>
+              <div className="text-sm">
+                <ul className="space-y-1 text-gray-300">
+                  <li>• Top 50 tracks across 3 time periods: <span className="text-purple-400">Last 4 Weeks</span>, <span className="text-purple-400">Last 6 Months</span>, <span className="text-purple-400">All Time</span> (~150 tracks total)</li>
+                  <li>• Top 50 artists across the same 3 time periods (~150 artists total)</li>
+                  <li>• Last 50 recently played tracks</li>
+                  <li>• Up to 50 of your saved (liked) tracks</li>
+                </ul>
               </div>
               <p className="text-xs text-yellow-300 mt-4 italic">
-                💡 This means some patterns are inferred from a snapshot of your data, not your complete history.
-                Think of it as analyzing your "greatest hits" rather than every song you've ever played!
+                💡 We analyze your "greatest hits" snapshot - not every song you've ever played.
+                No exact play counts, full history, or complete playlists.
               </p>
-            </div>
-
-            {/* Privacy Note */}
-            <div className="bg-pink-500/10 border border-pink-500/30 rounded-xl p-4">
-              <p className="text-sm text-pink-300 text-center">
-                🔒 This data stays on your device. We don't store any of your listening history.
+              <p className="text-xs text-blue-400 mt-3">
+                Want your complete listening history?{' '}
+                <a
+                  href="https://www.spotify.com/account/privacy/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:text-blue-300"
+                >
+                  Request your full Spotify data
+                </a>{' '}
+                (takes ~30 days)
               </p>
             </div>
           </div>

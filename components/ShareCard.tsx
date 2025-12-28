@@ -247,6 +247,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
             height: '6px',
             backgroundColor: neonColorForMode,
             borderRadius: '3px',
+            marginTop: '40px',
             marginBottom: '60px',
             boxShadow: `0 0 20px ${neonColorForMode}80, 0 0 40px ${neonColorForMode}40`,
           }}
@@ -332,7 +333,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
         >
           <div
             style={{
-              fontSize: '32px',
+              fontSize: '36px',
               fontWeight: 700,
               color: subtleTextColor,
               letterSpacing: '6px',
@@ -344,17 +345,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           </div>
           <div
             style={{
-              fontSize: '24px',
-              color: subtleTextColor,
-              fontWeight: 300,
-              textShadow: lightMode ? '0 1px 3px rgba(0,0,0,0.3)' : 'none',
-            }}
-          >
-            by Chloe • 2025
-          </div>
-          <div
-            style={{
-              fontSize: '18px',
+              fontSize: '20px',
               color: subtleTextColor,
               fontWeight: 300,
               textAlign: 'center',
@@ -363,22 +354,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
               textShadow: lightMode ? '0 1px 3px rgba(0,0,0,0.3)' : 'none',
             }}
           >
-            🎓 built with music cognition + psych research • for entertainment, not therapy
-          </div>
-          <div
-            style={{
-              fontSize: '16px',
-              color: 'rgba(255, 255, 255, 0.5)',
-              fontWeight: 300,
-              textAlign: 'center',
-              maxWidth: '650px',
-              marginTop: '6px',
-              fontStyle: 'italic',
-              lineHeight: 1.4,
-              textShadow: lightMode ? '0 1px 3px rgba(0,0,0,0.3)' : 'none',
-            }}
-          >
-            spotify's api gave us crumbs but we made it cute ✨
+            Made with ✨ by Chloe | for entertainment, not therapy
           </div>
         </div>
       </div>

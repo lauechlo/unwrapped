@@ -285,8 +285,8 @@ export function SynthesisClient({ detectedPatterns }: SynthesisClientProps) {
               <p className="text-yellow-300 font-semibold animate-pulse text-base md:text-lg px-4">
                 Almost ready to roast you (lovingly)...
               </p>
-              <p className="text-xs text-gray-500 mt-4 italic px-4">
-                Remember: This is for fun, not therapy! 🎭
+              <p className="text-sm text-purple-400 mt-6 font-semibold px-4">
+                ↓ Scroll down after loading to explore your full data breakdown
               </p>
             </div>
           )}
@@ -413,88 +413,91 @@ export function SynthesisClient({ detectedPatterns }: SynthesisClientProps) {
       {/* Listening DNA - 5 Dimensions */}
       <section className="py-12 md:py-20 px-4 md:px-8 bg-gradient-to-b from-black to-zinc-900">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4 text-center px-2">Your Listening DNA</h2>
+          <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4 text-center px-2">Your Listening DNA</h2>
           <p className="text-sm md:text-base text-gray-400 text-center mb-8 md:mb-12 px-4">
             Five dimensions that define how you use music
           </p>
 
-          <div className="grid md:grid-cols-2 gap-4 md:gap-8">
+          <div className="grid md:grid-cols-2 gap-4 md:gap-10">
             {/* Temporal Pattern */}
-            <div className="bg-zinc-900 border border-zinc-800 p-4 md:p-8 rounded-lg md:rounded-xl">
+            <div className="bg-zinc-900 border border-zinc-800 p-4 md:p-10 rounded-lg md:rounded-xl">
               <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
                 <span className="text-3xl md:text-4xl flex-shrink-0">⏰</span>
                 <div className="min-w-0">
                   <p className="text-xs md:text-sm text-gray-500 uppercase tracking-wide">Temporal Pattern</p>
-                  <h3 className="text-lg md:text-2xl font-bold text-green-400 leading-tight break-words">
+                  <h3 className="text-lg md:text-xl font-bold text-green-400 leading-tight break-words">
                     {synthesis.listeningDNA.temporalPattern.label}
                   </h3>
                 </div>
               </div>
-              <p className="text-sm md:text-lg text-gray-300 leading-relaxed">
+              <p className="text-sm md:text-base text-gray-300 leading-relaxed">
                 {synthesis.listeningDNA.temporalPattern.evidence}
+              </p>
+              <p className="text-xs text-gray-500 mt-3 italic">
+                Based on your last 50 recently played tracks
               </p>
             </div>
 
             {/* Emotional Strategy */}
-            <div className="bg-zinc-900 border border-zinc-800 p-4 md:p-8 rounded-lg md:rounded-xl">
+            <div className="bg-zinc-900 border border-zinc-800 p-4 md:p-10 rounded-lg md:rounded-xl">
               <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
                 <span className="text-3xl md:text-4xl flex-shrink-0">💭</span>
                 <div className="min-w-0">
                   <p className="text-xs md:text-sm text-gray-500 uppercase tracking-wide">Emotional Strategy</p>
-                  <h3 className="text-lg md:text-2xl font-bold text-blue-400 leading-tight break-words">
+                  <h3 className="text-lg md:text-xl font-bold text-blue-400 leading-tight break-words">
                     {synthesis.listeningDNA.emotionalStrategy.label}
                   </h3>
                 </div>
               </div>
-              <p className="text-sm md:text-lg text-gray-300 leading-relaxed">
+              <p className="text-sm md:text-base text-gray-300 leading-relaxed">
                 {synthesis.listeningDNA.emotionalStrategy.evidence}
               </p>
             </div>
 
             {/* Discovery Mode */}
-            <div className="bg-zinc-900 border border-zinc-800 p-4 md:p-8 rounded-lg md:rounded-xl">
+            <div className="bg-zinc-900 border border-zinc-800 p-4 md:p-10 rounded-lg md:rounded-xl">
               <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
                 <span className="text-3xl md:text-4xl flex-shrink-0">🔍</span>
                 <div className="min-w-0">
                   <p className="text-xs md:text-sm text-gray-500 uppercase tracking-wide">Discovery Mode</p>
-                  <h3 className="text-lg md:text-2xl font-bold text-purple-400 leading-tight break-words">
+                  <h3 className="text-lg md:text-xl font-bold text-purple-400 leading-tight break-words">
                     {synthesis.listeningDNA.discoveryMode.label}
                   </h3>
                 </div>
               </div>
-              <p className="text-sm md:text-lg text-gray-300 leading-relaxed">
+              <p className="text-sm md:text-base text-gray-300 leading-relaxed">
                 {synthesis.listeningDNA.discoveryMode.evidence}
               </p>
             </div>
 
             {/* Attachment Style */}
-            <div className="bg-zinc-900 border border-zinc-800 p-4 md:p-8 rounded-lg md:rounded-xl">
+            <div className="bg-zinc-900 border border-zinc-800 p-4 md:p-10 rounded-lg md:rounded-xl">
               <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
                 <span className="text-3xl md:text-4xl flex-shrink-0">🎯</span>
                 <div className="min-w-0">
                   <p className="text-xs md:text-sm text-gray-500 uppercase tracking-wide">Attachment Style</p>
-                  <h3 className="text-lg md:text-2xl font-bold text-orange-400 leading-tight break-words">
+                  <h3 className="text-lg md:text-xl font-bold text-orange-400 leading-tight break-words">
                     {synthesis.listeningDNA.attachmentStyle.label}
                   </h3>
                 </div>
               </div>
-              <p className="text-sm md:text-lg text-gray-300 leading-relaxed">
+              <p className="text-sm md:text-base text-gray-300 leading-relaxed">
                 {synthesis.listeningDNA.attachmentStyle.evidence}
               </p>
             </div>
 
             {/* Genre Profile */}
-            <div className="bg-zinc-900 border border-zinc-800 p-4 md:p-8 rounded-lg md:rounded-xl">
+            <div className="bg-zinc-900 border border-zinc-800 p-4 md:p-10 rounded-lg md:rounded-xl">
               <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
                 <span className="text-3xl md:text-4xl flex-shrink-0">🎵</span>
                 <div className="min-w-0">
                   <p className="text-xs md:text-sm text-gray-500 uppercase tracking-wide">Genre Profile</p>
-                  <h3 className="text-lg md:text-2xl font-bold text-pink-400 leading-tight break-words">
+                  <h3 className="text-lg md:text-xl font-bold text-pink-400 leading-tight break-words">
                     {synthesis.listeningDNA.genreProfile.label}
                   </h3>
                 </div>
               </div>
-              <p className="text-sm md:text-lg text-gray-300 leading-relaxed">
+              <p className="text-sm md:text-base text-gray-300 leading-relaxed">
                 {synthesis.listeningDNA.genreProfile.evidence}
               </p>
             </div>
@@ -510,6 +513,42 @@ export function SynthesisClient({ detectedPatterns }: SynthesisClientProps) {
           </div>
         </section>
       )}
+
+      {/* Waitlist & Feedback CTA */}
+      <section className="py-16 px-8 bg-gradient-to-b from-black to-zinc-950">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            What's Next?
+          </h2>
+          <p className="text-gray-400 mb-8 text-sm md:text-base">
+            Unwrapped v2 is coming soon with unlimited analyses, more insights, and new features!
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {/* Waitlist Button */}
+            <a
+              href="https://forms.gle/djCs4NFUBnwFCLBr7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold rounded-lg
+                       hover:opacity-90 transition-all shadow-lg hover:shadow-pink-500/50 text-center"
+            >
+              🎉 Join the v2 Waitlist
+            </a>
+
+            {/* Feedback Button */}
+            <a
+              href="https://forms.gle/bo1K5tWekj2uPTow8"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-8 py-4 bg-zinc-800 text-white font-semibold rounded-lg
+                       hover:bg-zinc-700 transition-all border border-zinc-700 text-center"
+            >
+              💬 Share Feedback
+            </a>
+          </div>
+        </div>
+      </section>
     </>
   );
 }

@@ -5,6 +5,7 @@
 
 import { callClaude } from '@/lib/claude/api';
 import { groupPatternsByDimension, selectHeroPattern, parsePatternCard, formatPatternForPrompt, formatPatternsForPrompt, deduplicatePatterns, normalizeSlashes } from './helpers';
+import { validateAndLog } from './validation';
 import type { DetectionResult, SynthesisOutput, PatternCard, HeroInsight, ListeningDNA } from './types';
 
 /**
@@ -97,9 +98,9 @@ ${formatPatternForPrompt(pattern)}
 
 1. **VIRAL LABEL** - Make it screenshot-worthy + Gen Z slang
    - For ARTIST/TRACK patterns → Include specific names (e.g., "The Sabrina Carpenter Chokehold")
-   - For GENRE patterns → Focus on sonic/vibe (e.g., "Pop Girl Autumn Energy")
+   - For GENRE patterns → Focus on sonic/vibe (e.g., "Pop Girl Autumn Aura")
    - For TIME patterns → Emphasize when/ritual (e.g., "4AM Sad Girl Hours")
-   - For BEHAVIOR patterns → Highlight the action (e.g., "The Vault Hunter Syndrome")
+   - For BEHAVIOR patterns → Highlight the action (e.g., "Vaulted Songs Commitment Issues")
    - VARY the style - don't make every label about artists!
 
 2. **CITE SPECIFIC EVIDENCE** - Use track/artist names, numbers, percentages
@@ -116,18 +117,18 @@ ${formatPatternForPrompt(pattern)}
 
 Artist-focused: "The [Artist] Loyalty Chokehold"
 Track-focused: "The '[Song Title]' Disorder"
-Time-focused: "4AM Sad Girl Hours" or "Weekend Warrior Energy"
-Genre-focused: "Pop Girl Autumn Realness" or "The Hyperpop Escape Pod"
-Behavior-focused: "The Vault Hunter (17-Track Edition)" or "First Verse Addict Era"
+Time-focused: "4AM Sad Girl Hours" or "The Weekend (Not Weeknd) Energy"
+Genre-focused: "Pop Girl Falling" or "The Hyperpop Escape Pod" or "[Number]-Genre Commitment Issues" 
+Behavior-focused: "Your [Number] Tracks Miss You" or "You Went to Get Milk (And Forgot About [Track])" or "Performative Era" or "Not A Chill Guy" 
 
 ## Output Format
 
 For EACH pattern, output:
 
 PATTERN: [Viral Label - MATCH THE PATTERN'S FOCUS]
-├─ CORE: [Primary finding with specific evidence and numbers]
-├─ SUPPORTING: [Secondary evidence with details]
-└─ BEHAVIOR: [What this reveals about how they use music]
+├─ KEY FINDING: [Primary finding with specific evidence and numbers]
+├─ WHY: [Secondary evidence with details]
+└─ WHAT IT MEANS: [What this reveals about how they use music]
 
 *[Punchy callout in italics using POV/Gen Z format]*
 
@@ -140,9 +141,9 @@ RAW EVIDENCE:
 
 Example (Artist-focused):
 PATTERN: The "Make It To Christmas" Disorder
-├─ CORE: #1 current, #2 six-month, #5 long-term (avg rank 2.7)
-├─ SUPPORTING: Sabrina Carpenter has you in a complete chokehold
-└─ BEHAVIOR: When one holiday song becomes year-round emotional support
+├─ KEY FINDING: #1 current, #2 six-month, #5 long-term (avg rank 2.7)
+├─ WHY: Sabrina Carpenter has you in a complete chokehold
+└─ WHAT IT MEANS: When one holiday song becomes year-round emotional support
 
 *This is what happens when a song becomes your entire personality*
 
@@ -157,9 +158,9 @@ RAW EVIDENCE:
 
 Example (Time-focused):
 PATTERN: 4AM Sad Girl Hours
-├─ CORE: 67% of plays between midnight-4am (34 night vs 16 day plays)
-├─ SUPPORTING: Lana Del Rey, Billie Eilish, and Phoebe Bridgers dominate late-night rotation
-└─ BEHAVIOR: Using music as emotional regulation during peak vulnerability hours
+├─ KEY FINDING: 67% of plays between midnight-4am (34 night vs 16 day plays)
+├─ WHY: Lana Del Rey, Billie Eilish, and Phoebe Bridgers dominate late-night rotation
+└─ WHAT IT MEANS: Using music as emotional regulation during peak vulnerability hours
 
 *POV: Sleep is for people who don't have feelings to process*
 
@@ -190,12 +191,28 @@ Generate ${topPatterns.length} pattern cards separated by "---".
       const pattern = topPatterns[i];
       if (!pattern) return null;
 
-      return parsePatternCard(
+      const card = parsePatternCard(
         section,
         pattern.confidence,
         pattern.evidence.map(e => e.humanReadable),
         pattern.psychologicalDimension
       );
+
+      // Validate card against evidence to catch hallucinations
+      if (card) {
+        const isValid = validateAndLog(
+          card,
+          pattern.evidence.map(e => e.humanReadable),
+          card.patternLabel
+        );
+
+        if (!isValid) {
+          console.error(`[Synthesis] ⚠️ REJECTED hallucinated card: "${card.patternLabel}"`);
+          return null; // Reject hallucinated cards
+        }
+      }
+
+      return card;
     })
     .filter((card): card is NonNullable<typeof card> => {
       // Only keep valid cards

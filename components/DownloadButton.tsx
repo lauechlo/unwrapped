@@ -156,24 +156,7 @@ export function DownloadButton({ cards }: DownloadButtonProps) {
           Share Your Results
         </h2>
         <p className="text-sm md:text-base text-gray-400 text-center max-w-2xl px-4">
-          We've selected your {cards.length} most shareable patterns. {/iPhone|iPad|iPod|Android/i.test(typeof navigator !== 'undefined' ? navigator.userAgent : '') ? 'Tap cards to share. Add Instagram music sticker 🎵 to the square at top!' : 'Download them for Instagram Stories! Add music sticker 🎵 to the square at top.'}
-        </p>
-
-        {/* Download All Button */}
-        <button
-          onClick={downloadAll}
-          disabled={isGenerating}
-          className="px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-full
-                     font-semibold text-base md:text-lg hover:opacity-90 disabled:opacity-50 transition-all
-                     shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
-        >
-          {isGenerating
-            ? `Generating ${(currentCardIndex ?? 0) + 1}/${cards.length}...`
-            : `Download All ${cards.length} Cards 📲`}
-        </button>
-
-        <p className="text-sm text-white/60 text-center">
-          Optimized for Instagram Stories (1080×1920)
+          We've selected your {cards.length} most shareable patterns. {/iPhone|iPad|iPod|Android/i.test(typeof navigator !== 'undefined' ? navigator.userAgent : '') ? 'Tap cards below to share. Add Instagram music sticker 🎵 to the square at top!' : 'Click cards below to download for Instagram Stories! Add music sticker 🎵 to the square at top.'}
         </p>
 
         {/* Thumbnail Preview Grid */}

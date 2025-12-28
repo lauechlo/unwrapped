@@ -69,7 +69,7 @@ export default function Home() {
               <div className="flex items-center gap-3">
                 <span className="text-xl">⚠️</span>
                 <p className="text-sm text-red-300">
-                  Authentication failed. Try Chrome or disable Safari's "Prevent Cross-Site Tracking"
+                  Authentication failed. Try refreshing or using Chrome
                 </p>
               </div>
               <button
