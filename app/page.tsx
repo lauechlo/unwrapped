@@ -62,25 +62,45 @@ export default function Home() {
         {/* Usage limit banner */}
         <UsageLimitBanner />
 
-        {/* OAuth Error Banner */}
+        {/* OAuth Error Banner - User not on allowlist */}
         {authError && (
-          <div className="bg-red-500/10 border-b border-red-500/30 py-3 px-4">
-            <div className="max-w-4xl mx-auto flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <span className="text-xl">⚠️</span>
-                <p className="text-sm text-red-300">
-                  Authentication failed. Try refreshing or using Chrome
-                </p>
+          <div className="bg-pink-500/10 border-b border-pink-500/30 py-4 px-4">
+            <div className="max-w-4xl mx-auto text-center">
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <span className="text-2xl">💔</span>
+                <h3 className="text-lg font-bold text-white">
+                  Spotify Unwrapped v1 is at capacity!
+                </h3>
               </div>
-              <button
-                onClick={() => {
-                  setAuthError(null);
-                  window.history.replaceState({}, '', '/');
-                }}
-                className="text-xs bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full transition-colors whitespace-nowrap"
-              >
-                Dismiss
-              </button>
+              <p className="text-sm text-gray-300 mb-4 max-w-2xl mx-auto">
+                This early version is limited to 25 beta testers while we use Spotify's development API.
+              </p>
+              <p className="text-sm text-pink-300 font-semibold mb-4">
+                ✨ Good news: v2 is launching soon with unlimited access, more insights, and new features!
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                <a
+                  href="https://forms.gle/djCs4NFUBnwFCLBr7"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold rounded-lg
+                           hover:opacity-90 transition-all shadow-lg hover:shadow-pink-500/50"
+                >
+                  🎉 Join the v2 Waitlist
+                </a>
+                <button
+                  onClick={() => {
+                    setAuthError(null);
+                    window.history.replaceState({}, '', '/');
+                  }}
+                  className="px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors"
+                >
+                  Dismiss
+                </button>
+              </div>
+              <p className="text-xs text-gray-500 mt-4">
+                Got sent here by a friend? Join the waitlist to be first in line when we launch!
+              </p>
             </div>
           </div>
         )}
