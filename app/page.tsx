@@ -107,43 +107,54 @@ export default function Home() {
 
       {/* Main content */}
       <div className="flex items-center justify-center px-4 py-16 min-h-[calc(100vh-60px)]">
-        <div className="max-w-2xl text-center">
-          <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
-            Unwrapped
-          </h1>
-          <p className="text-lg md:text-xl text-gray-400 mb-8 px-4">
-            Spotify shows what you listen to. We show <span className="text-pink-400 font-semibold">who you are</span>.
-          </p>
+        <div className="max-w-4xl w-full">
+          <div className="flex flex-col md:flex-row gap-8 md:gap-20 items-center">
+            {/* Left side - Text content */}
+            <div className="text-center md:text-left flex-1">
+              <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
+                Unwrapped
+              </h1>
 
-          <a
-            href="/api/auth/spotify"
-            onClick={handleConnectClick}
-            className={`inline-block font-semibold px-8 py-4 rounded-full transition-all shadow-lg
-              ${hasUsesLeft
-                ? 'bg-green-500 hover:bg-green-600 text-black hover:shadow-green-500/50'
-                : 'bg-gray-600 text-gray-400 cursor-not-allowed'
-              }`}
-          >
-            {hasUsesLeft ? 'Connect Spotify' : 'Limit Reached'}
-          </a>
+              <p className="text-lg md:text-xl text-gray-400 mb-8">
+                Spotify shows what you listen to. We show <span className="text-pink-400 font-semibold">who you are</span>.
+              </p>
 
-          <div className="mt-12 text-sm text-gray-500">
-            <p className="text-gray-400 mb-4">
-              Get psychology-driven insights + Instagram-ready shareable cards 📲
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left max-w-xl mx-auto">
-              <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
-                <div className="text-pink-400 font-semibold mb-1">30+ Detectors</div>
-                <div className="text-xs text-gray-500">Behavioral patterns, coping songs, rituals</div>
+              <a
+                href="/api/auth/spotify"
+                onClick={handleConnectClick}
+                className={`inline-block font-semibold px-8 py-4 rounded-full transition-all shadow-lg
+                  ${hasUsesLeft
+                    ? 'bg-green-500 hover:bg-green-600 text-black hover:shadow-green-500/50'
+                    : 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                  }`}
+              >
+                {hasUsesLeft ? 'Connect Spotify' : 'Limit Reached'}
+              </a>
+
+              {/* Feature cards */}
+              <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+                <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
+                  <div className="text-pink-400 font-semibold mb-1">30+ Detectors</div>
+                  <div className="text-xs text-gray-500">Behavioral patterns, coping songs, rituals</div>
+                </div>
+                <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
+                  <div className="text-purple-400 font-semibold mb-1">AI Synthesis</div>
+                  <div className="text-xs text-gray-500">Claude-powered insights with proof</div>
+                </div>
+                <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
+                  <div className="text-blue-400 font-semibold mb-1">Share Cards</div>
+                  <div className="text-xs text-gray-500">Instagram Stories-ready (1080×1920)</div>
+                </div>
               </div>
-              <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
-                <div className="text-purple-400 font-semibold mb-1">AI Synthesis</div>
-                <div className="text-xs text-gray-500">Claude-powered insights with proof</div>
-              </div>
-              <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
-                <div className="text-blue-400 font-semibold mb-1">Share Cards</div>
-                <div className="text-xs text-gray-500">Instagram Stories-ready (1080×1920)</div>
-              </div>
+            </div>
+
+            {/* Right side - Mobile mockup (static, no animations) */}
+            <div className="hidden md:flex justify-center md:justify-end">
+              <img
+                src="/mockup.png"
+                alt="Mobile app preview showing callout feature"
+                className="w-64 h-auto drop-shadow-2xl"
+              />
             </div>
           </div>
         </div>

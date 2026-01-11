@@ -8,7 +8,7 @@ import { redirect } from 'next/navigation';
 import { fetchUserData } from '@/lib/spotify';
 import { runAllDetectors, type UserListeningData } from '@/lib/detectors';
 import { DataBreakdown } from '@/components/DataBreakdown';
-import { SynthesisClient } from '@/components/SynthesisClient';
+import { SynthesisClient } from '@/components/v1/SynthesisClient';
 import { Footer } from '@/components/Footer';
 
 export default async function ResultsPage() {

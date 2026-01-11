@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
+    "@upstash/ratelimit": "^2.0.7",
+    "@upstash/redis": "^1.36.1",
     "axios": "^1.13.2",
     "date-fns": "^4.1.0",
     "html-to-image": "^1.11.13",

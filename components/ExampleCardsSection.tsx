@@ -1,6 +1,6 @@
 "use client";
 
-import { ShareCard } from './ShareCard';
+import { ShareCard } from './v1/ShareCard';
 import type { PatternCard } from '@/lib/synthesis/types';
 
 /**
@@ -59,7 +59,7 @@ export function ExampleCardsSection() {
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
-            Here's What You'll Get
+            Unwrap Unwrapped
           </h2>
           <p className="text-xl text-gray-400">
             Psychology-backed insights about your listening habits + shareable Instagram Story cards
@@ -131,10 +131,10 @@ export function ExampleCardsSection() {
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className="inline-block px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold rounded-full
-                     hover:opacity-90 transition-all shadow-lg hover:shadow-purple-500/50"
+            className="inline-block px-8 py-4 bg-green-500 hover:bg-green-600 text-black font-semibold rounded-full
+                     hover:shadow-green-500/50 transition-all shadow-lg"
           >
-            Connect Spotify to Get Yours
+            Connect Spotify
           </a>
         </div>
       </div>
