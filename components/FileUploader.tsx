@@ -244,8 +244,15 @@ export default function FileUploader({ onUploadComplete }: FileUploaderProps) {
   }, []);
 
   const handleFileInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('[FileUploader] handleFileInput triggered!');
+    console.log('[FileUploader] e.target.files:', e.target.files);
+    console.log('[FileUploader] files length:', e.target.files?.length);
+
     if (e.target.files && e.target.files.length > 0) {
+      console.log('[FileUploader] Calling handleFileSelection...');
       handleFileSelection(e.target.files);
+    } else {
+      console.log('[FileUploader] No files selected or files is null');
     }
   }, [handleFileSelection]);
 
