@@ -49,12 +49,15 @@ export default function FileUploader({ onUploadComplete }: FileUploaderProps) {
 
   // Handle file selection (preview before processing)
   const handleFileSelection = useCallback((files: FileList) => {
+    console.log('[FileUploader] handleFileSelection called with', files.length, 'files');
     const filesArray = Array.from(files);
 
     // Validate files
     const jsonFiles = filesArray.filter(f => f.name.endsWith('.json'));
+    console.log('[FileUploader] Found', jsonFiles.length, 'JSON files');
 
     if (jsonFiles.length === 0) {
+      console.log('[FileUploader] No JSON files found');
       setUploadState({
         status: 'error',
         message: 'Please upload JSON files only',
@@ -67,14 +70,17 @@ export default function FileUploader({ onUploadComplete }: FileUploaderProps) {
       return;
     }
 
+    console.log('[FileUploader] Setting selectedFiles:', jsonFiles.map(f => f.name));
     setSelectedFiles(jsonFiles);
 
     // Initialize progress tracking
-    setFileProgress(jsonFiles.map(f => ({
+    const progress = jsonFiles.map(f => ({
       name: f.name,
-      status: 'pending',
+      status: 'pending' as const,
       size: formatFileSize(f.size)
-    })));
+    }));
+    console.log('[FileUploader] Setting fileProgress:', progress);
+    setFileProgress(progress);
   }, []);
 
   // Process files with progress tracking
@@ -262,6 +268,9 @@ export default function FileUploader({ onUploadComplete }: FileUploaderProps) {
       dateRange: '',
     });
   }, []);
+
+  // Debug: Log render state
+  console.log('[FileUploader] Render - selectedFiles.length:', selectedFiles.length, 'status:', uploadState.status);
 
   return (
     <div className="w-full max-w-3xl mx-auto">
