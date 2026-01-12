@@ -49,6 +49,16 @@ body {
   }
 }
 
+/* Hide scrollbar for tab navigation on mobile */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
+}
+
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }

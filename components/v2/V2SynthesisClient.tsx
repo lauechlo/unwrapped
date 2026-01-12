@@ -2,14 +2,14 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import type { SynthesisOutput } from '@/lib/v2/synthesis/types';
-import V2NarrativeCards from './V2NarrativeCards';
 import { Footer } from '@/components/Footer';
-import CollapsiblePsychologicalSummary from './CollapsiblePsychologicalSummary';
-import PersonaCard from './PersonaCard';
 import { matchPersona } from '@/lib/v2/personas';
 import NPSWidget from '@/components/NPSWidget';
-import ListeningJourneyTimeline from './ListeningJourneyTimeline';
-import TemporalHeatmap from './TemporalHeatmap';
+import TabNavigation, { type TabId } from './TabNavigation';
+import OverviewTab from './tabs/OverviewTab';
+import PatternsTab from './tabs/PatternsTab';
+import TemporalTab from './tabs/TemporalTab';
+import PersonaTab from './tabs/PersonaTab';
 
 interface V2SynthesisClientProps {
   detectedPatterns: any[];
@@ -39,11 +39,20 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData }: V2S
   const [loadingScreen, setLoadingScreen] = useState(0); // 0, 1, 2
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState<TabId>('overview');
 
   // Calculate persona match from detected patterns
   const personaMatch = useMemo(() => {
     return matchPersona(detectedPatterns);
   }, [detectedPatterns]);
+
+  // Define tabs
+  const tabs = useMemo(() => [
+    { id: 'overview' as TabId, label: 'Overview', icon: '🎯' },
+    { id: 'patterns' as TabId, label: 'Patterns', icon: '🔍', badge: synthesis?.narratives?.length || 0 },
+    { id: 'when' as TabId, label: 'When You Listen', icon: '🕐' },
+    { id: 'persona' as TabId, label: 'Your Persona', icon: '💎' },
+  ], [synthesis]);
 
   useEffect(() => {
     async function loadSynthesis() {
@@ -392,81 +401,54 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData }: V2S
   }
 
   return (
-    <>
-      {/* Hero Insight */}
-      <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1DB954]/20 via-black to-black px-4 md:px-8 py-12 md:py-20">
-        <div className="max-w-6xl mx-auto w-full text-center">
-          <div className="inline-block bg-[#1DB954]/10 border border-[#1DB954]/30 px-4 py-2 md:px-6 md:py-3 rounded-full text-xs md:text-sm text-[#1DB954] mb-6 md:mb-8 backdrop-blur-sm">
-            Your Extended History Analysis
-          </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 md:mb-8 leading-tight px-4 md:px-8 break-words text-white">
-            {synthesis.heroInsight.headline}
-          </h1>
-          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-300 leading-relaxed max-w-4xl mx-auto px-4 md:px-8">
-            {synthesis.heroInsight.subtext}
-          </p>
+    <div className="min-h-screen bg-black text-white">
+      {/* Tab Navigation */}
+      <TabNavigation
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        tabs={tabs}
+      />
 
-          <div className="mt-8 md:mt-12">
-            <p className="text-gray-500 text-sm">
-              Scroll to see your patterns ↓
-            </p>
-          </div>
-        </div>
-      </section>
+      {/* Tab Content */}
+      <div className="min-h-screen">
+        {activeTab === 'overview' && (
+          <OverviewTab
+            mainNarrative={{
+              title: synthesis.heroInsight.headline,
+              summary: synthesis.heroInsight.subtext,
+            }}
+            stats={stats || {
+              totalPlays: 0,
+              uniqueTracks: 0,
+              uniqueArtists: 0,
+              dateRange: '',
+            }}
+            personaPreview={personaMatch ? {
+              name: personaMatch.persona.name,
+              icon: personaMatch.persona.icon,
+              tagline: personaMatch.persona.tagline,
+            } : undefined}
+            onNavigate={(tab) => setActiveTab(tab)}
+          />
+        )}
 
-      {/* Listening Journey Timeline */}
-      <ListeningJourneyTimeline patterns={detectedPatterns} />
+        {activeTab === 'patterns' && (
+          <PatternsTab narratives={synthesis.narratives} />
+        )}
 
-      {/* Temporal Heatmap */}
-      {uploadedData && uploadedData.length > 0 && (
-        <TemporalHeatmap uploadedData={uploadedData} />
-      )}
+        {activeTab === 'when' && uploadedData && (
+          <TemporalTab plays={uploadedData} />
+        )}
 
-      {/* Narrative Cards */}
-      {synthesis.narratives.length > 0 && (
-        <V2NarrativeCards narratives={synthesis.narratives} />
-      )}
+        {activeTab === 'persona' && (
+          <PersonaTab
+            personaMatch={personaMatch}
+            psychologicalSummary={synthesis.psychologicalSummary}
+          />
+        )}
+      </div>
 
-      {/* Persona Match - "People Like Me" */}
-      <section className="py-12 px-8 bg-gradient-to-b from-black to-zinc-950">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
-              People Like You
-            </h2>
-            <p className="text-gray-400">
-              Based on your listening patterns, here's your archetype
-            </p>
-          </div>
-          <PersonaCard personaMatch={personaMatch} />
-        </div>
-      </section>
-
-      {/* Data Range Info */}
-      {stats && (
-        <section className="py-12 px-8 bg-zinc-950">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="bg-zinc-900/50 border border-zinc-700 rounded-xl p-6">
-              <p className="text-sm text-gray-400 mb-2">Analyzed Data Range</p>
-              <p className="text-lg md:text-xl font-semibold text-[#1DB954]">
-                {stats.dateRange}
-              </p>
-              <div className="mt-4 flex flex-wrap justify-center gap-4 md:gap-8 text-sm text-gray-400">
-                <span>{stats.totalPlays.toLocaleString()} total plays</span>
-                <span>•</span>
-                <span>{stats.uniqueTracks.toLocaleString()} unique tracks</span>
-                <span>•</span>
-                <span>{stats.uniqueArtists.toLocaleString()} unique artists</span>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Psychological Summary - Collapsible */}
-      <CollapsiblePsychologicalSummary summary={synthesis.psychologicalSummary} />
-
-      {/* Privacy Reminder */}
+      {/* Privacy Reminder - appears at bottom of all tabs */}
       <section className="py-12 px-8 bg-zinc-950">
         <div className="max-w-4xl mx-auto text-center">
           <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-6">
@@ -493,10 +475,11 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData }: V2S
         </div>
       </section>
 
-      {/* NPS Widget - appears after user spends time on page */}
+      {/* NPS Widget */}
       <NPSWidget />
 
+      {/* Footer */}
       <Footer />
-    </>
+    </div>
   );
 }
