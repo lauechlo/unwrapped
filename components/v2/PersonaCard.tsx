@@ -73,8 +73,11 @@ export default function PersonaCard({ personaMatch }: PersonaCardProps) {
 
       {/* Traits */}
       <details className="mb-6">
-        <summary className="cursor-pointer text-sm font-bold text-purple-400 hover:text-purple-300 mb-3 uppercase tracking-wide">
-          ▼ Key Traits of {persona.name}
+        <summary className="cursor-pointer text-sm font-bold text-purple-400 hover:text-purple-300 mb-3 uppercase tracking-wide list-none">
+          <span className="inline-flex items-center gap-2">
+            <span className="text-xs">▼</span>
+            <span>Key Traits of {persona.name}</span>
+          </span>
         </summary>
         <ul className="space-y-2 mt-3">
           {persona.traits.map((trait, idx) => (
@@ -88,8 +91,11 @@ export default function PersonaCard({ personaMatch }: PersonaCardProps) {
 
       {/* Research Basis */}
       <details>
-        <summary className="cursor-pointer text-sm font-bold text-gray-400 hover:text-gray-300 mb-3 uppercase tracking-wide">
-          ▼ Research Basis
+        <summary className="cursor-pointer text-sm font-bold text-gray-400 hover:text-gray-300 mb-3 uppercase tracking-wide list-none">
+          <span className="inline-flex items-center gap-2">
+            <span className="text-xs">▼</span>
+            <span>Research Basis</span>
+          </span>
         </summary>
         <div className="mt-3 space-y-3">
           <div className="bg-zinc-800/50 p-3 rounded-lg">

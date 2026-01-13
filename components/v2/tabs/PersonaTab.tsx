@@ -23,12 +23,9 @@ export default function PersonaTab({ personaMatch, psychologicalSummary }: Perso
       {/* Persona Card */}
       <PersonaCard personaMatch={personaMatch} />
 
-      {/* Psychological Profile */}
+      {/* Psychological Profile - CollapsiblePsychologicalSummary has its own header */}
       {psychologicalSummary && (
         <div className="mt-12">
-          <h2 className="text-3xl font-bold mb-6 text-center text-purple-400">
-            Psychological Profile
-          </h2>
           <CollapsiblePsychologicalSummary summary={psychologicalSummary} />
         </div>
       )}

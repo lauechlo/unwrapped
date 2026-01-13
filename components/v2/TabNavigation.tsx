@@ -31,8 +31,8 @@ export default function TabNavigation({ activeTab, onTabChange, tabs }: TabNavig
                 whitespace-nowrap transition-all duration-200
                 ${
                   activeTab === tab.id
-                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-500/30'
-                    : 'bg-zinc-800/50 text-gray-400 hover:bg-zinc-700 hover:text-gray-200'
+                    ? 'bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 text-white shadow-lg shadow-purple-500/40 border border-purple-400/30'
+                    : 'bg-zinc-800/80 text-gray-300 hover:bg-zinc-700/80 hover:text-white hover:border-zinc-600 border border-zinc-700'
                 }
               `}
             >

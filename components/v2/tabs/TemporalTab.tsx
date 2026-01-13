@@ -9,15 +9,7 @@ interface TemporalTabProps {
 export default function TemporalTab({ plays }: TemporalTabProps) {
   return (
     <div className="max-w-7xl mx-auto px-4 py-12 space-y-8">
-      {/* Header */}
-      <div className="text-center mb-12">
-        <h2 className="text-3xl md:text-4xl font-bold mb-3">When You Listen</h2>
-        <p className="text-gray-400">
-          Your overall listening rhythm across all plays
-        </p>
-      </div>
-
-      {/* Temporal Heatmap */}
+      {/* Temporal Heatmap - has its own header */}
       <TemporalHeatmap uploadedData={plays} />
 
       {/* Additional Context */}
