@@ -94,8 +94,8 @@ export default function TypeReveal({ typeResult }: TypeRevealProps) {
             Your <span className="text-purple-400 font-bold">{code}</span> type is based on four dimensions of your listening behavior:
           </p>
           <div className="grid md:grid-cols-2 gap-4 mt-6">
-            {dimensions.map((dimension) => (
-              <div key={dimension.code} className="bg-zinc-800/50 rounded-lg p-4">
+            {dimensions.map((dimension, index) => (
+              <div key={`${dimension.code}-${index}`} className="bg-zinc-800/50 rounded-lg p-4">
                 <div className="flex items-center gap-3 mb-2">
                   <span className="text-3xl font-black text-purple-400">{dimension.code}</span>
                   <span className="text-lg font-bold text-white">{dimension.label}</span>

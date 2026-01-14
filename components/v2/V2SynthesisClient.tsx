@@ -497,8 +497,8 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
               <div className="max-w-7xl mx-auto px-4 py-8">
                 <h2 className="text-3xl font-bold mb-6 text-center">Your Four Dimensions</h2>
                 <div className="grid md:grid-cols-2 gap-6">
-                  {typeResult.dimensions.map((dimension) => (
-                    <DimensionCard key={dimension.code} dimension={dimension} />
+                  {typeResult.dimensions.map((dimension, index) => (
+                    <DimensionCard key={`${dimension.code}-${index}`} dimension={dimension} />
                   ))}
                 </div>
               </div>
@@ -509,8 +509,8 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
             <div className="max-w-7xl mx-auto px-4 py-12">
               <h2 className="text-3xl font-bold mb-6">Deep Dive</h2>
               <div className="grid md:grid-cols-2 gap-6">
-                {typeResult.dimensions.map((dimension) => (
-                  <DimensionCard key={dimension.code} dimension={dimension} showDetails={true} />
+                {typeResult.dimensions.map((dimension, index) => (
+                  <DimensionCard key={`${dimension.code}-${index}-detail`} dimension={dimension} showDetails={true} />
                 ))}
               </div>
               <div className="mt-8 bg-zinc-900/50 border border-zinc-700 rounded-2xl p-6">

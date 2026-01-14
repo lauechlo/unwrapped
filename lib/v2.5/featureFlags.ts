@@ -9,7 +9,7 @@
  * Set to true to enable V2.5 (Music Type System)
  * Set to false to use V2 (Narrative + Persona System)
  */
-export const USE_V25 = false; // V2.5 DISABLED - Using V2 Narrative System for now
+export const USE_V25 = true; // V2.5 ENABLED - Testing Music Type System locally
 
 /**
  * Show V2.5 preview banner for testing

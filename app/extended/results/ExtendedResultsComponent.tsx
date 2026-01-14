@@ -37,6 +37,7 @@ export default function ExtendedResultsComponent({ uploadedData }: ExtendedResul
     dateRange: '',
   });
   const [error, setError] = useState('');
+  const [sourceOfTruth, setSourceOfTruth] = useState<any>(null); // Store SOT for V2.5
 
   useEffect(() => {
     const analyze = async () => {
@@ -53,6 +54,9 @@ export default function ExtendedResultsComponent({ uploadedData }: ExtendedResul
         // Build SourceOfTruth
         setStatus('analyzing');
         const sot = buildSourceOfTruth(uploadedData);
+
+        // Store for V2.5
+        setSourceOfTruth(sot);
 
         // Calculate stats
         const timestamps = uploadedData
@@ -208,5 +212,5 @@ export default function ExtendedResultsComponent({ uploadedData }: ExtendedResul
     );
   }
 
-  return <V2SynthesisClient detectedPatterns={patterns} stats={stats} uploadedData={uploadedData} />;
+  return <V2SynthesisClient detectedPatterns={patterns} stats={stats} uploadedData={uploadedData} sourceOfTruth={sourceOfTruth} />;
 }
