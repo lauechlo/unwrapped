@@ -56,9 +56,19 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
 
   // V2.5: Calculate music type if enabled
   const typeResult = useMemo<TypeResult | null>(() => {
-    if (!useV25 || !sourceOfTruth) return null;
+    if (!useV25) {
+      console.log('[V2.5] Mode disabled, skipping type calculation');
+      return null;
+    }
+    if (!sourceOfTruth) {
+      console.log('[V2.5] No sourceOfTruth provided, skipping type calculation');
+      return null;
+    }
     try {
-      return calculateMusicType(sourceOfTruth);
+      console.log('[V2.5] Calculating music type from sourceOfTruth...');
+      const result = calculateMusicType(sourceOfTruth);
+      console.log('[V2.5] Type calculation successful:', result);
+      return result;
     } catch (err) {
       console.error('[V2.5] Type calculation failed:', err);
       return null;
@@ -440,6 +450,30 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
   // No synthesis (V2 mode only)
   if (!useV25 && !synthesis) {
     return null;
+  }
+
+  // V2.5 mode: Check if type calculation failed
+  if (useV25 && !typeResult) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
+        <div className="max-w-2xl text-center">
+          <h2 className="text-3xl font-bold mb-4">Unable to Calculate Music Type</h2>
+          <p className="text-gray-400 mb-6">
+            We couldn't calculate your music type from the provided data.
+            This might be due to insufficient listening history.
+          </p>
+          <p className="text-sm text-gray-500 mb-8">
+            Try uploading all your Extended Streaming History files for more accurate results.
+          </p>
+          <button
+            onClick={() => window.location.href = '/extended'}
+            className="px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-lg"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
   }
 
   // V2.5 mode: Render type-based UI
