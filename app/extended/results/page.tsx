@@ -35,6 +35,8 @@ export default function ExtendedResultsPage() {
     dateRange: '',
   });
   const [error, setError] = useState('');
+  const [sourceOfTruth, setSourceOfTruth] = useState<any>(null); // Store SOT for V2.5
+  const [uploadedData, setUploadedData] = useState<any[]>([]); // Store raw data for temporal viz
 
   useEffect(() => {
     const loadAndAnalyze = async () => {
@@ -76,6 +78,10 @@ export default function ExtendedResultsPage() {
         // Build SourceOfTruth
         setStatus('analyzing');
         const sot = buildSourceOfTruth(uploadedData);
+
+        // Store for V2.5
+        setSourceOfTruth(sot);
+        setUploadedData(uploadedData);
 
         // Calculate stats
         const timestamps = uploadedData
@@ -232,5 +238,12 @@ export default function ExtendedResultsPage() {
     );
   }
 
-  return <V2SynthesisClient detectedPatterns={patterns} stats={stats} />;
+  return (
+    <V2SynthesisClient
+      detectedPatterns={patterns}
+      stats={stats}
+      uploadedData={uploadedData}
+      sourceOfTruth={sourceOfTruth}
+    />
+  );
 }

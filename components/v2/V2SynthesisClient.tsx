@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import type { SynthesisOutput } from '@/lib/v2/synthesis/types';
+import type { SourceOfTruth } from '@/lib/v2/types';
 import { Footer } from '@/components/Footer';
 import { matchPersona } from '@/lib/v2/personas';
 import NPSWidget from '@/components/NPSWidget';
@@ -10,6 +11,13 @@ import OverviewTab from './tabs/OverviewTab';
 import PatternsTab from './tabs/PatternsTab';
 import TemporalTab from './tabs/TemporalTab';
 import PersonaTab from './tabs/PersonaTab';
+
+// V2.5 imports
+import { isV25Enabled } from '@/lib/v2.5/featureFlags';
+import { calculateMusicType } from '@/lib/v2.5/typing';
+import type { TypeResult } from '@/lib/v2.5/typing';
+import TypeReveal from '@/components/v2.5/TypeReveal';
+import DimensionCard from '@/components/v2.5/DimensionCard';
 
 interface V2SynthesisClientProps {
   detectedPatterns: any[];
@@ -20,6 +28,8 @@ interface V2SynthesisClientProps {
     dateRange: string;
   };
   uploadedData?: any[];
+  /** V2.5: Pass SourceOfTruth for type calculation */
+  sourceOfTruth?: SourceOfTruth;
 }
 
 const CACHE_KEY = 'unwrapped_v2_synthesis_cache_v12'; // Added citations to psych profile
@@ -31,7 +41,7 @@ interface CacheEntry {
   synthesis: SynthesisOutput;
 }
 
-export function V2SynthesisClient({ detectedPatterns, stats, uploadedData }: V2SynthesisClientProps) {
+export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourceOfTruth }: V2SynthesisClientProps) {
   const [synthesis, setSynthesis] = useState<SynthesisOutput | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isFromCache, setIsFromCache] = useState(false);
@@ -41,22 +51,54 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData }: V2S
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<TabId>('overview');
 
+  // Check if V2.5 mode is enabled
+  const useV25 = isV25Enabled();
+
+  // V2.5: Calculate music type if enabled
+  const typeResult = useMemo<TypeResult | null>(() => {
+    if (!useV25 || !sourceOfTruth) return null;
+    try {
+      return calculateMusicType(sourceOfTruth);
+    } catch (err) {
+      console.error('[V2.5] Type calculation failed:', err);
+      return null;
+    }
+  }, [useV25, sourceOfTruth]);
+
   // Calculate persona match from detected patterns
   const personaMatch = useMemo(() => {
     return matchPersona(detectedPatterns);
   }, [detectedPatterns]);
 
-  // Define tabs
-  const tabs = useMemo(() => [
-    { id: 'overview' as TabId, label: 'Overview', icon: '🎯' },
-    { id: 'patterns' as TabId, label: 'Patterns', icon: '🔍', badge: synthesis?.narratives?.length || 0 },
-    { id: 'when' as TabId, label: 'When You Listen', icon: '🕐' },
-    { id: 'persona' as TabId, label: 'Your Persona', icon: '💎' },
-  ], [synthesis]);
+  // Define tabs (different for V2.5)
+  const tabs = useMemo(() => {
+    if (useV25) {
+      return [
+        { id: 'overview' as TabId, label: 'Your Type', icon: '✨' },
+        { id: 'patterns' as TabId, label: 'Deep Dive', icon: '🔍' },
+        { id: 'when' as TabId, label: 'When You Listen', icon: '🕐' },
+        { id: 'persona' as TabId, label: 'Insights', icon: '💎' },
+      ];
+    }
+
+    return [
+      { id: 'overview' as TabId, label: 'Overview', icon: '🎯' },
+      { id: 'patterns' as TabId, label: 'Patterns', icon: '🔍', badge: synthesis?.narratives?.length || 0 },
+      { id: 'when' as TabId, label: 'When You Listen', icon: '🕐' },
+      { id: 'persona' as TabId, label: 'Your Persona', icon: '💎' },
+    ];
+  }, [useV25, synthesis]);
 
   useEffect(() => {
     async function loadSynthesis() {
-      // Check cache first
+      // V2.5 mode: Skip synthesis API, use client-side type calculation
+      if (useV25) {
+        console.log('[V2.5 Mode] Skipping synthesis API, using client-side type calculation');
+        setIsLoading(false);
+        return;
+      }
+
+      // V2 mode: Check cache first
       const cached = localStorage.getItem(CACHE_KEY);
       if (cached) {
         try {
@@ -129,7 +171,7 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData }: V2S
     }
 
     loadSynthesis();
-  }, [detectedPatterns]);
+  }, [detectedPatterns, useV25]);
 
   // Auto-advance loading screens every 20 seconds
   useEffect(() => {
@@ -395,7 +437,97 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData }: V2S
     );
   }
 
-  // No synthesis
+  // No synthesis (V2 mode only)
+  if (!useV25 && !synthesis) {
+    return null;
+  }
+
+  // V2.5 mode: Render type-based UI
+  if (useV25 && typeResult) {
+    return (
+      <div className="min-h-screen bg-black text-white">
+        {/* Tab Navigation */}
+        <TabNavigation
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          tabs={tabs}
+        />
+
+        {/* Tab Content */}
+        <div className="min-h-screen">
+          {activeTab === 'overview' && (
+            <>
+              <TypeReveal typeResult={typeResult} />
+
+              {/* Dimension Cards Grid */}
+              <div className="max-w-7xl mx-auto px-4 py-8">
+                <h2 className="text-3xl font-bold mb-6 text-center">Your Four Dimensions</h2>
+                <div className="grid md:grid-cols-2 gap-6">
+                  {typeResult.dimensions.map((dimension) => (
+                    <DimensionCard key={dimension.code} dimension={dimension} />
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+
+          {activeTab === 'patterns' && (
+            <div className="max-w-7xl mx-auto px-4 py-12">
+              <h2 className="text-3xl font-bold mb-6">Deep Dive</h2>
+              <div className="grid md:grid-cols-2 gap-6">
+                {typeResult.dimensions.map((dimension) => (
+                  <DimensionCard key={dimension.code} dimension={dimension} showDetails={true} />
+                ))}
+              </div>
+              <div className="mt-8 bg-zinc-900/50 border border-zinc-700 rounded-2xl p-6">
+                <p className="text-gray-400">
+                  More detailed metrics and visualizations coming soon!
+                </p>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'when' && uploadedData && (
+            <TemporalTab plays={uploadedData} />
+          )}
+
+          {activeTab === 'persona' && (
+            <div className="max-w-5xl mx-auto px-4 py-12">
+              <h2 className="text-3xl font-bold mb-6">Behavioral Insights</h2>
+              <PersonaTab
+                personaMatch={personaMatch}
+                psychologicalSummary={undefined}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Privacy Reminder */}
+        <section className="py-12 px-8 bg-zinc-950">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-6">
+              <h4 className="text-lg font-bold text-green-400 mb-2 flex items-center justify-center gap-2">
+                <span>🔒</span>
+                100% Private Analysis
+              </h4>
+              <p className="text-sm text-gray-300">
+                Your music type was calculated entirely in your browser.
+                No data was sent to any server.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* NPS Widget */}
+        <NPSWidget />
+
+        {/* Footer */}
+        <Footer />
+      </div>
+    );
+  }
+
+  // V2 mode: Render narrative-based UI
   if (!synthesis) {
     return null;
   }
