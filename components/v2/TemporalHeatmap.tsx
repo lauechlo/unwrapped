@@ -79,7 +79,7 @@ export default function TemporalHeatmap({ uploadedData }: TemporalHeatmapProps) 
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
             When You Listen
           </h2>
-          <p className="text-gray-400 mb-4">
+          <p className="text-gray-300 mb-4">
             Your overall listening rhythm across all plays
           </p>
           <p className="text-xs text-gray-500 mb-6">
@@ -125,7 +125,7 @@ export default function TemporalHeatmap({ uploadedData }: TemporalHeatmapProps) 
               {DAYS.map((day, dayIndex) => (
                 <div key={day} className="flex items-center gap-1">
                   {/* Day Label */}
-                  <div className="w-12 text-xs font-semibold text-gray-400">
+                  <div className="w-12 text-xs font-semibold text-gray-300">
                     {day}
                   </div>
 

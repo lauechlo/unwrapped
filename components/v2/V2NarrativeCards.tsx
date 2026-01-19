@@ -50,7 +50,7 @@ function ConfidenceBadge({ confidence, theme, narrative }: { confidence: number;
               <h5 className="text-xs font-bold text-gray-300 mb-1.5 flex items-center gap-1">
                 <span className="text-green-400">✓</span> Data Consistency
               </h5>
-              <ul className="text-xs text-gray-400 space-y-1 pl-4">
+              <ul className="text-xs text-gray-300 space-y-1 pl-4">
                 {hasSkipData && <li>• Low skip rate detected in evidence</li>}
                 {hasCompletionData && <li>• High completion rate observed</li>}
                 {confidenceLevel === 'high' && <li>• Low variance across observations</li>}
@@ -63,7 +63,7 @@ function ConfidenceBadge({ confidence, theme, narrative }: { confidence: number;
               <h5 className="text-xs font-bold text-gray-300 mb-1.5 flex items-center gap-1">
                 <span className="text-blue-400">✓</span> Sample Size
               </h5>
-              <ul className="text-xs text-gray-400 space-y-1 pl-4">
+              <ul className="text-xs text-gray-300 space-y-1 pl-4">
                 {hasPlaysData ? (
                   <li>• {hasPlaysData[1]} observations detected</li>
                 ) : (
@@ -78,7 +78,7 @@ function ConfidenceBadge({ confidence, theme, narrative }: { confidence: number;
               <h5 className="text-xs font-bold text-gray-300 mb-1.5 flex items-center gap-1">
                 <span className="text-purple-400">✓</span> Behavioral Clarity
               </h5>
-              <ul className="text-xs text-gray-400 space-y-1 pl-4">
+              <ul className="text-xs text-gray-300 space-y-1 pl-4">
                 <li>• {confidenceLevel === 'high' ? 'Clear, unambiguous pattern' : 'Pattern detected with some variation'}</li>
                 <li>• {confidenceLevel === 'high' ? 'No noise or randomness detected' : 'Moderate signal strength'}</li>
               </ul>
@@ -347,7 +347,7 @@ export default function V2NarrativeCards({ narratives }: V2NarrativeCardsProps) 
                         {narrative.title}
                       </h3>
                     </div>
-                    <div className={`text-2xl md:text-3xl text-gray-400 transition-transform duration-200 flex-shrink-0 ${isCollapsed ? '' : 'rotate-180'}`}>
+                    <div className={`text-2xl md:text-3xl text-gray-300 transition-transform duration-200 flex-shrink-0 ${isCollapsed ? '' : 'rotate-180'}`}>
                       ▼
                     </div>
                   </div>
@@ -478,7 +478,7 @@ export default function V2NarrativeCards({ narratives }: V2NarrativeCardsProps) 
 
                     {/* Feedback Buttons - Thumbs Up/Down */}
                     <div className="mt-4 pt-4 border-t border-zinc-700/50">
-                      <p className="text-xs text-gray-400 mb-3 text-center">How accurate is this insight?</p>
+                      <p className="text-xs text-gray-300 mb-3 text-center">How accurate is this insight?</p>
                       <div className="flex gap-3">
                         <button
                           onClick={() => handleFeedback(idx, 'up')}
@@ -573,7 +573,7 @@ export default function V2NarrativeCards({ narratives }: V2NarrativeCardsProps) 
                       </span>
                     </div>
                   </div>
-                  <p className="text-gray-400 text-sm">
+                  <p className="text-gray-300 text-sm">
                     You had multiple instances of this pattern throughout your listening history
                   </p>
                 </div>
@@ -603,7 +603,7 @@ export default function V2NarrativeCards({ narratives }: V2NarrativeCardsProps) 
                               {previewText}
                             </p>
                           </div>
-                          <div className={`text-xl text-gray-400 transition-transform duration-200 ml-4 ${isExpanded ? 'rotate-180' : ''}`}>
+                          <div className={`text-xl text-gray-300 transition-transform duration-200 ml-4 ${isExpanded ? 'rotate-180' : ''}`}>
                             ▼
                           </div>
                         </button>
@@ -665,7 +665,7 @@ export default function V2NarrativeCards({ narratives }: V2NarrativeCardsProps) 
                                   className={`px-3 py-2 rounded-lg border transition-all ${
                                     narrativeFeedback.get(idx) === 'up'
                                       ? 'bg-green-500/20 border-green-500 text-green-400'
-                                      : 'bg-zinc-800 border-zinc-700 text-gray-400 hover:border-gray-500'
+                                      : 'bg-zinc-800 border-zinc-700 text-gray-300 hover:border-gray-500'
                                   }`}
                                   title="This resonates"
                                 >
@@ -676,7 +676,7 @@ export default function V2NarrativeCards({ narratives }: V2NarrativeCardsProps) 
                                   className={`px-3 py-2 rounded-lg border transition-all ${
                                     narrativeFeedback.get(idx) === 'down'
                                       ? 'bg-red-500/20 border-red-500 text-red-400'
-                                      : 'bg-zinc-800 border-zinc-700 text-gray-400 hover:border-gray-500'
+                                      : 'bg-zinc-800 border-zinc-700 text-gray-300 hover:border-gray-500'
                                   }`}
                                   title="This feels off"
                                 >

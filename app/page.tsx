@@ -43,7 +43,7 @@ export default function Home() {
             "@type": "WebApplication",
             "name": "Unwrapped",
             "description": "Psychology-driven Spotify listening analysis with AI-powered insights and shareable Instagram Stories cards",
-            "url": "https://unwrapped.app",
+            "url": "https://unwrapped.fm",
             "applicationCategory": "MusicApplication",
             "offers": {
               "@type": "Offer",

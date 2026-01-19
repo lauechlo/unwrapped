@@ -113,7 +113,7 @@ export default function ShareButton({ cardId, cardTitle, cardType, onShare }: Sh
           <div className="absolute right-0 mt-2 w-64 bg-zinc-900 border border-zinc-700 rounded-xl shadow-2xl z-50 overflow-hidden">
             <div className="p-4 bg-gradient-to-r from-purple-600/20 to-pink-600/20 border-b border-zinc-700">
               <h4 className="text-sm font-bold text-white">Share This Insight</h4>
-              <p className="text-xs text-gray-400 mt-1">Send to friends via DM</p>
+              <p className="text-xs text-gray-300 mt-1">Send to friends via DM</p>
             </div>
 
             <div className="p-2">
@@ -129,7 +129,7 @@ export default function ShareButton({ cardId, cardTitle, cardType, onShare }: Sh
                   <span className="text-xl">📱</span>
                   <div>
                     <div className="text-sm font-medium text-white">Share via...</div>
-                    <div className="text-xs text-gray-400">Message, WhatsApp, etc.</div>
+                    <div className="text-xs text-gray-300">Message, WhatsApp, etc.</div>
                   </div>
                 </button>
               )}
@@ -146,7 +146,7 @@ export default function ShareButton({ cardId, cardTitle, cardType, onShare }: Sh
                   <div className="text-sm font-medium text-white">
                     {copySuccess ? 'Link Copied!' : 'Copy Link'}
                   </div>
-                  <div className="text-xs text-gray-400">Share in DMs</div>
+                  <div className="text-xs text-gray-300">Share in DMs</div>
                 </div>
               </button>
 
@@ -163,7 +163,7 @@ export default function ShareButton({ cardId, cardTitle, cardType, onShare }: Sh
                   <div className="text-sm font-medium text-white">
                     {isGenerating ? 'Generating...' : 'Download Image'}
                   </div>
-                  <div className="text-xs text-gray-400">Save as PNG</div>
+                  <div className="text-xs text-gray-300">Save as PNG</div>
                 </div>
               </button>
             </div>

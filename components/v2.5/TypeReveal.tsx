@@ -2,27 +2,37 @@
 
 import type { TypeResult } from '@/lib/v2.5/typing';
 import { getTypeDescription } from '@/lib/v2.5/typing';
+import { getRarityBadge, getTypeTagline } from '@/lib/v2.5/typing/typeNames';
+import TypeShareButton from './TypeShareButton';
+import DimensionDetailCard from './DimensionDetailCard';
 
 interface TypeRevealProps {
   typeResult: TypeResult;
 }
 
 export default function TypeReveal({ typeResult }: TypeRevealProps) {
-  const { code, dimensions, rarity, description } = typeResult;
+  const { code, dimensions, description } = typeResult;
 
   // Get dimension labels for display (e.g., "Nocturnal · Looper · Explorer · Anchored")
   const dimensionLabels = dimensions.map((d) => d.label).join(' · ');
 
-  // Determine rarity color based on percentage
-  const getRarityColor = (rarity: number): string => {
-    if (rarity <= 5) return 'from-purple-500 to-pink-500'; // Very rare
-    if (rarity <= 10) return 'from-blue-500 to-purple-500'; // Rare
-    if (rarity <= 20) return 'from-cyan-500 to-blue-500'; // Uncommon
-    return 'from-green-500 to-cyan-500'; // Common
-  };
+  // Get Gen Z slang tagline and behavior-based rarity badge
+  const tagline = getTypeTagline(code);
+  const rarityBadge = getRarityBadge(code);
 
-  const rarityColor = getRarityColor(rarity);
-  const rarityLabel = rarity <= 5 ? 'Very Rare' : rarity <= 10 ? 'Rare' : rarity <= 20 ? 'Uncommon' : 'Common';
+  // Map rarity badge colors to Tailwind gradients
+  const getRarityGradient = (color: 'gold' | 'purple' | 'blue' | null): string => {
+    switch (color) {
+      case 'gold':
+        return 'from-yellow-400 to-orange-400';
+      case 'purple':
+        return 'from-purple-500 to-pink-500';
+      case 'blue':
+        return 'from-blue-500 to-cyan-500';
+      default:
+        return 'from-gray-500 to-gray-400';
+    }
+  };
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-12">
@@ -30,7 +40,7 @@ export default function TypeReveal({ typeResult }: TypeRevealProps) {
       <div className="bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 border border-zinc-700 rounded-3xl p-8 md:p-12 text-center shadow-2xl">
 
         {/* Small Header */}
-        <div className="text-sm uppercase tracking-widest text-gray-400 mb-6">
+        <div className="text-sm uppercase tracking-widest text-gray-300 mb-6">
           Your Music Type
         </div>
 
@@ -44,36 +54,46 @@ export default function TypeReveal({ typeResult }: TypeRevealProps) {
         </div>
 
         {/* Type Description */}
-        <div className="mb-8">
+        <div className="mb-4">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
             {description}
           </h2>
         </div>
 
+        {/* Tagline (Gen Z Slang) */}
+        {tagline && (
+          <div className="mb-8">
+            <p className="text-lg md:text-xl text-gray-300 italic">
+              "{tagline}"
+            </p>
+          </div>
+        )}
+
         {/* Dimension Labels */}
         <div className="mb-10">
-          <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
+          <p className="text-base md:text-lg text-gray-300 leading-relaxed">
             {dimensionLabels}
           </p>
         </div>
 
-        {/* Rarity Badge */}
-        <div className="flex justify-center items-center gap-4 flex-wrap">
-          {/* Rarity Percentage */}
-          <div className={`
-            inline-flex items-center gap-2 px-6 py-3 rounded-full
-            bg-gradient-to-r ${rarityColor}
-            text-white font-bold text-base md:text-lg
-            shadow-lg
-          `}>
-            <span className="text-xl">✨</span>
-            <span>{rarityLabel}</span>
+        {/* Rarity Badge (Behavior-Based, Honest) */}
+        {rarityBadge && (
+          <div className="flex justify-center">
+            <div className={`
+              inline-flex items-center gap-2 px-6 py-3 rounded-full
+              bg-gradient-to-r ${getRarityGradient(rarityBadge.color)}
+              text-white font-bold text-base md:text-lg
+              shadow-lg
+            `}>
+              <span className="text-xl">✨</span>
+              <span>{rarityBadge.text}</span>
+            </div>
           </div>
+        )}
 
-          {/* Population Text */}
-          <div className="text-gray-400 text-base md:text-lg">
-            Only <span className="text-white font-bold">{rarity}%</span> of users share your type
-          </div>
+        {/* Share Button */}
+        <div className="flex justify-center mt-8">
+          <TypeShareButton typeCode={code} />
         </div>
 
         {/* Confidence Indicator (if not complete) */}
@@ -86,35 +106,23 @@ export default function TypeReveal({ typeResult }: TypeRevealProps) {
         )}
       </div>
 
-      {/* What This Means Section */}
-      <div className="mt-8 bg-zinc-900/50 border border-zinc-700 rounded-2xl p-6 md:p-8">
-        <h3 className="text-xl font-bold mb-4 text-white">What This Means</h3>
-        <div className="space-y-4 text-gray-300">
-          <p>
-            Your <span className="text-purple-400 font-bold">{code}</span> type is based on four dimensions of your listening behavior:
-          </p>
-          <div className="grid md:grid-cols-2 gap-4 mt-6">
-            {dimensions.map((dimension, index) => (
-              <div key={`${dimension.code}-${index}`} className="bg-zinc-800/50 rounded-lg p-4">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-3xl font-black text-purple-400">{dimension.code}</span>
-                  <span className="text-lg font-bold text-white">{dimension.label}</span>
-                </div>
-                <div className="text-sm text-gray-400">
-                  {dimension.metric}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+      {/* Your Four Dimensions - Full Cards */}
+      <div className="mt-12 space-y-6">
+        <h3 className="text-2xl md:text-3xl font-bold text-white text-center mb-8">
+          Your Four Dimensions
+        </h3>
+        {dimensions.map((dimension, index) => (
+          <DimensionDetailCard
+            key={`${dimension.code}-${index}`}
+            dimension={dimension}
+          />
+        ))}
       </div>
 
       {/* About Your Type Section */}
-      <div className="mt-8 text-center">
-        <p className="text-gray-400 text-sm">
+      <div className="mt-12 text-center">
+        <p className="text-gray-300 text-sm">
           Your type is calculated from your actual listening data—no surveys, no guessing.
-          <br />
-          Scroll down to explore each dimension in detail.
         </p>
       </div>
     </div>

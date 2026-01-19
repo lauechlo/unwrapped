@@ -38,7 +38,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
               Oops! Something Broke
             </h1>
 
-            <p className="text-xl text-gray-400 mb-8">
+            <p className="text-xl text-gray-300 mb-8">
               We hit a snag analyzing your music. This is on us, not you!
             </p>
 

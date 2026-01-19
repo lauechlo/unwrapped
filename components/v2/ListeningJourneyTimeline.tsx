@@ -140,7 +140,7 @@ export default function ListeningJourneyTimeline({ patterns }: ListeningJourneyT
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
             Your Listening Journey
           </h2>
-          <p className="text-gray-400">
+          <p className="text-gray-300">
             A timeline of your musical patterns and moments
           </p>
         </div>
@@ -193,7 +193,7 @@ export default function ListeningJourneyTimeline({ patterns }: ListeningJourneyT
 
                       {/* Confidence Badge */}
                       <div className="mb-3">
-                        <div className="inline-block px-2 py-1 bg-zinc-800 rounded text-xs text-gray-400">
+                        <div className="inline-block px-2 py-1 bg-zinc-800 rounded text-xs text-gray-300">
                           {(pattern.confidence * 100).toFixed(0)}% confidence
                         </div>
                       </div>
@@ -231,7 +231,7 @@ export default function ListeningJourneyTimeline({ patterns }: ListeningJourneyT
                                             <p className="font-semibold mb-1">{label}:</p>
                                             <ul className="ml-4 space-y-1">
                                               {tracks.map((track, i) => (
-                                                <li key={i} className="text-xs text-gray-400">
+                                                <li key={i} className="text-xs text-gray-300">
                                                   {i + 1}. {track}
                                                 </li>
                                               ))}
@@ -241,7 +241,7 @@ export default function ListeningJourneyTimeline({ patterns }: ListeningJourneyT
                                           // Collapsed: Show artist + first track only
                                           <p>
                                             <span className="font-semibold">{label}</span>
-                                            <span className="text-gray-400"> · {firstTrack}</span>
+                                            <span className="text-gray-300"> · {firstTrack}</span>
                                           </p>
                                         )}
                                         <button

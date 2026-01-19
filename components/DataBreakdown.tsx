@@ -38,7 +38,7 @@ export function DataBreakdown({ detectedPatterns, topTracks, topArtists }: DataB
               <span className="text-3xl">{isExpanded ? '📊' : '📈'}</span>
               <div className="text-left">
                 <h2 className="text-2xl font-bold text-white">Your Data Breakdown</h2>
-                <p className="text-gray-400 text-sm mt-1">
+                <p className="text-gray-300 text-sm mt-1">
                   See exactly what we analyzed from your Spotify
                 </p>
               </div>
@@ -58,7 +58,7 @@ export function DataBreakdown({ detectedPatterns, topTracks, topArtists }: DataB
                 <span>🎯</span>
                 Patterns Detected ({detectedPatterns.length})
               </h3>
-              <p className="text-sm text-gray-400 mb-6">
+              <p className="text-sm text-gray-300 mb-6">
                 We analyzed your listening behavior across multiple psychological dimensions
               </p>
 
@@ -84,7 +84,7 @@ export function DataBreakdown({ detectedPatterns, topTracks, topArtists }: DataB
                 };
 
                 return Object.entries(grouped).map(([dimension, patterns]) => {
-                  const config = dimensionConfig[dimension.toLowerCase()] || { icon: '✨', color: 'text-gray-400' };
+                  const config = dimensionConfig[dimension.toLowerCase()] || { icon: '✨', color: 'text-gray-300' };
                   return (
                     <div key={dimension} className="mb-6 last:mb-0">
                       <h4 className={`text-sm font-semibold ${config.color} mb-3 flex items-center gap-2`}>
@@ -106,7 +106,7 @@ export function DataBreakdown({ detectedPatterns, topTracks, topArtists }: DataB
                               </span>
                             </div>
                             {pattern.evidence.length > 0 && (
-                              <div className="text-xs text-gray-400 mt-1 line-clamp-2">
+                              <div className="text-xs text-gray-300 mt-1 line-clamp-2">
                                 {pattern.evidence[0].humanReadable}
                               </div>
                             )}
@@ -128,7 +128,7 @@ export function DataBreakdown({ detectedPatterns, topTracks, topArtists }: DataB
               <div className="grid md:grid-cols-3 gap-6">
                 {/* Last 4 Weeks */}
                 <div>
-                  <h4 className="text-sm font-semibold text-gray-400 mb-3">Last 4 Weeks</h4>
+                  <h4 className="text-sm font-semibold text-gray-300 mb-3">Last 4 Weeks</h4>
                   <div className="space-y-2">
                     {topTracks.short.slice(0, 5).map((track: any, i: number) => (
                       <div key={i} className="text-sm">
@@ -145,7 +145,7 @@ export function DataBreakdown({ detectedPatterns, topTracks, topArtists }: DataB
 
                 {/* Last 6 Months */}
                 <div>
-                  <h4 className="text-sm font-semibold text-gray-400 mb-3">Last 6 Months</h4>
+                  <h4 className="text-sm font-semibold text-gray-300 mb-3">Last 6 Months</h4>
                   <div className="space-y-2">
                     {topTracks.medium.slice(0, 5).map((track: any, i: number) => (
                       <div key={i} className="text-sm">
@@ -162,7 +162,7 @@ export function DataBreakdown({ detectedPatterns, topTracks, topArtists }: DataB
 
                 {/* All Time */}
                 <div>
-                  <h4 className="text-sm font-semibold text-gray-400 mb-3">All Time</h4>
+                  <h4 className="text-sm font-semibold text-gray-300 mb-3">All Time</h4>
                   <div className="space-y-2">
                     {topTracks.long.slice(0, 5).map((track: any, i: number) => (
                       <div key={i} className="text-sm">
@@ -188,7 +188,7 @@ export function DataBreakdown({ detectedPatterns, topTracks, topArtists }: DataB
               <div className="grid md:grid-cols-3 gap-6">
                 {/* Last 4 Weeks */}
                 <div>
-                  <h4 className="text-sm font-semibold text-gray-400 mb-3">Last 4 Weeks</h4>
+                  <h4 className="text-sm font-semibold text-gray-300 mb-3">Last 4 Weeks</h4>
                   <div className="space-y-2">
                     {topArtists.short.slice(0, 5).map((artist: any, i: number) => (
                       <div key={i} className="text-sm text-white truncate">
@@ -200,7 +200,7 @@ export function DataBreakdown({ detectedPatterns, topTracks, topArtists }: DataB
 
                 {/* Last 6 Months */}
                 <div>
-                  <h4 className="text-sm font-semibold text-gray-400 mb-3">Last 6 Months</h4>
+                  <h4 className="text-sm font-semibold text-gray-300 mb-3">Last 6 Months</h4>
                   <div className="space-y-2">
                     {topArtists.medium.slice(0, 5).map((artist: any, i: number) => (
                       <div key={i} className="text-sm text-white truncate">
@@ -212,7 +212,7 @@ export function DataBreakdown({ detectedPatterns, topTracks, topArtists }: DataB
 
                 {/* All Time */}
                 <div>
-                  <h4 className="text-sm font-semibold text-gray-400 mb-3">All Time</h4>
+                  <h4 className="text-sm font-semibold text-gray-300 mb-3">All Time</h4>
                   <div className="space-y-2">
                     {topArtists.long.slice(0, 5).map((artist: any, i: number) => (
                       <div key={i} className="text-sm text-white truncate">

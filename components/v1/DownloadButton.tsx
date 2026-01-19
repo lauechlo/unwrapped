@@ -155,7 +155,7 @@ export function DownloadButton({ cards }: DownloadButtonProps) {
         <h2 className="text-2xl md:text-3xl font-bold text-white text-center px-4">
           Share Your Results
         </h2>
-        <p className="text-sm md:text-base text-gray-400 text-center max-w-2xl px-4">
+        <p className="text-sm md:text-base text-gray-300 text-center max-w-2xl px-4">
           We've selected your {cards.length} most shareable patterns. {/iPhone|iPad|iPod|Android/i.test(typeof navigator !== 'undefined' ? navigator.userAgent : '') ? 'Tap cards below to share. Add Instagram music sticker 🎵 to the square at top!' : 'Click cards below to download for Instagram Stories! Add music sticker 🎵 to the square at top.'}
         </p>
 
@@ -214,7 +214,7 @@ export function DownloadButton({ cards }: DownloadButtonProps) {
 
               {/* Card Title & Download Button */}
               <div className="text-center w-full">
-                <p className="text-sm text-gray-400 mb-2 px-2 line-clamp-2 min-h-[2.5rem]">
+                <p className="text-sm text-gray-300 mb-2 px-2 line-clamp-2 min-h-[2.5rem]">
                   {card.patternLabel.replace(/^The /, '')}
                 </p>
                 <button

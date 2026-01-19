@@ -348,7 +348,7 @@ export function SynthesisClient({ detectedPatterns }: SynthesisClientProps) {
         <div className="max-w-md text-center">
           <div className="text-5xl mb-4">😵‍💫</div>
           <h2 className="text-2xl font-bold text-white mb-2">Oops! Synthesis Failed</h2>
-          <p className="text-gray-400 mb-6">{error}</p>
+          <p className="text-gray-300 mb-6">{error}</p>
           <button
             onClick={() => window.location.reload()}
             className="px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-lg"
@@ -414,7 +414,7 @@ export function SynthesisClient({ detectedPatterns }: SynthesisClientProps) {
       <section className="py-12 md:py-20 px-4 md:px-8 bg-gradient-to-b from-black to-zinc-900">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4 text-center px-2">Your Listening DNA</h2>
-          <p className="text-sm md:text-base text-gray-400 text-center mb-8 md:mb-12 px-4">
+          <p className="text-sm md:text-base text-gray-300 text-center mb-8 md:mb-12 px-4">
             Five dimensions that define how you use music
           </p>
 
@@ -520,7 +520,7 @@ export function SynthesisClient({ detectedPatterns }: SynthesisClientProps) {
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             What's Next?
           </h2>
-          <p className="text-gray-400 mb-8 text-sm md:text-base">
+          <p className="text-gray-300 mb-8 text-sm md:text-base">
             Unwrapped v2 is coming soon with unlimited analyses, more insights, and new features!
           </p>
 

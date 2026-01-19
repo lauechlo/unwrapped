@@ -71,7 +71,7 @@ export const PROCESSING_DIMENSION: DimensionDefinition = {
 };
 
 // ============================================================================
-// Dimension 3: Discovery (E/L)
+// Dimension 3: Discovery (E/R)
 // ============================================================================
 
 export const DISCOVERY_DIMENSION: DimensionDefinition = {
@@ -87,8 +87,8 @@ export const DISCOVERY_DIMENSION: DimensionDefinition = {
       baseline: 0.25, // Average: 25% unique artists
     },
     {
-      code: 'L',
-      label: 'Loyalist',
+      code: 'R',
+      label: 'Rooted',
       description: 'You stick with familiar artists and repeat favorites',
       threshold: 0.3, // <30% unique artists
       baseline: 0.25,
@@ -158,16 +158,11 @@ export function getDimensionLabel(code: string): string {
     S: 'Skimmer',
     // Discovery
     E: 'Explorer',
+    R: 'Rooted',
     // Attachment
     A: 'Anchored',
     F: 'Fluid',
   };
-
-  // Handle discovery 'L' conflict
-  if (code === 'L') {
-    // Context-dependent: needs to be resolved by caller
-    return 'Looper/Loyalist';
-  }
 
   return labelMap[code] || code;
 }
@@ -182,7 +177,7 @@ export function getTypeDescription(typeCode: string): string {
 
   const temporal = t === 'D' ? 'Diurnal' : 'Nocturnal';
   const processing = p === 'L' ? 'Looper' : 'Skimmer';
-  const discovery = d === 'E' ? 'Explorer' : 'Loyalist';
+  const discovery = d === 'E' ? 'Explorer' : 'Rooted';
   const attachment = a === 'A' ? 'Anchored' : 'Fluid';
 
   return `${temporal} · ${processing} · ${discovery} · ${attachment}`;
@@ -190,25 +185,12 @@ export function getTypeDescription(typeCode: string): string {
 
 /**
  * Get short type description (for cards)
+ *
+ * DEPRECATED: Use getTypeName() from typeNames.ts instead
+ * This is kept for backwards compatibility only
  */
 export function getShortTypeDescription(typeCode: string): string {
-  const descriptions: Record<string, string> = {
-    // Nocturnal types
-    NLEA: 'The Night Owl Explorer',
-    NLEL: 'The Night Owl Wanderer',
-    NSEF: 'The Nocturnal Nomad',
-    NSEA: 'The Night Adventurer',
-
-    // Diurnal types
-    DSLA: 'The Steady Listener',
-    DLEA: 'The Devoted Fan',
-    DLEF: 'The Curious Mind',
-    DSEF: 'The Free Spirit',
-
-    // Common types
-    NSLA: 'The Night Owl Loyalist',
-    DSEL: 'The Daytime Wanderer',
-  };
-
-  return descriptions[typeCode] || 'The Music Lover';
+  // Import is done at runtime to avoid circular dependencies
+  const { getTypeName } = require('./typeNames');
+  return getTypeName(typeCode);
 }

@@ -3,4 +3,4 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://unwrapped.app/sitemap.xml
+Sitemap: https://unwrapped.fm/sitemap.xml

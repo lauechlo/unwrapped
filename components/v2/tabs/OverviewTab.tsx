@@ -54,25 +54,25 @@ export default function OverviewTab({
             <div className="text-3xl md:text-4xl font-bold text-purple-400">
               {stats.totalPlays.toLocaleString()}
             </div>
-            <div className="text-sm text-gray-400 mt-1">Total Plays</div>
+            <div className="text-sm text-gray-300 mt-1">Total Plays</div>
           </div>
           <div className="text-center">
             <div className="text-3xl md:text-4xl font-bold text-pink-400">
               {stats.uniqueTracks.toLocaleString()}
             </div>
-            <div className="text-sm text-gray-400 mt-1">Unique Tracks</div>
+            <div className="text-sm text-gray-300 mt-1">Unique Tracks</div>
           </div>
           <div className="text-center">
             <div className="text-3xl md:text-4xl font-bold text-blue-400">
               {stats.uniqueArtists.toLocaleString()}
             </div>
-            <div className="text-sm text-gray-400 mt-1">Unique Artists</div>
+            <div className="text-sm text-gray-300 mt-1">Unique Artists</div>
           </div>
           <div className="text-center md:col-span-1 col-span-2">
             <div className="text-lg md:text-xl font-bold text-green-400">
               {stats.dateRange}
             </div>
-            <div className="text-sm text-gray-400 mt-1">Date Range</div>
+            <div className="text-sm text-gray-300 mt-1">Date Range</div>
           </div>
         </div>
       </section>
@@ -85,7 +85,7 @@ export default function OverviewTab({
             <div className="flex items-center gap-4">
               <div className="text-6xl">{personaPreview.icon}</div>
               <div>
-                <div className="text-sm text-gray-400 mb-1">You Are Most Like</div>
+                <div className="text-sm text-gray-300 mb-1">You Are Most Like</div>
                 <h3 className="text-3xl font-bold text-white">
                   {personaPreview.name}
                 </h3>
@@ -115,7 +115,7 @@ export default function OverviewTab({
             </span>
           </div>
           <h3 className="text-xl font-bold mb-2">View All Patterns</h3>
-          <p className="text-gray-400 text-sm">
+          <p className="text-gray-300 text-sm">
             Explore detailed insights about your listening behavior
           </p>
         </button>
@@ -131,7 +131,7 @@ export default function OverviewTab({
             </span>
           </div>
           <h3 className="text-xl font-bold mb-2">See When You Listen</h3>
-          <p className="text-gray-400 text-sm">
+          <p className="text-gray-300 text-sm">
             Discover your listening patterns by time and day
           </p>
         </button>

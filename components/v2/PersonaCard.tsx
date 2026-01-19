@@ -26,7 +26,7 @@ export default function PersonaCard({ personaMatch }: PersonaCardProps) {
         <div className="flex items-center gap-4">
           <div className="text-6xl">{persona.icon}</div>
           <div>
-            <div className="text-xs uppercase tracking-wide text-gray-400 mb-1">
+            <div className="text-xs uppercase tracking-wide text-gray-300 mb-1">
               You Are Most Like
             </div>
             <h3 className="text-2xl md:text-3xl font-bold text-white">
@@ -56,7 +56,7 @@ export default function PersonaCard({ personaMatch }: PersonaCardProps) {
 
       {/* Description */}
       <div className="mb-6">
-        <p className="text-base text-gray-400 leading-relaxed">
+        <p className="text-base text-gray-300 leading-relaxed">
           {persona.description}
         </p>
       </div>
@@ -81,7 +81,7 @@ export default function PersonaCard({ personaMatch }: PersonaCardProps) {
         </summary>
         <ul className="space-y-2 mt-3">
           {persona.traits.map((trait, idx) => (
-            <li key={idx} className="flex items-start gap-2 text-sm text-gray-400">
+            <li key={idx} className="flex items-start gap-2 text-sm text-gray-300">
               <span className="text-purple-400">•</span>
               <span>{trait}</span>
             </li>
@@ -91,7 +91,7 @@ export default function PersonaCard({ personaMatch }: PersonaCardProps) {
 
       {/* Research Basis */}
       <details>
-        <summary className="cursor-pointer text-sm font-bold text-gray-400 hover:text-gray-300 mb-3 uppercase tracking-wide list-none">
+        <summary className="cursor-pointer text-sm font-bold text-gray-300 hover:text-gray-300 mb-3 uppercase tracking-wide list-none">
           <span className="inline-flex items-center gap-2">
             <span className="text-xs">▼</span>
             <span>Research Basis</span>
@@ -99,13 +99,13 @@ export default function PersonaCard({ personaMatch }: PersonaCardProps) {
         </summary>
         <div className="mt-3 space-y-3">
           <div className="bg-zinc-800/50 p-3 rounded-lg">
-            <p className="text-xs text-gray-400">{persona.researchBasis}</p>
+            <p className="text-xs text-gray-300">{persona.researchBasis}</p>
           </div>
 
           {persona.famousExample && (
             <div className="bg-zinc-800/50 p-3 rounded-lg">
               <div className="text-xs font-bold text-gray-500 mb-1">IN THE WILD:</div>
-              <p className="text-xs text-gray-400 italic">{persona.famousExample}</p>
+              <p className="text-xs text-gray-300 italic">{persona.famousExample}</p>
             </div>
           )}
         </div>

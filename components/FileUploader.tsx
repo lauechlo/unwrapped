@@ -306,7 +306,7 @@ export default function FileUploader({ onUploadComplete }: FileUploaderProps) {
             <h3 className="text-2xl font-bold text-white mb-2">
               Drop Your Spotify Files Here
             </h3>
-            <p className="text-gray-400 mb-6">
+            <p className="text-gray-300 mb-6">
               or click to browse
             </p>
             <input
@@ -336,7 +336,7 @@ export default function FileUploader({ onUploadComplete }: FileUploaderProps) {
                     <div className="text-sm font-medium text-white truncate">
                       {file.name}
                     </div>
-                    <div className="text-xs text-gray-400">{file.size}</div>
+                    <div className="text-xs text-gray-300">{file.size}</div>
                   </div>
                   <button
                     onClick={() => handleRemoveFile(idx)}
@@ -372,7 +372,7 @@ export default function FileUploader({ onUploadComplete }: FileUploaderProps) {
 
             {/* Overall Progress Bar */}
             <div className="mb-6">
-              <div className="flex justify-between text-sm text-gray-400 mb-2">
+              <div className="flex justify-between text-sm text-gray-300 mb-2">
                 <span>Progress</span>
                 <span>{processingProgress}%</span>
               </div>
@@ -402,7 +402,7 @@ export default function FileUploader({ onUploadComplete }: FileUploaderProps) {
                       {file.status === 'error' && <span className="text-red-400">✗</span>}
                       {file.name}
                     </div>
-                    <div className="text-xs text-gray-400">
+                    <div className="text-xs text-gray-300">
                       {file.status === 'success' && file.plays && `${file.plays.toLocaleString()} plays`}
                       {file.status === 'error' && file.error && (
                         <span className="text-red-400">{file.error}</span>
@@ -428,25 +428,25 @@ export default function FileUploader({ onUploadComplete }: FileUploaderProps) {
             {/* Summary Stats */}
             <div className="grid grid-cols-2 gap-4 max-w-md mx-auto text-left mb-6">
               <div className="bg-zinc-800/50 p-4 rounded-lg">
-                <div className="text-sm text-gray-400">Total Plays</div>
+                <div className="text-sm text-gray-300">Total Plays</div>
                 <div className="text-2xl font-bold text-white">
                   {uploadState.totalPlays.toLocaleString()}
                 </div>
               </div>
               <div className="bg-zinc-800/50 p-4 rounded-lg">
-                <div className="text-sm text-gray-400">Unique Tracks</div>
+                <div className="text-sm text-gray-300">Unique Tracks</div>
                 <div className="text-2xl font-bold text-white">
                   {uploadState.uniqueTracks.toLocaleString()}
                 </div>
               </div>
               <div className="bg-zinc-800/50 p-4 rounded-lg">
-                <div className="text-sm text-gray-400">Artists</div>
+                <div className="text-sm text-gray-300">Artists</div>
                 <div className="text-2xl font-bold text-white">
                   {uploadState.uniqueArtists.toLocaleString()}
                 </div>
               </div>
               <div className="bg-zinc-800/50 p-4 rounded-lg">
-                <div className="text-sm text-gray-400">Files Processed</div>
+                <div className="text-sm text-gray-300">Files Processed</div>
                 <div className="text-2xl font-bold text-white">
                   {fileProgress.filter(f => f.status === 'success').length}/{uploadState.fileCount}
                 </div>
@@ -473,7 +473,7 @@ export default function FileUploader({ onUploadComplete }: FileUploaderProps) {
               </details>
             )}
 
-            <div className="mb-4 text-sm text-gray-400">
+            <div className="mb-4 text-sm text-gray-300">
               Date range: {uploadState.dateRange}
             </div>
 
@@ -489,7 +489,7 @@ export default function FileUploader({ onUploadComplete }: FileUploaderProps) {
             <h3 className="text-2xl font-bold text-red-400 mb-2">
               Upload Failed
             </h3>
-            <p className="text-gray-400 mb-4">
+            <p className="text-gray-300 mb-4">
               {uploadState.message}
             </p>
 
@@ -533,7 +533,7 @@ export default function FileUploader({ onUploadComplete }: FileUploaderProps) {
         <p className="text-sm text-gray-300 mb-3">
           Upload your <span className="font-mono text-blue-300">Streaming_History_Audio_*.json</span> files from your Spotify privacy export.
         </p>
-        <ul className="text-sm text-gray-400 space-y-1">
+        <ul className="text-sm text-gray-300 space-y-1">
           <li>• You can upload multiple files at once</li>
           <li>• Files must be from <strong>Extended Streaming History</strong> (not Basic API data)</li>
           <li>• Request your data at <a href="https://www.spotify.com/account/privacy/" target="_blank" className="text-blue-400 hover:underline">spotify.com/account/privacy</a></li>

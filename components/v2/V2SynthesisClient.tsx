@@ -264,11 +264,11 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
                   <div className="grid grid-cols-2 gap-4 mb-6 px-4">
                     <div className="bg-zinc-900/50 border border-zinc-700 p-4 rounded-lg">
                       <div className="text-2xl font-bold text-white">{stats.totalPlays.toLocaleString()}</div>
-                      <div className="text-sm text-gray-400">Total Plays</div>
+                      <div className="text-sm text-gray-300">Total Plays</div>
                     </div>
                     <div className="bg-zinc-900/50 border border-zinc-700 p-4 rounded-lg">
                       <div className="text-2xl font-bold text-white">{stats.uniqueTracks.toLocaleString()}</div>
-                      <div className="text-sm text-gray-400">Unique Tracks</div>
+                      <div className="text-sm text-gray-300">Unique Tracks</div>
                     </div>
                   </div>
                 )}
@@ -363,7 +363,7 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
                 onClick={() => setLoadingScreen(Math.max(0, loadingScreen - 1))}
                 disabled={loadingScreen === 0}
                 className={`text-2xl transition-all ${
-                  loadingScreen === 0 ? 'text-gray-700 cursor-not-allowed' : 'text-gray-400 hover:text-white'
+                  loadingScreen === 0 ? 'text-gray-700 cursor-not-allowed' : 'text-gray-300 hover:text-white'
                 }`}
                 aria-label="Previous screen"
               >
@@ -391,7 +391,7 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
                 onClick={() => setLoadingScreen(Math.min(2, loadingScreen + 1))}
                 disabled={loadingScreen === 2}
                 className={`text-2xl transition-all ${
-                  loadingScreen === 2 ? 'text-gray-700 cursor-not-allowed' : 'text-gray-400 hover:text-white'
+                  loadingScreen === 2 ? 'text-gray-700 cursor-not-allowed' : 'text-gray-300 hover:text-white'
                 }`}
                 aria-label="Next screen"
               >
@@ -420,7 +420,7 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
           <h2 className="text-2xl font-bold text-white mb-2">
             {isRateLimit ? 'Rate Limit Reached' : 'Oops! Synthesis Failed'}
           </h2>
-          <p className="text-gray-400 mb-6">{error}</p>
+          <p className="text-gray-300 mb-6">{error}</p>
 
           {isRateLimit ? (
             <div className="space-y-4">
@@ -458,7 +458,7 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
       <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
         <div className="max-w-2xl text-center">
           <h2 className="text-3xl font-bold mb-4">Unable to Calculate Music Type</h2>
-          <p className="text-gray-400 mb-6">
+          <p className="text-gray-300 mb-6">
             We couldn't calculate your music type from the provided data.
             This might be due to insufficient listening history.
           </p>
@@ -514,7 +514,7 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
                 ))}
               </div>
               <div className="mt-8 bg-zinc-900/50 border border-zinc-700 rounded-2xl p-6">
-                <p className="text-gray-400">
+                <p className="text-gray-300">
                   More detailed metrics and visualizations coming soon!
                 </p>
               </div>

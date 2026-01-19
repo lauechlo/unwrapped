@@ -4,7 +4,7 @@
  * Defines the core types for the 4-dimensional music typing system:
  * - Temporal (D/N): Diurnal vs Nocturnal
  * - Processing (L/S): Looper vs Skimmer
- * - Discovery (E/L): Explorer vs Loyalist
+ * - Discovery (E/R): Explorer vs Rooted
  * - Attachment (A/F): Anchored vs Fluid
  */
 
@@ -32,7 +32,7 @@ export type ProcessingType = 'L' | 'S'; // Looper or Skimmer
 /**
  * Discovery dimension: What you seek
  */
-export type DiscoveryType = 'E' | 'L'; // Explorer or Loyalist
+export type DiscoveryType = 'E' | 'R'; // Explorer or Rooted
 
 /**
  * Attachment dimension: How you bond
@@ -45,13 +45,31 @@ export type AttachmentType = 'A' | 'F'; // Anchored or Fluid
 export type DimensionCode = TemporalType | ProcessingType | DiscoveryType | AttachmentType;
 
 /**
- * 4-letter type code (e.g., "NLEA", "DSLA")
+ * 4-letter type code (e.g., "NLEA", "DSRA")
  */
 export type TypeCode = `${TemporalType}${ProcessingType}${DiscoveryType}${AttachmentType}`;
 
 // ============================================================================
 // Dimension Results
 // ============================================================================
+
+/**
+ * Concrete example for evidence display
+ */
+export interface ConcreteExample {
+  label: string;      // "Peak Hour", "Most Replayed"
+  value: string;      // "11pm", "we can't be friends"
+  detail: string;     // "1,247 plays", "53× plays"
+  emphasis?: string;  // Optional emphasis text
+}
+
+/**
+ * Evidence data for dimension
+ */
+export interface DimensionEvidence {
+  topExamples: ConcreteExample[];
+  insights?: string[];
+}
 
 /**
  * Base dimension result with metadata
@@ -80,6 +98,9 @@ export interface DimensionResult {
 
   /** Whether there was sufficient data to calculate */
   hasSufficientData: boolean;
+
+  /** Concrete evidence examples (optional, populated by evidence extractor) */
+  evidence?: DimensionEvidence;
 }
 
 /**
@@ -144,10 +165,7 @@ export interface TypeResult {
   /** Array of 4 dimension results in order: T, P, D, A */
   dimensions: [TemporalResult, ProcessingResult, DiscoveryResult, AttachmentResult];
 
-  /** Population rarity percentage (1-100) */
-  rarity: number;
-
-  /** One-line type description (e.g., "The Night Owl Explorer") */
+  /** One-line type description (e.g., "Comfort Zone Champion") */
   description: string;
 
   /** Overall confidence (0-1) - average of dimension confidences */

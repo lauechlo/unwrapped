@@ -19,48 +19,13 @@ import {
   calculateAttachment,
   checkDataSufficiency,
 } from './thresholds';
-import { getShortTypeDescription } from './dimensions';
-
-// ============================================================================
-// Type Rarity Estimates
-// ============================================================================
-
-/**
- * Estimated population percentages for each type
- * Based on planned distribution from V2.5 pivot plan
- *
- * These will be replaced with real data once we have enough users
- */
-const TYPE_RARITY_MAP: Record<string, number> = {
-  // Common types (20-30%)
-  DSLA: 28, // The Steady Listener
-  DLEA: 22, // The Devoted Fan
-
-  // Moderately common (10-20%)
-  NSLA: 18, // The Night Owl Loyalist
-  DLEF: 15, // The Curious Mind
-  DSEL: 12, // The Daytime Wanderer
-
-  // Less common (5-10%)
-  NLEA: 8, // The Night Owl Explorer
-  DSEF: 7, // The Free Spirit
-  NSEA: 6, // The Night Adventurer
-
-  // Rare (1-5%)
-  NSEF: 4, // The Nocturnal Nomad
-  NLEF: 3, // The Night Wanderer
-
-  // Very rare (<1%)
-  // (other combinations)
-};
-
-/**
- * Get rarity percentage for a type code (1-100)
- * Lower = more rare
- */
-function getTypeRarity(typeCode: string): number {
-  return TYPE_RARITY_MAP[typeCode] || 5; // Default: 5% for unknown types
-}
+import { getTypeName } from './typeNames';
+import {
+  extractTemporalEvidence,
+  extractProcessingEvidence,
+  extractDiscoveryEvidence,
+  extractAttachmentEvidence,
+} from './evidence';
 
 // ============================================================================
 // Main Type Calculation
@@ -79,11 +44,17 @@ export function calculateMusicType(sot: SourceOfTruth): TypeResult {
   const discovery = calculateDiscovery(sot);
   const attachment = calculateAttachment(sot);
 
+  // Extract evidence for each dimension
+  temporal.evidence = extractTemporalEvidence(sot, temporal);
+  processing.evidence = extractProcessingEvidence(sot, processing);
+  discovery.evidence = extractDiscoveryEvidence(sot, discovery);
+  attachment.evidence = extractAttachmentEvidence(sot, attachment);
+
   // Construct 4-letter type code
   const typeCode: TypeCode = `${temporal.code}${processing.code}${discovery.code}${attachment.code}`;
 
-  // Get type description
-  const description = getShortTypeDescription(typeCode);
+  // Get Gen Z slang type name (e.g., "Comfort Zone Champion", "Feral for Favorites")
+  const description = getTypeName(typeCode);
 
   // Calculate overall confidence (average of dimension confidences)
   const confidence = (
@@ -100,13 +71,9 @@ export function calculateMusicType(sot: SourceOfTruth): TypeResult {
     discovery.hasSufficientData &&
     attachment.hasSufficientData;
 
-  // Get rarity
-  const rarity = getTypeRarity(typeCode);
-
   return {
     code: typeCode,
     dimensions: [temporal, processing, discovery, attachment],
-    rarity,
     description,
     confidence,
     isComplete,
@@ -198,10 +165,10 @@ export function calculateTypeCompatibility(type1: TypeCode, type2: TypeCode): nu
     score += 5;
   }
 
-  // Example: Explorer + Loyalist (balance)
+  // Example: Explorer + Rooted (balance)
   if (
-    (type1[2] === 'E' && type2[2] === 'L') ||
-    (type1[2] === 'L' && type2[2] === 'E')
+    (type1[2] === 'E' && type2[2] === 'R') ||
+    (type1[2] === 'R' && type2[2] === 'E')
   ) {
     score += 5;
   }
@@ -214,8 +181,22 @@ export function calculateTypeCompatibility(type1: TypeCode, type2: TypeCode): nu
  * Returns array of [typeCode, compatibilityScore] sorted by score
  */
 export function getMostCompatibleTypes(typeCode: TypeCode, limit = 5): Array<[TypeCode, number]> {
-  // Get all possible types
-  const allTypes = Object.keys(TYPE_RARITY_MAP) as TypeCode[];
+  // Generate all possible type codes programmatically
+  const temporalCodes = ['D', 'N'] as const;
+  const processingCodes = ['L', 'S'] as const;
+  const discoveryCodes = ['E', 'R'] as const;
+  const attachmentCodes = ['A', 'F'] as const;
+
+  const allTypes: TypeCode[] = [];
+  for (const t of temporalCodes) {
+    for (const p of processingCodes) {
+      for (const d of discoveryCodes) {
+        for (const a of attachmentCodes) {
+          allTypes.push(`${t}${p}${d}${a}` as TypeCode);
+        }
+      }
+    }
+  }
 
   // Calculate compatibility with each type
   const compatibilities = allTypes
@@ -273,7 +254,7 @@ export function isValidTypeCode(typeCode: string): typeCode is TypeCode {
   return (
     (t === 'D' || t === 'N') &&
     (p === 'L' || p === 'S') &&
-    (d === 'E' || d === 'L') &&
+    (d === 'E' || d === 'R') &&
     (a === 'A' || a === 'F')
   );
 }
@@ -293,6 +274,5 @@ export {
   calculateAttachment,
 
   // Utilities
-  getTypeRarity,
   checkDataSufficiency,
 };

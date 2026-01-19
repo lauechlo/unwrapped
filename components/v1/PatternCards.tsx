@@ -63,7 +63,7 @@ export default function PatternCards({ cards }: { cards: PatternCard[] }) {
 
                 {/* Callout - Gen Z language */}
                 <div className="bg-zinc-950/50 border border-zinc-800 p-4 md:p-6 rounded-lg md:rounded-xl mb-3 md:mb-4">
-                  <p className="text-base md:text-lg italic text-gray-400 leading-relaxed">
+                  <p className="text-base md:text-lg italic text-gray-300 leading-relaxed">
                     {card.callout}
                   </p>
                 </div>

@@ -104,7 +104,7 @@ export default function NPSWidget({ onComplete }: NPSWidgetProps) {
               <div className="flex items-start justify-between">
                 <div>
                   <h3 className="text-sm font-bold text-white mb-1">Quick Question</h3>
-                  <p className="text-xs text-gray-400">Help us improve Unwrapped</p>
+                  <p className="text-xs text-gray-300">Help us improve Unwrapped</p>
                 </div>
                 <button
                   onClick={handleSkip}
@@ -150,7 +150,7 @@ export default function NPSWidget({ onComplete }: NPSWidgetProps) {
                 <div className="text-center">
                   <div className="inline-block bg-purple-500/20 px-4 py-2 rounded-full mb-2">
                     <span className="text-2xl font-bold text-white">{score}</span>
-                    <span className="text-xs text-gray-400 ml-1">/10</span>
+                    <span className="text-xs text-gray-300 ml-1">/10</span>
                   </div>
                   <p className="text-sm text-white">
                     {getFollowUpMessage(score)}
@@ -191,7 +191,7 @@ export default function NPSWidget({ onComplete }: NPSWidgetProps) {
           <div className="p-6 text-center">
             <div className="text-4xl mb-3">🎉</div>
             <h3 className="text-lg font-bold text-white mb-2">Thank You!</h3>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-gray-300">
               Your feedback helps us improve music psychology research
             </p>
           </div>

@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://unwrapped.app",
+    url: "https://unwrapped.fm",
     siteName: "Unwrapped",
     title: "Unwrapped - Your Spotify Listening DNA",
     description: "Get psychology-driven insights about your Spotify listening habits. AI-powered analysis + Instagram Stories-ready cards.",
@@ -48,9 +48,9 @@ export const metadata: Metadata = {
   },
 
   // Additional meta
-  metadataBase: new URL("https://unwrapped.app"),
+  metadataBase: new URL("https://unwrapped.fm"),
   alternates: {
-    canonical: "https://unwrapped.app",
+    canonical: "https://unwrapped.fm",
   },
 
   // Theme colors
