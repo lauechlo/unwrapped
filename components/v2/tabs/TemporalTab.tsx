@@ -12,13 +12,10 @@ export default function TemporalTab({ plays }: TemporalTabProps) {
       {/* Temporal Heatmap - has its own header */}
       <TemporalHeatmap uploadedData={plays} />
 
-      {/* Additional Context */}
-      <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-6 max-w-3xl mx-auto">
-        <h4 className="text-sm font-bold text-blue-400 mb-2 uppercase tracking-wide">
-          💡 About This Heatmap
-        </h4>
-        <p className="text-sm text-gray-300 leading-relaxed">
-          This shows your general listening habits across all time periods. Individual patterns in the Patterns tab may focus on specific moments or behaviors within this broader rhythm.
+      {/* Context */}
+      <div className="bg-zinc-900/50 border border-zinc-700 rounded-lg p-5 max-w-3xl mx-auto">
+        <p className="text-sm text-gray-400">
+          Darker squares = more listening. Times are in your local timezone.
         </p>
       </div>
     </div>

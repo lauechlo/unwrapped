@@ -188,10 +188,10 @@ export default function ExtendedResultsPage() {
         <div className="text-center">
           <div className="text-6xl mb-4 animate-pulse">🎵</div>
           <h2 className="text-3xl font-bold mb-2">
-            {status === 'loading' ? 'Loading your data...' : 'Analyzing patterns...'}
+            {status === 'loading' ? 'Loading...' : 'Finding patterns...'}
           </h2>
           <p className="text-gray-400">
-            Running 9 behavioral detectors on your listening history
+            This might take a moment
           </p>
         </div>
       </div>
@@ -222,10 +222,9 @@ export default function ExtendedResultsPage() {
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
         <div className="max-w-2xl mx-auto text-center p-8">
           <div className="text-6xl mb-4">🔍</div>
-          <h2 className="text-3xl font-bold mb-4">No Patterns Detected</h2>
+          <h2 className="text-3xl font-bold mb-4">Need More Data</h2>
           <p className="text-gray-400 mb-8">
-            Your listening data didn't meet the thresholds for our detectors.
-            Try uploading more history or different time periods.
+            Not enough listening history to find patterns. Try uploading more files.
           </p>
           <button
             onClick={() => router.push('/extended')}

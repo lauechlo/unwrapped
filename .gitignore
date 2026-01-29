@@ -42,4 +42,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-.vercel
+# temp/debug files
+tmpclaude-*
+*.tmp
+*-cwd
+
+# test files
+test-*.html

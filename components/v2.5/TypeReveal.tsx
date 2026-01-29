@@ -41,7 +41,7 @@ export default function TypeReveal({ typeResult }: TypeRevealProps) {
 
         {/* Small Header */}
         <div className="text-sm uppercase tracking-widest text-gray-300 mb-6">
-          Your Music Type
+          Your Type
         </div>
 
         {/* Type Code - Large Display */}
@@ -106,11 +106,84 @@ export default function TypeReveal({ typeResult }: TypeRevealProps) {
         )}
       </div>
 
-      {/* Your Four Dimensions - Full Cards */}
-      <div className="mt-12 space-y-6">
-        <h3 className="text-2xl md:text-3xl font-bold text-white text-center mb-8">
-          Your Four Dimensions
+      {/* How to Read Your Type */}
+      <div className="mt-12 bg-zinc-900/50 border border-zinc-700 rounded-2xl p-6 md:p-8">
+        <h3 className="text-lg font-bold text-white mb-6 text-center">
+          What Each Letter Means
         </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Temporal */}
+          <div className="bg-zinc-800/50 rounded-lg p-4 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+              <span className="text-xl font-black text-white">{code[0]}</span>
+            </div>
+            <div className="flex-1">
+              <div className="font-bold text-white">
+                {code[0] === 'D' ? 'Diurnal' : 'Nocturnal'}
+              </div>
+              <div className="text-sm text-gray-400">
+                {code[0] === 'D' ? 'You listen mostly during the day' : 'You listen mostly at night'}
+              </div>
+            </div>
+          </div>
+
+          {/* Processing */}
+          <div className="bg-zinc-800/50 rounded-lg p-4 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0">
+              <span className="text-xl font-black text-white">{code[1]}</span>
+            </div>
+            <div className="flex-1">
+              <div className="font-bold text-white">
+                {code[1] === 'L' ? 'Looper' : 'Skimmer'}
+              </div>
+              <div className="text-sm text-gray-400">
+                {code[1] === 'L' ? 'You replay songs you love' : 'You move through songs quickly'}
+              </div>
+            </div>
+          </div>
+
+          {/* Discovery */}
+          <div className="bg-zinc-800/50 rounded-lg p-4 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center flex-shrink-0">
+              <span className="text-xl font-black text-white">{code[2]}</span>
+            </div>
+            <div className="flex-1">
+              <div className="font-bold text-white">
+                {code[2] === 'E' ? 'Explorer' : 'Rooted'}
+              </div>
+              <div className="text-sm text-gray-400">
+                {code[2] === 'E' ? 'You actively seek new artists' : 'You stick with familiar favorites'}
+              </div>
+            </div>
+          </div>
+
+          {/* Attachment */}
+          <div className="bg-zinc-800/50 rounded-lg p-4 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center flex-shrink-0">
+              <span className="text-xl font-black text-white">{code[3]}</span>
+            </div>
+            <div className="flex-1">
+              <div className="font-bold text-white">
+                {code[3] === 'A' ? 'Anchored' : 'Fluid'}
+              </div>
+              <div className="text-sm text-gray-400">
+                {code[3] === 'A' ? 'Your favorites stay the same over time' : 'Your favorites change often'}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* The Four Dimensions - Full Cards */}
+      <div className="mt-16 space-y-6">
+        <div className="text-center mb-10">
+          <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
+            Your Data Breakdown
+          </h3>
+          <p className="text-gray-400 max-w-xl mx-auto">
+            Here's the evidence behind each dimension of your type
+          </p>
+        </div>
         {dimensions.map((dimension, index) => (
           <DimensionDetailCard
             key={`${dimension.code}-${index}`}
@@ -119,10 +192,10 @@ export default function TypeReveal({ typeResult }: TypeRevealProps) {
         ))}
       </div>
 
-      {/* About Your Type Section */}
+      {/* Footer Note */}
       <div className="mt-12 text-center">
-        <p className="text-gray-300 text-sm">
-          Your type is calculated from your actual listening data—no surveys, no guessing.
+        <p className="text-gray-500 text-sm">
+          Calculated from your actual listening history
         </p>
       </div>
     </div>

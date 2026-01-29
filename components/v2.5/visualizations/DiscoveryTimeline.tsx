@@ -32,7 +32,8 @@ export default function DiscoveryTimeline({ monthlyData }: DiscoveryTimelineProp
 
   // Calculate points for line
   const points = sortedData.map((data, idx) => {
-    const x = (idx / (sortedData.length - 1)) * 100;
+    // Guard against single data point (avoid division by zero)
+    const x = sortedData.length === 1 ? 50 : (idx / (sortedData.length - 1)) * 100;
     const y = 100 - ((data.newArtists / maxArtists) * 100);
     return { x, y, data };
   });

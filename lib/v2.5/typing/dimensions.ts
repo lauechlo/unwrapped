@@ -17,19 +17,19 @@ import type { DimensionDefinition } from './types';
 export const TEMPORAL_DIMENSION: DimensionDefinition = {
   category: 'temporal',
   name: 'Temporal',
-  measures: 'When you listen to music',
+  measures: 'When you listen',
   options: [
     {
       code: 'D',
       label: 'Diurnal',
-      description: 'You listen primarily during daytime hours (before 9pm)',
+      description: 'Most of your listening happens during the day, before 9pm',
       threshold: 0.5, // <50% night listening
       baseline: 0.34, // Average person: 34% night listening
     },
     {
       code: 'N',
       label: 'Nocturnal',
-      description: 'You listen primarily during nighttime hours (after 9pm)',
+      description: 'Most of your listening happens at night, after 9pm',
       threshold: 0.5, // >50% night listening
       baseline: 0.34,
     },
@@ -47,19 +47,19 @@ export const TEMPORAL_DIMENSION: DimensionDefinition = {
 export const PROCESSING_DIMENSION: DimensionDefinition = {
   category: 'processing',
   name: 'Processing',
-  measures: 'How you engage with tracks',
+  measures: 'How you listen',
   options: [
     {
       code: 'L',
       label: 'Looper',
-      description: 'You replay your favorite tracks repeatedly',
+      description: 'You replay songs you love, often many times in a row',
       threshold: 1.5, // >1.5x average replay rate
       baseline: 1.0, // 1.0 = average replay rate
     },
     {
       code: 'S',
       label: 'Skimmer',
-      description: 'You move through tracks quickly without replaying',
+      description: 'You move through songs quickly, rarely replaying',
       threshold: 1.5, // <1.5x average replay rate
       baseline: 1.0,
     },
@@ -77,19 +77,19 @@ export const PROCESSING_DIMENSION: DimensionDefinition = {
 export const DISCOVERY_DIMENSION: DimensionDefinition = {
   category: 'discovery',
   name: 'Discovery',
-  measures: 'How you discover new music',
+  measures: 'What you seek',
   options: [
     {
       code: 'E',
       label: 'Explorer',
-      description: 'You constantly seek out new artists and genres',
+      description: 'You actively seek new artists and expand your taste',
       threshold: 0.3, // >30% unique artists
       baseline: 0.25, // Average: 25% unique artists
     },
     {
       code: 'R',
       label: 'Rooted',
-      description: 'You stick with familiar artists and repeat favorites',
+      description: 'You stick with artists you know and trust',
       threshold: 0.3, // <30% unique artists
       baseline: 0.25,
     },
@@ -107,19 +107,19 @@ export const DISCOVERY_DIMENSION: DimensionDefinition = {
 export const ATTACHMENT_DIMENSION: DimensionDefinition = {
   category: 'attachment',
   name: 'Attachment',
-  measures: 'How you bond with artists',
+  measures: 'How you bond',
   options: [
     {
       code: 'A',
       label: 'Anchored',
-      description: 'You maintain long-term loyalty to your top artists',
+      description: 'Your favorites stay your favorites for months or years',
       threshold: 6, // >6 months with same top artist
       baseline: 4, // Average: 4 months
     },
     {
       code: 'F',
       label: 'Fluid',
-      description: 'Your top artists change frequently',
+      description: 'Your top artists rotate frequently',
       threshold: 6, // <6 months with same top artist
       baseline: 4,
     },

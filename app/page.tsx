@@ -42,7 +42,7 @@ export default function Home() {
             "@context": "https://schema.org",
             "@type": "WebApplication",
             "name": "Unwrapped",
-            "description": "Psychology-driven Spotify listening analysis with AI-powered insights and shareable Instagram Stories cards",
+            "description": "Discover what your Spotify listening habits reveal about you. Get personalized insights and shareable cards.",
             "url": "https://unwrapped.fm",
             "applicationCategory": "MusicApplication",
             "offers": {
@@ -134,16 +134,16 @@ export default function Home() {
               {/* Feature cards */}
               <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
                 <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
-                  <div className="text-pink-400 font-semibold mb-1">30+ Detectors</div>
-                  <div className="text-xs text-gray-500">Behavioral patterns, coping songs, rituals</div>
+                  <div className="text-pink-400 font-semibold mb-1">30+ Patterns</div>
+                  <div className="text-xs text-gray-500">Replay habits, comfort songs, listening rituals</div>
                 </div>
                 <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
-                  <div className="text-purple-400 font-semibold mb-1">AI Synthesis</div>
-                  <div className="text-xs text-gray-500">Claude-powered insights with proof</div>
+                  <div className="text-purple-400 font-semibold mb-1">Real Evidence</div>
+                  <div className="text-xs text-gray-500">Your actual songs and artists, with receipts</div>
                 </div>
                 <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
                   <div className="text-blue-400 font-semibold mb-1">Share Cards</div>
-                  <div className="text-xs text-gray-500">Instagram Stories-ready (1080×1920)</div>
+                  <div className="text-xs text-gray-500">Ready for Instagram Stories</div>
                 </div>
               </div>
             </div>

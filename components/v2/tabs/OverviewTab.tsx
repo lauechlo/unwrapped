@@ -42,7 +42,7 @@ export default function OverviewTab({
         </p>
 
         <div className="text-gray-500 text-sm mt-4">
-          Scroll down or use tabs above to explore your patterns ↓
+          Use the tabs above to explore ↑
         </div>
       </section>
 

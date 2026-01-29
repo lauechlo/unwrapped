@@ -41,29 +41,29 @@ export default function ExtendedPage() {
       <section className="py-20 px-8 bg-gradient-to-b from-purple-950/20 to-black">
         <div className="max-w-6xl mx-auto text-center">
           <div className="inline-block bg-purple-500/20 border border-purple-500/40 px-4 py-2 rounded-full text-sm mb-6">
-            ✨ Extended Streaming History Analysis
+            Full Listening History
           </div>
 
           <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-            Unwrapped V2
+            Unwrapped
           </h1>
 
           <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-            Analyze your <strong className="text-purple-400">complete Spotify history</strong> with advanced behavioral patterns
+            See what your <strong className="text-purple-400">Spotify history</strong> says about you
           </p>
 
           <div className="flex flex-wrap justify-center gap-4 mb-12">
             <div className="bg-zinc-900/50 border border-zinc-700 px-6 py-3 rounded-lg">
-              <div className="text-sm text-gray-400">100% Client-Side</div>
-              <div className="text-lg font-bold text-green-400">No OAuth Required</div>
+              <div className="text-sm text-gray-400">No Login Needed</div>
+              <div className="text-lg font-bold text-green-400">Just upload your files</div>
             </div>
             <div className="bg-zinc-900/50 border border-zinc-700 px-6 py-3 rounded-lg">
-              <div className="text-sm text-gray-400">Advanced Patterns</div>
-              <div className="text-lg font-bold text-purple-400">9 V2 Detectors</div>
+              <div className="text-sm text-gray-400">30+ Patterns</div>
+              <div className="text-lg font-bold text-purple-400">From your real data</div>
             </div>
             <div className="bg-zinc-900/50 border border-zinc-700 px-6 py-3 rounded-lg">
-              <div className="text-sm text-gray-400">Privacy First</div>
-              <div className="text-lg font-bold text-blue-400">Never Stored</div>
+              <div className="text-sm text-gray-400">Stays Private</div>
+              <div className="text-lg font-bold text-blue-400">Nothing leaves your browser</div>
             </div>
           </div>
         </div>
@@ -88,80 +88,36 @@ export default function ExtendedPage() {
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 opacity-0
                              group-hover:opacity-20 rounded-xl transition-opacity blur-xl" />
               </button>
-              <p className="text-sm text-gray-500 mt-3">
-                This will run 9 advanced behavioral pattern detectors on your data
-              </p>
             </div>
           )}
         </div>
       </section>
 
-      {/* Why V2? Section */}
+      {/* Why Full History Section */}
       <section className="py-16 px-8 bg-zinc-950">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
-            Why Use Extended History?
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center">
+            Your Full History = Better Insights
           </h2>
+          <p className="text-gray-400 text-center mb-12 max-w-2xl mx-auto">
+            Spotify's data export includes everything—not just your top 50
+          </p>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* V1 (API) */}
-            <div className="bg-zinc-900/50 border border-zinc-700 rounded-xl p-8">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="text-3xl">🔌</span>
-                <h3 className="text-2xl font-bold">V1 (Spotify API)</h3>
-              </div>
-              <div className="space-y-3">
-                <div className="flex items-start gap-2">
-                  <span className="text-green-400">✓</span>
-                  <span className="text-gray-300">Instant results (OAuth login)</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-green-400">✓</span>
-                  <span className="text-gray-300">Top 50 tracks/artists snapshots</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-red-400">✗</span>
-                  <span className="text-gray-300">No skip data, completion rates, or search behavior</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-red-400">✗</span>
-                  <span className="text-gray-300">Some users experience OAuth failures</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-red-400">✗</span>
-                  <span className="text-gray-300">Limited to API-provided data</span>
-                </div>
-              </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="bg-gradient-to-br from-purple-900/20 to-pink-900/20 border border-purple-500/40 rounded-xl p-6 text-center">
+              <div className="text-4xl mb-3">📊</div>
+              <h3 className="text-lg font-bold text-purple-400 mb-2">Every Play</h3>
+              <p className="text-sm text-gray-300">Years of listening data, not just recent favorites</p>
             </div>
-
-            {/* V2 (Extended) */}
-            <div className="bg-gradient-to-br from-purple-900/20 to-pink-900/20 border-2 border-purple-500/40 rounded-xl p-8">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="text-3xl">🚀</span>
-                <h3 className="text-2xl font-bold text-purple-400">V2 (Extended History)</h3>
-              </div>
-              <div className="space-y-3">
-                <div className="flex items-start gap-2">
-                  <span className="text-green-400">✓</span>
-                  <span className="text-gray-300">100% reliable (no OAuth)</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-green-400">✓</span>
-                  <span className="text-gray-300">Complete listening history</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-green-400">✓</span>
-                  <span className="text-gray-300">Skip rates, completion tracking, search intent</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-green-400">✓</span>
-                  <span className="text-gray-300">10 V2-exclusive behavioral detectors</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-yellow-400">⚠</span>
-                  <span className="text-gray-300">Requires 30-day wait for Spotify export</span>
-                </div>
-              </div>
+            <div className="bg-gradient-to-br from-purple-900/20 to-pink-900/20 border border-purple-500/40 rounded-xl p-6 text-center">
+              <div className="text-4xl mb-3">⏭️</div>
+              <h3 className="text-lg font-bold text-purple-400 mb-2">Skip Behavior</h3>
+              <p className="text-sm text-gray-300">Songs you skip, songs you finish, songs you replay</p>
+            </div>
+            <div className="bg-gradient-to-br from-purple-900/20 to-pink-900/20 border border-purple-500/40 rounded-xl p-6 text-center">
+              <div className="text-4xl mb-3">🔍</div>
+              <h3 className="text-lg font-bold text-purple-400 mb-2">Search Intent</h3>
+              <p className="text-sm text-gray-300">Music you searched for vs. let autoplay</p>
             </div>
           </div>
         </div>
@@ -252,48 +208,48 @@ export default function ExtendedPage() {
       <section className="py-16 px-8 bg-zinc-950">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">
-            9 Advanced Behavioral Detectors
+            What We Look For
           </h2>
 
           <div className="grid md:grid-cols-2 gap-6">
             {[
               {
-                name: 'The Explorer',
+                name: 'Discovery',
                 icon: '🔍',
-                description: 'Detects weeks with high new artist discovery velocity',
-                family: 'Discovery & Diversity'
+                description: 'Weeks when you found lots of new artists',
+                family: 'New music'
               },
               {
-                name: 'The Loyalist',
+                name: 'Loyalty',
                 icon: '💎',
-                description: 'Finds sustained artist devotion over multiple weeks',
-                family: 'Loyalty & Retention'
+                description: 'Artists you keep coming back to',
+                family: 'Favorites'
               },
               {
-                name: 'Skip Velocity',
+                name: 'Skips',
                 icon: '⚡',
-                description: 'Identifies instant rejection and extreme skip patterns',
-                family: 'Engagement',
+                description: 'Songs you skip within seconds',
+                family: 'Taste',
                 exclusive: true
               },
               {
-                name: 'The Searcher',
+                name: 'Search',
                 icon: '🎯',
-                description: 'Reveals intentional search vs. passive listening',
-                family: 'Cognitive Patterns',
+                description: 'Music you looked for vs. let play',
+                family: 'Intent',
                 exclusive: true
               },
               {
-                name: 'The Looper',
+                name: 'Replays',
                 icon: '🔁',
-                description: 'Detects consecutive track repetition (emotional processing)',
-                family: 'Ritual & Repetition'
+                description: 'Songs you play on repeat',
+                family: 'Comfort'
               },
               {
-                name: 'Completion Loyalist',
+                name: 'Completion',
                 icon: '✅',
-                description: 'Tracks sustained completion rates over time',
-                family: 'Attention & Persistence',
+                description: 'How often you finish songs',
+                family: 'Attention',
                 exclusive: true
               },
             ].map((detector, i) => (
@@ -314,7 +270,7 @@ export default function ExtendedPage() {
                       <h3 className="font-bold text-lg">{detector.name}</h3>
                       {detector.exclusive && (
                         <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full border border-purple-500/40">
-                          V2 Exclusive
+                          Extended only
                         </span>
                       )}
                     </div>
@@ -329,7 +285,7 @@ export default function ExtendedPage() {
           </div>
 
           <p className="text-center text-gray-400 mt-8">
-            ...plus 3 more from the existing detector suite adapted for extended history data
+            ...and more
           </p>
         </div>
       </section>

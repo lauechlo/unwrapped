@@ -117,7 +117,7 @@ export function calculateCompatibility(type1: TypeCode, type2: TypeCode): Compat
   const dimensionLabels = [
     { D: 'Diurnal', N: 'Nocturnal' },
     { L: 'Looper', S: 'Skimmer' },
-    { L: 'Loyalist', E: 'Explorer' },
+    { E: 'Explorer', R: 'Rooted' },
     { A: 'Anchored', F: 'Fluid' },
   ];
 
@@ -145,8 +145,8 @@ export function calculateCompatibility(type1: TypeCode, type2: TypeCode): Compat
     score += 5;
   }
 
-  // Explorer + Loyalist balance (complementary)
-  if ((type1[2] === 'E' && type2[2] === 'L') || (type1[2] === 'L' && type2[2] === 'E')) {
+  // Explorer + Rooted balance (complementary)
+  if ((type1[2] === 'E' && type2[2] === 'R') || (type1[2] === 'R' && type2[2] === 'E')) {
     score += 5;
   }
 

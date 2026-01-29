@@ -120,7 +120,7 @@ export default function DimensionCard({ dimension, showDetails = false, dateRang
       {showDetails && (
         <div className="mt-4 pt-4 border-t border-zinc-700">
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-xs text-gray-500">Confidence</span>
+            <span className="text-xs text-gray-500">Match</span>
             <span className="text-xs font-bold text-gray-300">
               {Math.round(confidence * 100)}%
             </span>

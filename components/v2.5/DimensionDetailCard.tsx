@@ -75,9 +75,17 @@ export default function DimensionDetailCard({ dimension }: DimensionDetailCardPr
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <span className="text-3xl md:text-4xl">{theme.icon}</span>
-          <h3 className="text-2xl md:text-3xl font-bold text-white">
-            {dimension.label}
-          </h3>
+          <div>
+            <h3 className="text-2xl md:text-3xl font-bold text-white">
+              {dimension.label}
+            </h3>
+            <p className="text-sm text-gray-400">
+              {dimension.category === 'temporal' && 'When you listen'}
+              {dimension.category === 'processing' && 'How you engage with songs'}
+              {dimension.category === 'discovery' && 'How you find new music'}
+              {dimension.category === 'attachment' && 'How you bond with artists'}
+            </p>
+          </div>
         </div>
 
         {/* Confidence Badge */}
@@ -86,7 +94,7 @@ export default function DimensionDetailCard({ dimension }: DimensionDetailCardPr
           px-3 py-1 md:px-4 md:py-2 rounded-full
           text-xs font-bold
         `}>
-          {confidence}% confidence
+          {confidence}% match
         </div>
       </div>
 
@@ -96,7 +104,7 @@ export default function DimensionDetailCard({ dimension }: DimensionDetailCardPr
         p-4 md:p-6 rounded-r-lg mb-5
       `}>
         <div className="text-xs font-bold uppercase text-gray-300 mb-3">
-          📊 Data
+          The Numbers
         </div>
         <p className="text-white text-xl md:text-2xl font-bold mb-2">
           {dimension.metric}
@@ -106,20 +114,27 @@ export default function DimensionDetailCard({ dimension }: DimensionDetailCardPr
         </p>
       </div>
 
-      {/* Evidence Section - ALWAYS VISIBLE */}
+      {/* Evidence Section */}
       {dimension.evidence && dimension.evidence.topExamples.length > 0 && (
         <div className="mt-5 pt-5 border-t border-zinc-700">
           <button
             onClick={() => setEvidenceExpanded(!evidenceExpanded)}
             className={`
               w-full flex items-center justify-between
-              text-left ${theme.accent} font-semibold text-base md:text-lg
-              mb-4 hover:opacity-80 transition-opacity
+              text-left hover:opacity-80 transition-opacity
+              mb-4
             `}
           >
-            <span>📍 Evidence</span>
+            <div className="flex items-center gap-2">
+              <span className={`${theme.accent} font-semibold text-base md:text-lg`}>
+                {evidenceExpanded ? 'Hide Details' : 'See the Receipts'}
+              </span>
+              <span className="text-xs text-gray-500">
+                ({dimension.evidence.topExamples.length} examples)
+              </span>
+            </div>
             <span className={`
-              text-sm transition-transform duration-200
+              text-sm text-gray-400 transition-transform duration-200
               ${evidenceExpanded ? 'rotate-180' : ''}
             `}>
               ▼
@@ -202,7 +217,7 @@ export default function DimensionDetailCard({ dimension }: DimensionDetailCardPr
       {!dimension.hasSufficientData && (
         <div className="mt-5 bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
           <p className="text-xs text-yellow-200">
-            ⚠️ Limited data for this dimension. Upload all Extended History files for more accurate results.
+            Need more data for accuracy. Try uploading all your files.
           </p>
         </div>
       )}

@@ -60,7 +60,7 @@ export default function FileUploader({ onUploadComplete }: FileUploaderProps) {
       console.log('[FileUploader] No JSON files found');
       setUploadState({
         status: 'error',
-        message: 'Please upload JSON files only',
+        message: 'Only JSON files work here',
         fileCount: 0,
         totalPlays: 0,
         uniqueTracks: 0,
@@ -304,7 +304,7 @@ export default function FileUploader({ onUploadComplete }: FileUploaderProps) {
           <>
             <div className="text-6xl mb-4">📂</div>
             <h3 className="text-2xl font-bold text-white mb-2">
-              Drop Your Spotify Files Here
+              Drop your files here
             </h3>
             <p className="text-gray-300 mb-6">
               or click to browse
@@ -367,7 +367,7 @@ export default function FileUploader({ onUploadComplete }: FileUploaderProps) {
           <>
             <div className="text-6xl mb-4 animate-pulse">⚙️</div>
             <h3 className="text-2xl font-bold text-white mb-4">
-              Processing Files...
+              Reading...
             </h3>
 
             {/* Overall Progress Bar */}
@@ -422,7 +422,7 @@ export default function FileUploader({ onUploadComplete }: FileUploaderProps) {
           <>
             <div className="text-6xl mb-4">✅</div>
             <h3 className="text-2xl font-bold text-green-400 mb-4">
-              Files Loaded Successfully!
+              Got it!
             </h3>
 
             {/* Summary Stats */}
@@ -473,13 +473,9 @@ export default function FileUploader({ onUploadComplete }: FileUploaderProps) {
               </details>
             )}
 
-            <div className="mb-4 text-sm text-gray-300">
-              Date range: {uploadState.dateRange}
+            <div className="text-sm text-gray-400">
+              {uploadState.dateRange}
             </div>
-
-            <p className="text-xs text-gray-500">
-              Ready to analyze! Click "Analyze My Listening History" below.
-            </p>
           </>
         )}
 
@@ -528,16 +524,16 @@ export default function FileUploader({ onUploadComplete }: FileUploaderProps) {
       {/* File Format Help */}
       <div className="mt-6 bg-blue-500/10 border border-blue-500/30 rounded-xl p-6">
         <h4 className="text-lg font-bold text-blue-400 mb-2">
-          📋 Expected File Format
+          Which files?
         </h4>
         <p className="text-sm text-gray-300 mb-3">
-          Upload your <span className="font-mono text-blue-300">Streaming_History_Audio_*.json</span> files from your Spotify privacy export.
+          Upload your <span className="font-mono text-blue-300">Streaming_History_Audio_*.json</span> files from Spotify.
         </p>
         <ul className="text-sm text-gray-300 space-y-1">
           <li>• You can upload multiple files at once</li>
-          <li>• Files must be from <strong>Extended Streaming History</strong> (not Basic API data)</li>
+          <li>• Use files from Extended Streaming History</li>
           <li>• Request your data at <a href="https://www.spotify.com/account/privacy/" target="_blank" className="text-blue-400 hover:underline">spotify.com/account/privacy</a></li>
-          <li>• Usually takes 30 days to receive from Spotify</li>
+          <li>• Takes about 30 days from Spotify</li>
         </ul>
       </div>
     </div>

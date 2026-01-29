@@ -1,8 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import type { TypeCode } from '@/lib/v2.5/typing';
 import { getTypeInfo } from '@/lib/v2.5/typing/typeNames';
-import { calculateCompatibility } from '@/lib/v2.5/comparison';
+import { calculateCompatibility, generateComparisonLink } from '@/lib/v2.5/comparison';
 
 interface ComparisonResultsProps {
   userType: TypeCode;
@@ -14,9 +15,17 @@ interface ComparisonResultsProps {
  * Implements P1.2 from SHARE_AND_COMPARISON_FLOW_SPEC
  */
 export default function ComparisonResults({ userType, friendType }: ComparisonResultsProps) {
+  const [copied, setCopied] = useState(false);
   const userInfo = getTypeInfo(userType);
   const friendInfo = getTypeInfo(friendType);
   const compatibility = calculateCompatibility(userType, friendType);
+  const shareLink = generateComparisonLink(userType);
+
+  const handleCopyLink = async () => {
+    await navigator.clipboard.writeText(shareLink);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   // Get color based on compatibility level
   const getCompatibilityColor = () => {
@@ -164,37 +173,54 @@ export default function ComparisonResults({ userType, friendType }: ComparisonRe
         </div>
       )}
 
-      {/* Call to Action */}
+      {/* Share Your Type */}
       <div className="text-center bg-zinc-900/50 border border-zinc-700 rounded-2xl p-8">
         <h3 className="text-2xl font-bold text-white mb-4">
-          Want to see your own Music Type?
+          Share your type with others
         </h3>
-        <a
-          href="/extended"
-          className="
-            inline-flex items-center gap-2 px-8 py-4 rounded-full
-            bg-gradient-to-r from-purple-500 to-pink-500
-            hover:from-purple-600 hover:to-pink-600
-            text-white font-bold text-lg
-            shadow-lg hover:shadow-xl
-            transition-all duration-200
-            transform hover:scale-105
-          "
-        >
-          <span>Get Your Music Type</span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
+        <p className="text-gray-400 mb-6">
+          See how compatible you are with your friends
+        </p>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <button
+            onClick={handleCopyLink}
+            className={`
+              inline-flex items-center gap-2 px-8 py-4 rounded-full
+              font-bold text-lg transition-all duration-200
+              ${copied
+                ? 'bg-green-500 text-white'
+                : 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105'
+              }
+            `}
           >
-            <path
-              fillRule="evenodd"
-              d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </a>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+              />
+            </svg>
+            <span>{copied ? 'Copied!' : 'Copy My Link'}</span>
+          </button>
+          <a
+            href="/extended"
+            className="
+              inline-flex items-center gap-2 px-6 py-3 rounded-full
+              bg-zinc-800 hover:bg-zinc-700 border border-zinc-700
+              text-white font-medium
+              transition-all duration-200
+            "
+          >
+            <span>Analyze New Data</span>
+          </a>
+        </div>
       </div>
     </div>
   );

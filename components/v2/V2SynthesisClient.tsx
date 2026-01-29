@@ -84,10 +84,10 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
   const tabs = useMemo(() => {
     if (useV25) {
       return [
-        { id: 'overview' as TabId, label: 'Your Type', icon: '✨' },
-        { id: 'patterns' as TabId, label: 'Deep Dive', icon: '🔍' },
-        { id: 'when' as TabId, label: 'When You Listen', icon: '🕐' },
-        { id: 'persona' as TabId, label: 'Insights', icon: '💎' },
+        { id: 'overview' as TabId, label: 'Type', icon: '✨' },
+        { id: 'patterns' as TabId, label: 'Details', icon: '🔍' },
+        { id: 'when' as TabId, label: 'When', icon: '🕐' },
+        { id: 'persona' as TabId, label: 'About You', icon: '💎' },
       ];
     }
 
@@ -250,15 +250,11 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
                 <div className="text-sm text-gray-500 mb-4 font-semibold">Step 1 of 3</div>
                 <div className="text-6xl mb-6 animate-pulse">📊</div>
                 <h2 className="text-2xl md:text-3xl font-bold text-white mb-6 px-4">
-                  Analyzing your Extended Streaming History...
+                  Reading your listening history...
                 </h2>
-                <p className="text-base md:text-lg text-gray-300 leading-relaxed mb-4 px-4">
-                  Extended History unlocks <span className="text-purple-400 font-semibold">temporal patterns</span> that
-                  Spotify Wrapped can't see.
-                </p>
                 <p className="text-base md:text-lg text-gray-300 leading-relaxed mb-6 px-4">
-                  Your data contains <span className="text-blue-400 font-semibold">real timestamps</span> and
-                  <span className="text-pink-400 font-semibold"> behavioral evidence</span> - not just API snapshots.
+                  Looking at <span className="text-purple-400 font-semibold">when</span> and
+                  <span className="text-pink-400 font-semibold"> how</span> you listen.
                 </p>
                 {stats && (
                   <div className="grid grid-cols-2 gap-4 mb-6 px-4">
@@ -273,7 +269,7 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
                   </div>
                 )}
                 <div className="inline-block bg-green-500/20 border border-green-500/50 px-4 py-2 rounded-full text-green-400 font-semibold text-sm md:text-base">
-                  Detected: {detectedPatterns.length} patterns
+                  Found {detectedPatterns.length} patterns
                 </div>
               </div>
             )}
@@ -284,74 +280,48 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
                 <div className="text-sm text-gray-500 mb-4 font-semibold">Step 2 of 3</div>
                 <div className="text-6xl mb-6 animate-pulse">🔍</div>
                 <h2 className="text-2xl md:text-3xl font-bold text-white mb-6 px-4">
-                  Running 9 advanced behavioral detectors...
+                  Running 30+ detectors...
                 </h2>
-                <div className="text-left space-y-2 mb-6 px-4">
+                <div className="text-left space-y-3 mb-6 px-4">
                   <p className="text-sm md:text-base text-gray-300 flex items-start gap-2">
                     <span className="text-green-400 font-bold flex-shrink-0">✓</span>
-                    <span><strong className="text-white">The Looper</strong> - Consecutive play analysis</span>
+                    <span>Songs you replay vs. skip</span>
                   </p>
                   <p className="text-sm md:text-base text-gray-300 flex items-start gap-2">
                     <span className="text-green-400 font-bold flex-shrink-0">✓</span>
-                    <span><strong className="text-white">Skip Velocity</strong> - Instant rejection patterns</span>
+                    <span>Daily and weekly listening rhythms</span>
                   </p>
                   <p className="text-sm md:text-base text-gray-300 flex items-start gap-2">
                     <span className="text-green-400 font-bold flex-shrink-0">✓</span>
-                    <span><strong className="text-white">The Ritual</strong> - Time-anchored behaviors</span>
+                    <span>Artists you've abandoned (and returned to)</span>
                   </p>
                   <p className="text-sm md:text-base text-gray-300 flex items-start gap-2">
                     <span className="text-green-400 font-bold flex-shrink-0">✓</span>
-                    <span><strong className="text-white">Life Event Detection</strong> - Musical taste shifts</span>
+                    <span>How your taste has evolved</span>
                   </p>
                   <p className="text-sm md:text-base text-gray-300 flex items-start gap-2">
                     <span className="text-green-400 font-bold flex-shrink-0">✓</span>
-                    <span><strong className="text-white">Ghost Timeline</strong> - Artist abandonment tracking</span>
-                  </p>
-                  <p className="text-sm md:text-base text-gray-300 flex items-start gap-2">
-                    <span className="text-green-400 font-bold flex-shrink-0">✓</span>
-                    <span><strong className="text-white">The Searcher</strong> - Intentional listening analysis</span>
-                  </p>
-                  <p className="text-sm md:text-base text-gray-300 flex items-start gap-2">
-                    <span className="text-green-400 font-bold flex-shrink-0">✓</span>
-                    <span><strong className="text-white">Completion Loyalist</strong> - Sustained engagement</span>
-                  </p>
-                  <p className="text-sm md:text-base text-gray-300 flex items-start gap-2">
-                    <span className="text-green-400 font-bold flex-shrink-0">✓</span>
-                    <span><strong className="text-white">The Explorer</strong> - Discovery velocity</span>
-                  </p>
-                  <p className="text-sm md:text-base text-gray-300 flex items-start gap-2">
-                    <span className="text-green-400 font-bold flex-shrink-0">✓</span>
-                    <span><strong className="text-white">The Loyalist</strong> - Artist devotion</span>
+                    <span>Discovery weeks vs. comfort zones</span>
                   </p>
                 </div>
-                <p className="text-xs md:text-sm text-gray-500 italic px-4">
-                  All patterns validated against source data
-                </p>
               </div>
             )}
 
-            {/* Screen 3: Claude AI Synthesis */}
+            {/* Screen 3: Synthesis */}
             {loadingScreen === 2 && (
               <div className="animate-fadeIn">
                 <div className="text-sm text-gray-500 mb-4 font-semibold">Step 3 of 3</div>
                 <div className="text-6xl mb-6 animate-pulse">✨</div>
                 <h2 className="text-2xl md:text-3xl font-bold text-white mb-6 px-4">
-                  Generating research-grounded insights...
+                  Putting it together...
                 </h2>
-                <p className="text-base md:text-lg text-gray-300 leading-relaxed mb-4 px-4">
-                  Claude AI is creating narratives with:
-                </p>
                 <div className="text-left space-y-2 mb-6 text-sm md:text-base text-gray-300 px-4">
-                  <p>• <span className="text-pink-400 font-semibold">Exact track names</span> from your evidence</p>
-                  <p>• <span className="text-purple-400 font-semibold">Real timestamps</span> (weeks, hours, dates)</p>
-                  <p>• <span className="text-blue-400 font-semibold">Psychological research</span> citations (Saarikallio, Levitin)</p>
-                  <p>• <span className="text-green-400 font-semibold">Formal analysis</span> grounded in music cognition</p>
+                  <p>• Your <span className="text-pink-400 font-semibold">actual songs and artists</span></p>
+                  <p>• <span className="text-purple-400 font-semibold">Real dates</span> from your history</p>
+                  <p>• Patterns unique to <span className="text-blue-400 font-semibold">how you listen</span></p>
                 </div>
                 <p className="text-yellow-300 font-semibold animate-pulse text-base md:text-lg px-4 mb-6">
-                  Validating narratives against evidence...
-                </p>
-                <p className="text-sm text-purple-400 font-semibold px-4">
-                  ↓ Scroll down after loading to see psychological summary
+                  Almost done...
                 </p>
               </div>
             )}
@@ -425,7 +395,7 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
           {isRateLimit ? (
             <div className="space-y-4">
               <p className="text-sm text-gray-500">
-                To prevent abuse, we limit each user to 3 analyses per day. This keeps costs sustainable and ensures everyone gets a fair turn.
+                3 per day max. Come back tomorrow!
               </p>
               <button
                 onClick={() => window.location.href = '/extended'}
@@ -457,13 +427,12 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
         <div className="max-w-2xl text-center">
-          <h2 className="text-3xl font-bold mb-4">Unable to Calculate Music Type</h2>
+          <h2 className="text-3xl font-bold mb-4">Need More Data</h2>
           <p className="text-gray-300 mb-6">
-            We couldn't calculate your music type from the provided data.
-            This might be due to insufficient listening history.
+            Not enough listening history to calculate your type.
           </p>
           <p className="text-sm text-gray-500 mb-8">
-            Try uploading all your Extended Streaming History files for more accurate results.
+            Try uploading all your files.
           </p>
           <button
             onClick={() => window.location.href = '/extended'}
@@ -495,7 +464,7 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
 
               {/* Dimension Cards Grid */}
               <div className="max-w-7xl mx-auto px-4 py-8">
-                <h2 className="text-3xl font-bold mb-6 text-center">Your Four Dimensions</h2>
+                <h2 className="text-3xl font-bold mb-6 text-center">The Four Dimensions</h2>
                 <div className="grid md:grid-cols-2 gap-6">
                   {typeResult.dimensions.map((dimension, index) => (
                     <DimensionCard key={`${dimension.code}-${index}`} dimension={dimension} />
@@ -542,11 +511,10 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
             <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-6">
               <h4 className="text-lg font-bold text-green-400 mb-2 flex items-center justify-center gap-2">
                 <span>🔒</span>
-                100% Private Analysis
+                Private
               </h4>
               <p className="text-sm text-gray-300">
-                Your music type was calculated entirely in your browser.
-                No data was sent to any server.
+                Everything happens in your browser. We never see your data.
               </p>
             </div>
           </div>

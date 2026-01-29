@@ -83,7 +83,7 @@ export default function TemporalHeatmap({ uploadedData }: TemporalHeatmapProps) 
             Your overall listening rhythm across all plays
           </p>
           <p className="text-xs text-gray-500 mb-6">
-            Note: This shows your general habits — individual patterns below may focus on specific moments
+            Times shown in your local timezone
           </p>
 
           {/* Summary Stats - Integrated into header */}

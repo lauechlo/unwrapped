@@ -247,20 +247,20 @@ export function getShortName(code: string): string {
 
 export const DIMENSION_LABELS = {
   // Temporal
-  D: { code: 'D', name: 'Diurnal', description: 'Daytime listener' },
-  N: { code: 'N', name: 'Nocturnal', description: 'Night owl' },
+  D: { code: 'D', name: 'Diurnal', description: 'Listens during the day' },
+  N: { code: 'N', name: 'Nocturnal', description: 'Listens at night' },
 
   // Processing
-  L: { code: 'L', name: 'Looper', description: 'Replays favorites' },
+  L: { code: 'L', name: 'Looper', description: 'Replays songs on repeat' },
   S: { code: 'S', name: 'Skimmer', description: 'Moves through quickly' },
 
   // Discovery
-  E: { code: 'E', name: 'Explorer', description: 'Seeks new music' },
+  E: { code: 'E', name: 'Explorer', description: 'Seeks new artists' },
   R: { code: 'R', name: 'Rooted', description: 'Sticks with favorites' },
 
   // Attachment
-  A: { code: 'A', name: 'Anchored', description: 'Lasting attachments' },
-  F: { code: 'F', name: 'Fluid', description: 'Rotating favorites' },
+  A: { code: 'A', name: 'Anchored', description: 'Favorites stay the same' },
+  F: { code: 'F', name: 'Fluid', description: 'Favorites change often' },
 };
 
 export function getDimensionLabel(code: string, position: number): string {

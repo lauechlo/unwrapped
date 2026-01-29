@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import type { TypeCode } from '@/lib/v2.5/typing';
-import { getTypeInfo, getShareText, getRarityBadge } from '@/lib/v2.5/typing/typeNames';
-import { generateComparisonLink, getComparisonShareText } from '@/lib/v2.5/comparison';
+import { getTypeInfo, getRarityBadge } from '@/lib/v2.5/typing/typeNames';
+import { generateComparisonLink } from '@/lib/v2.5/comparison';
 import ShareCard from './ShareCard';
 
 interface ShareModalProps {
@@ -13,42 +13,54 @@ interface ShareModalProps {
 }
 
 type CardFormat = 'story' | 'square';
-type Platform = 'instagram' | 'twitter' | 'dm';
 
 /**
- * Share modal with card generation and download
- * Implements P0.4 from SHARE_AND_COMPARISON_FLOW_SPEC
+ * Simplified share modal with inline feedback and Web Share API
  */
 export default function ShareModal({ isOpen, onClose, typeCode }: ShareModalProps) {
   const [cardFormat, setCardFormat] = useState<CardFormat>('story');
-  const [platform, setPlatform] = useState<Platform>('instagram');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
 
   const typeInfo = getTypeInfo(typeCode);
-  const rarityBadge = getRarityBadge(typeCode);
-  const shareText = getShareText(typeCode, platform);
   const comparisonLink = generateComparisonLink(typeCode);
-  const comparisonShareText = getComparisonShareText(typeCode, platform);
+
+  // Universal share text (no platform selection needed)
+  const shareText = `I'm a ${typeCode} — "${typeInfo.name}"
+
+${typeInfo.tagline}
+
+What's yours? ${comparisonLink}`;
+
+  // Clear copied feedback after 2 seconds
+  useEffect(() => {
+    if (copiedField) {
+      const timer = setTimeout(() => setCopiedField(null), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [copiedField]);
 
   if (!isOpen) return null;
+
+  const handleCopy = async (text: string, field: string) => {
+    await navigator.clipboard.writeText(text);
+    setCopiedField(field);
+  };
 
   const handleDownload = async () => {
     if (!cardRef.current) return;
 
     setIsGenerating(true);
     try {
-      // Dynamic import to reduce initial bundle size
       const html2canvas = (await import('html2canvas')).default;
 
-      // Generate canvas from card element
       const canvas = await html2canvas(cardRef.current, {
         backgroundColor: '#000000',
-        scale: 2, // Higher quality
+        scale: 2,
         logging: false,
       });
 
-      // Convert to blob and download
       canvas.toBlob((blob) => {
         if (!blob) return;
 
@@ -61,233 +73,242 @@ export default function ShareModal({ isOpen, onClose, typeCode }: ShareModalProp
       }, 'image/png');
     } catch (error) {
       console.error('Failed to generate card:', error);
-      alert('Failed to generate card. Please try again.');
     } finally {
       setIsGenerating(false);
     }
   };
 
-  const handleCopyText = () => {
-    navigator.clipboard.writeText(shareText);
-    alert('Share text copied to clipboard!');
+  // Web Share API for native sharing on mobile
+  const handleNativeShare = async () => {
+    if (!cardRef.current) return;
+
+    setIsGenerating(true);
+    try {
+      const html2canvas = (await import('html2canvas')).default;
+
+      const canvas = await html2canvas(cardRef.current, {
+        backgroundColor: '#000000',
+        scale: 2,
+        logging: false,
+      });
+
+      const blob = await new Promise<Blob | null>((resolve) => {
+        canvas.toBlob(resolve, 'image/png');
+      });
+
+      if (!blob) throw new Error('Failed to create blob');
+
+      const file = new File([blob], `unwrapped-${typeCode}.png`, { type: 'image/png' });
+
+      if (navigator.share && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          title: `I'm a ${typeCode}`,
+          text: shareText,
+          files: [file],
+        });
+      } else if (navigator.share) {
+        // Fallback: share without image
+        await navigator.share({
+          title: `I'm a ${typeCode}`,
+          text: shareText,
+          url: comparisonLink,
+        });
+      } else {
+        // No Web Share API, just download
+        handleDownload();
+      }
+    } catch (error) {
+      // User cancelled or error - silently fail
+      console.log('Share cancelled or failed:', error);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
-  const handleCopyComparisonLink = () => {
-    navigator.clipboard.writeText(comparisonLink);
-    alert('Comparison link copied to clipboard!');
-  };
+  // Check if Web Share API is available
+  const canNativeShare = typeof navigator !== 'undefined' && !!navigator.share;
 
-  const handleCopyComparisonText = () => {
-    navigator.clipboard.writeText(comparisonShareText);
-    alert('Comparison share text copied to clipboard!');
+  // Instagram Stories deep link (works on mobile with Instagram installed)
+  const handleShareToStories = async () => {
+    if (!cardRef.current) return;
+
+    setIsGenerating(true);
+    try {
+      const html2canvas = (await import('html2canvas')).default;
+
+      const canvas = await html2canvas(cardRef.current, {
+        backgroundColor: '#000000',
+        scale: 2,
+        logging: false,
+      });
+
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+
+        // Download first, then prompt user
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = `unwrapped-${typeCode}-story.png`;
+        link.href = url;
+        link.click();
+        URL.revokeObjectURL(url);
+
+        // Show instruction
+        setCopiedField('stories');
+      }, 'image/png');
+    } catch (error) {
+      console.error('Failed:', error);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-      <div className="bg-zinc-900 border border-zinc-700 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto m-4">
+      <div className="bg-zinc-900 border border-zinc-700 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto m-4">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-zinc-700">
-          <h2 className="text-2xl font-bold text-white">Share Your Music Type</h2>
+        <div className="flex items-center justify-between p-5 border-b border-zinc-700">
+          <h2 className="text-xl font-bold text-white">Share</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white transition-colors"
+            className="text-gray-400 hover:text-white transition-colors p-1"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-6">
-          {/* Card Format Selection */}
-          <div>
-            <h3 className="text-lg font-semibold text-white mb-3">Card Format</h3>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setCardFormat('story')}
-                className={`
-                  flex-1 px-4 py-3 rounded-lg border-2 font-medium transition-all
-                  ${
-                    cardFormat === 'story'
-                      ? 'border-purple-500 bg-purple-500/20 text-white'
-                      : 'border-zinc-700 bg-zinc-800 text-gray-400 hover:border-zinc-600'
-                  }
-                `}
-              >
-                Story (1080×1920)
-              </button>
-              <button
-                onClick={() => setCardFormat('square')}
-                className={`
-                  flex-1 px-4 py-3 rounded-lg border-2 font-medium transition-all
-                  ${
-                    cardFormat === 'square'
-                      ? 'border-purple-500 bg-purple-500/20 text-white'
-                      : 'border-zinc-700 bg-zinc-800 text-gray-400 hover:border-zinc-600'
-                  }
-                `}
-              >
-                Square (1080×1080)
-              </button>
-            </div>
-          </div>
-
-          {/* Platform Selection */}
-          <div>
-            <h3 className="text-lg font-semibold text-white mb-3">Platform</h3>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setPlatform('instagram')}
-                className={`
-                  flex-1 px-4 py-3 rounded-lg border-2 font-medium transition-all
-                  ${
-                    platform === 'instagram'
-                      ? 'border-pink-500 bg-pink-500/20 text-white'
-                      : 'border-zinc-700 bg-zinc-800 text-gray-400 hover:border-zinc-600'
-                  }
-                `}
-              >
-                Instagram
-              </button>
-              <button
-                onClick={() => setPlatform('twitter')}
-                className={`
-                  flex-1 px-4 py-3 rounded-lg border-2 font-medium transition-all
-                  ${
-                    platform === 'twitter'
-                      ? 'border-blue-500 bg-blue-500/20 text-white'
-                      : 'border-zinc-700 bg-zinc-800 text-gray-400 hover:border-zinc-600'
-                  }
-                `}
-              >
-                Twitter
-              </button>
-              <button
-                onClick={() => setPlatform('dm')}
-                className={`
-                  flex-1 px-4 py-3 rounded-lg border-2 font-medium transition-all
-                  ${
-                    platform === 'dm'
-                      ? 'border-purple-500 bg-purple-500/20 text-white'
-                      : 'border-zinc-700 bg-zinc-800 text-gray-400 hover:border-zinc-600'
-                  }
-                `}
-              >
-                DM
-              </button>
-            </div>
-          </div>
-
+        <div className="p-5 space-y-5">
           {/* Card Preview */}
           <div>
-            <h3 className="text-lg font-semibold text-white mb-3">Preview</h3>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-medium text-gray-400">Preview</h3>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setCardFormat('story')}
+                  className={`px-3 py-1 text-xs rounded-full transition-all ${
+                    cardFormat === 'story'
+                      ? 'bg-purple-500 text-white'
+                      : 'bg-zinc-800 text-gray-400 hover:bg-zinc-700'
+                  }`}
+                >
+                  Story
+                </button>
+                <button
+                  onClick={() => setCardFormat('square')}
+                  className={`px-3 py-1 text-xs rounded-full transition-all ${
+                    cardFormat === 'square'
+                      ? 'bg-purple-500 text-white'
+                      : 'bg-zinc-800 text-gray-400 hover:bg-zinc-700'
+                  }`}
+                >
+                  Square
+                </button>
+              </div>
+            </div>
             <div className="flex justify-center bg-zinc-800 rounded-lg p-4">
               <ShareCard
                 ref={cardRef}
                 typeCode={typeCode}
                 format={cardFormat}
-                platform={platform}
+                platform="instagram"
               />
             </div>
           </div>
 
-          {/* Share Text */}
-          <div>
-            <h3 className="text-lg font-semibold text-white mb-3">Share Text</h3>
-            <div className="bg-zinc-800 rounded-lg p-4 border border-zinc-700">
-              <p className="text-gray-300 whitespace-pre-wrap text-sm mb-3">
+          {/* Share Text + Link Combined */}
+          <div className="bg-zinc-800 rounded-lg p-4 border border-zinc-700">
+            <div className="flex items-start justify-between gap-3 mb-3">
+              <p className="text-gray-300 text-sm whitespace-pre-wrap flex-1">
                 {shareText}
               </p>
               <button
-                onClick={handleCopyText}
-                className="text-purple-400 hover:text-purple-300 text-sm font-medium"
+                onClick={() => handleCopy(shareText, 'text')}
+                className={`px-3 py-1.5 text-xs font-medium rounded transition-all flex-shrink-0 ${
+                  copiedField === 'text'
+                    ? 'bg-green-500 text-white'
+                    : 'bg-zinc-700 text-gray-300 hover:bg-zinc-600'
+                }`}
               >
-                Copy to clipboard
+                {copiedField === 'text' ? 'Copied!' : 'Copy'}
+              </button>
+            </div>
+
+            {/* Comparison Link */}
+            <div className="flex items-center gap-2 pt-3 border-t border-zinc-700">
+              <input
+                type="text"
+                value={comparisonLink}
+                readOnly
+                className="flex-1 bg-zinc-900 text-gray-400 px-3 py-2 rounded text-xs border border-zinc-700"
+              />
+              <button
+                onClick={() => handleCopy(comparisonLink, 'link')}
+                className={`px-3 py-2 text-xs font-medium rounded transition-all ${
+                  copiedField === 'link'
+                    ? 'bg-green-500 text-white'
+                    : 'bg-purple-600 text-white hover:bg-purple-700'
+                }`}
+              >
+                {copiedField === 'link' ? 'Copied!' : 'Copy Link'}
               </button>
             </div>
           </div>
 
-          {/* Comparison Link */}
-          <div>
-            <h3 className="text-lg font-semibold text-white mb-3">
-              Comparison Link
-              <span className="ml-2 text-sm font-normal text-gray-400">
-                Let friends compare their types with yours
-              </span>
-            </h3>
-            <div className="bg-zinc-800 rounded-lg p-4 border border-zinc-700 space-y-3">
-              <div>
-                <p className="text-xs text-gray-500 mb-2">Link:</p>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={comparisonLink}
-                    readOnly
-                    className="flex-1 bg-zinc-900 text-gray-300 px-3 py-2 rounded text-sm border border-zinc-700"
-                  />
-                  <button
-                    onClick={handleCopyComparisonLink}
-                    className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded"
-                  >
-                    Copy
-                  </button>
-                </div>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500 mb-2">Share text with link:</p>
-                <p className="text-gray-300 text-sm mb-2 whitespace-pre-wrap">
-                  {comparisonShareText}
-                </p>
-                <button
-                  onClick={handleCopyComparisonText}
-                  className="text-purple-400 hover:text-purple-300 text-sm font-medium"
-                >
-                  Copy share text
-                </button>
-              </div>
-            </div>
-          </div>
-
           {/* Action Buttons */}
-          <div className="flex gap-3">
-            <button
-              onClick={handleDownload}
-              disabled={isGenerating}
-              className="
-                flex-1 px-6 py-4 rounded-lg
-                bg-gradient-to-r from-purple-500 to-pink-500
-                hover:from-purple-600 hover:to-pink-600
-                disabled:from-gray-600 disabled:to-gray-600
-                text-white font-bold
-                transition-all
-              "
-            >
-              {isGenerating ? 'Generating...' : 'Download Card'}
-            </button>
-            <button
-              onClick={onClose}
-              className="
-                px-6 py-4 rounded-lg
-                bg-zinc-800 hover:bg-zinc-700
-                text-white font-medium
-                border border-zinc-700
-                transition-all
-              "
-            >
-              Close
-            </button>
+          <div className="space-y-3">
+            {/* Primary: Native Share or Download */}
+            {canNativeShare ? (
+              <button
+                onClick={handleNativeShare}
+                disabled={isGenerating}
+                className="w-full px-6 py-4 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:from-gray-600 disabled:to-gray-600 text-white font-bold transition-all flex items-center justify-center gap-2"
+              >
+                {isGenerating ? (
+                  'Preparing...'
+                ) : (
+                  <>
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                    </svg>
+                    Share
+                  </>
+                )}
+              </button>
+            ) : (
+              <button
+                onClick={handleDownload}
+                disabled={isGenerating}
+                className="w-full px-6 py-4 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:from-gray-600 disabled:to-gray-600 text-white font-bold transition-all"
+              >
+                {isGenerating ? 'Preparing...' : 'Save Image'}
+              </button>
+            )}
+
+            {/* Secondary actions row */}
+            <div className="flex gap-3">
+              {/* Share to Stories */}
+              <button
+                onClick={handleShareToStories}
+                disabled={isGenerating}
+                className="flex-1 px-4 py-3 rounded-lg bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 disabled:from-gray-600 disabled:to-gray-600 text-white font-medium text-sm transition-all"
+              >
+                {copiedField === 'stories' ? 'Saved! Add to Stories' : 'Instagram Stories'}
+              </button>
+
+              {/* Download (if native share is primary) */}
+              {canNativeShare && (
+                <button
+                  onClick={handleDownload}
+                  disabled={isGenerating}
+                  className="flex-1 px-4 py-3 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white font-medium text-sm border border-zinc-700 transition-all"
+                >
+                  Save Image
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>

@@ -391,10 +391,10 @@ export default function V2NarrativeCards({ narratives }: V2NarrativeCardsProps) 
                       </p>
                     </div>
 
-                    {/* Ethical Disclaimer */}
-                    <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 mb-4 md:mb-5">
-                      <p className="text-xs text-yellow-200 leading-relaxed">
-                        ⚠️ This insight is based on listening patterns only. Unwrapped doesn't diagnose emotional states or make clinical recommendations. It identifies <strong>behavior</strong>, not well-being.
+                    {/* Disclaimer */}
+                    <div className="bg-zinc-800/50 border border-zinc-700 rounded-lg p-3 mb-4 md:mb-5">
+                      <p className="text-xs text-gray-400">
+                        Based on listening behavior only—not a diagnosis or assessment of well-being.
                       </p>
                     </div>
 
