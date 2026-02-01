@@ -69,6 +69,7 @@ export interface ConcreteExample {
 export interface DimensionEvidence {
   topExamples: ConcreteExample[];
   insights?: string[];
+  visualizationData?: any;  // Raw data for charts
 }
 
 /**
