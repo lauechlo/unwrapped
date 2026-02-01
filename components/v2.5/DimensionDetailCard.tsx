@@ -5,6 +5,7 @@ import type { DimensionResult } from '@/lib/v2.5/typing';
 import ReplayIntensityChart from './visualizations/ReplayIntensityChart';
 import DiscoveryTimeline from './visualizations/DiscoveryTimeline';
 import AttachmentTimeline from './visualizations/AttachmentTimeline';
+import ArtistDominanceChart from './visualizations/ArtistDominanceChart';
 
 interface DimensionDetailCardProps {
   dimension: DimensionResult;
@@ -126,11 +127,9 @@ export default function DimensionDetailCard({ dimension }: DimensionDetailCardPr
             `}
           >
             <div className="flex items-center gap-2">
+              <span className="text-lg">📋</span>
               <span className={`${theme.accent} font-semibold text-base md:text-lg`}>
                 {evidenceExpanded ? 'Hide Details' : 'See the Receipts'}
-              </span>
-              <span className="text-xs text-gray-500">
-                ({dimension.evidence.topExamples.length} examples)
               </span>
             </div>
             <span className={`
@@ -143,29 +142,64 @@ export default function DimensionDetailCard({ dimension }: DimensionDetailCardPr
 
           {evidenceExpanded && (
             <div className="space-y-5">
-              {/* Evidence examples */}
-              <div className="space-y-3">
-                {dimension.evidence.topExamples.map((example, idx) => (
-                  <div
-                    key={idx}
-                    className="bg-zinc-800/50 rounded-lg p-4 md:p-5"
-                  >
-                    <div className="text-xs text-gray-500 uppercase tracking-wide mb-1.5">
-                      {example.label}
-                    </div>
-                    <div className="text-white font-bold text-base md:text-lg mb-1">
-                      {example.value}
-                    </div>
-                    <div className="text-sm md:text-base text-gray-300">
-                      {example.detail}
-                    </div>
-                    {example.emphasis && (
-                      <div className={`text-sm md:text-base ${theme.accent} font-medium mt-2`}>
-                        {example.emphasis}
+              {/* Evidence examples - compact bullet style */}
+              <div className="grid gap-3 md:grid-cols-2">
+                {dimension.evidence.topExamples.map((example, idx) => {
+                  // Check if value has multiple lines (like Top 5 lists)
+                  const isMultiLine = example.value.includes('\n');
+                  const lines = example.value.split('\n');
+
+                  return (
+                    <div
+                      key={idx}
+                      className={`bg-zinc-800/50 rounded-lg p-3 md:p-4 flex items-start gap-3 ${
+                        isMultiLine ? 'md:col-span-2' : ''
+                      }`}
+                    >
+                      <span className="text-lg flex-shrink-0">
+                        {example.label.includes('Peak') ? '📍' :
+                         example.label.includes('Top') ? '🏆' :
+                         example.label.includes('Most') ? '🔥' :
+                         example.label.includes('Rate') ? '📊' :
+                         example.label.includes('Artist') ? '🎤' :
+                         example.label.includes('Play') ? '▶️' :
+                         example.label.includes('Discovery') ? '🔍' :
+                         example.label.includes('Weekend') ? '📅' : '•'}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-xs text-gray-500 uppercase tracking-wide">
+                          {example.label}
+                        </div>
+                        {isMultiLine ? (
+                          // Show all lines for multi-line values (Top 5 lists)
+                          <div className="space-y-1 mt-1">
+                            {lines.map((line, lineIdx) => (
+                              <div
+                                key={lineIdx}
+                                className="text-white text-sm md:text-base"
+                              >
+                                {line}
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          // Single line value
+                          <div className="text-white font-bold text-sm md:text-base">
+                            {example.value}
+                          </div>
+                        )}
+                        <div className="text-xs md:text-sm text-gray-400 mt-1">
+                          {example.detail}
+                        </div>
+                        {example.emphasis && (
+                          <div className={`text-xs ${theme.accent} font-medium mt-1`}>
+                            {example.emphasis}
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                ))}
+                    </div>
+                  );
+                })}
               </div>
 
               {/* Visualization - Processing: Replay Intensity */}
@@ -195,12 +229,28 @@ export default function DimensionDetailCard({ dimension }: DimensionDetailCardPr
                   </div>
                 )}
 
-              {/* Visualization - Attachment: Timeline */}
+              {/* Visualization - Attachment: Artist Dominance Chart */}
               {dimension.category === 'attachment' &&
-                dimension.evidence.visualizationData?.type === 'attachmentTimeline' && (
+                dimension.evidence.visualizationData?.artistDominance && (
                   <div className="bg-zinc-900/50 border border-zinc-700 rounded-lg p-5 md:p-6">
                     <div className="text-sm font-bold uppercase text-gray-300 mb-4">
-                      ⚓ Artist Loyalty Over Time
+                      ⚓ Artist Dominance
+                    </div>
+                    <ArtistDominanceChart
+                      topArtists={dimension.evidence.visualizationData.artistDominance.topArtists}
+                      totalPlays={dimension.evidence.visualizationData.artistDominance.totalPlays}
+                      topArtistMonths={dimension.evidence.visualizationData.artistDominance.topArtistMonths}
+                    />
+                  </div>
+                )}
+
+              {/* Visualization - Attachment: Monthly Artist Rotation */}
+              {dimension.category === 'attachment' &&
+                dimension.evidence.visualizationData?.type === 'attachmentTimeline' &&
+                dimension.evidence.visualizationData.monthlyTopArtists?.length > 0 && (
+                  <div className="bg-zinc-900/50 border border-zinc-700 rounded-lg p-5 md:p-6">
+                    <div className="text-sm font-bold uppercase text-gray-300 mb-4">
+                      📅 Monthly #1 Artist
                     </div>
                     <AttachmentTimeline
                       monthlyTopArtists={dimension.evidence.visualizationData.monthlyTopArtists}

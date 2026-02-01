@@ -4,16 +4,24 @@ import { useState } from 'react';
 import ShareModal from './ShareModal';
 import type { TypeCode } from '@/lib/v2.5/typing';
 
+export interface ShareStats {
+  topArtist?: string;
+  totalPlays?: number;
+  topSong?: { name: string; plays: number };
+  timePeriod?: string;
+}
+
 interface TypeShareButtonProps {
   typeCode: TypeCode;
   className?: string;
+  shareStats?: ShareStats;
 }
 
 /**
  * Share button that opens modal with share card generation
  * Implements P0.3 from SHARE_AND_COMPARISON_FLOW_SPEC
  */
-export default function TypeShareButton({ typeCode, className = '' }: TypeShareButtonProps) {
+export default function TypeShareButton({ typeCode, className = '', shareStats }: TypeShareButtonProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -52,6 +60,7 @@ export default function TypeShareButton({ typeCode, className = '' }: TypeShareB
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         typeCode={typeCode}
+        shareStats={shareStats}
       />
     </>
   );

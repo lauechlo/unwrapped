@@ -93,7 +93,7 @@ export default function DiscoveryTimeline({ monthlyData }: DiscoveryTimelineProp
               d={linePath}
               fill="none"
               stroke="currentColor"
-              strokeWidth="2"
+              strokeWidth="0.5"
               strokeLinecap="round"
               strokeLinejoin="round"
               className="text-green-400"
@@ -105,7 +105,7 @@ export default function DiscoveryTimeline({ monthlyData }: DiscoveryTimelineProp
                 <circle
                   cx={point.x}
                   cy={point.y}
-                  r="2"
+                  r="0.8"
                   fill="currentColor"
                   className="text-green-400"
                 />

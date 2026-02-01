@@ -127,8 +127,9 @@ export function calculateTemporal(sot: SourceOfTruth): TemporalResult {
   // Format metric and comparison
   const percentage = Math.round(nightPercentage * 100);
   const metric = isNocturnal ? `${percentage}% after 9pm` : `${100 - percentage}% before 9pm`;
-  const baseline = Math.round(TEMPORAL_THRESHOLDS.BASELINE_NIGHT_PERCENTAGE * 100);
-  const comparison = `vs ${baseline}% average`;
+  const comparison = isNocturnal
+    ? `Most of your listening happens at night`
+    : `You're a daytime listener`;
 
   return {
     category: 'temporal',
@@ -178,7 +179,9 @@ export function calculateProcessing(sot: SourceOfTruth): ProcessingResult {
 
   // Format metric and comparison
   const metric = `${replayMultiplier.toFixed(1)}x replay rate`;
-  const comparison = `vs 1.0x average`;
+  const comparison = isLooper
+    ? `You replay your favorites on repeat`
+    : `You prefer variety over repetition`;
 
   return {
     category: 'processing',
@@ -211,8 +214,8 @@ export function calculateDiscovery(sot: SourceOfTruth): DiscoveryResult {
 
   // Determine type
   const isExplorer = uniqueArtistPercentage >= DISCOVERY_THRESHOLDS.EXPLORER_THRESHOLD;
-  const code: DiscoveryType = isExplorer ? 'E' : 'L';
-  const label = isExplorer ? 'Explorer' : 'Loyalist';
+  const code: DiscoveryType = isExplorer ? 'E' : 'R';
+  const label = isExplorer ? 'Explorer' : 'Rooted';
 
   // Calculate confidence based on data range
   const dateRange = meta.dateRange;
@@ -229,10 +232,11 @@ export function calculateDiscovery(sot: SourceOfTruth): DiscoveryResult {
     : months / DISCOVERY_THRESHOLDS.MINIMUM_MONTHS;
 
   // Format metric and comparison
-  const percentage = Math.round(uniqueArtistPercentage * 100);
-  const metric = `${percentage}% unique artists`;
-  const baseline = Math.round(DISCOVERY_THRESHOLDS.BASELINE_UNIQUE_ARTISTS * 100);
-  const comparison = `vs ${baseline}% average`;
+  const artistsPerPlay = totalPlays > 0 ? Math.round(totalPlays / uniqueArtists) : 0;
+  const metric = `${uniqueArtists.toLocaleString()} artists from ${totalPlays.toLocaleString()} plays`;
+  const comparison = isExplorer
+    ? `That's 1 new artist every ~${artistsPerPlay} plays — active explorer`
+    : `That's 1 new artist every ~${artistsPerPlay} plays — loyal to favorites`;
 
   return {
     category: 'discovery',
@@ -310,9 +314,10 @@ export function calculateAttachment(sot: SourceOfTruth): AttachmentResult {
     : totalMonths / ATTACHMENT_THRESHOLDS.MINIMUM_MONTHS;
 
   // Format metric and comparison
-  const metric = `${topArtistMonths}mo top artist`;
-  const baseline = `${ATTACHMENT_THRESHOLDS.BASELINE_MONTHS}mo average`;
-  const comparison = `vs ${baseline}`;
+  const metric = `${topArtistMonths} months with same #1`;
+  const comparison = isAnchored
+    ? `${topArtist.name} has been your #1 for ${topArtistMonths} months`
+    : `Your favorites change often`;
 
   return {
     category: 'attachment',

@@ -17,7 +17,9 @@ import { isV25Enabled } from '@/lib/v2.5/featureFlags';
 import { calculateMusicType } from '@/lib/v2.5/typing';
 import type { TypeResult } from '@/lib/v2.5/typing';
 import TypeReveal from '@/components/v2.5/TypeReveal';
-import DimensionCard from '@/components/v2.5/DimensionCard';
+import DimensionDetailCard from '@/components/v2.5/DimensionDetailCard';
+import StickyNav from '@/components/v2.5/StickyNav';
+import type { ShareStats } from '@/components/v2.5/TypeShareButton';
 
 interface V2SynthesisClientProps {
   detectedPatterns: any[];
@@ -50,6 +52,7 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<TabId>('overview');
+  const [activeSection, setActiveSection] = useState<string>('type'); // For V2.5 scroll-spy
 
   // Check if V2.5 mode is enabled
   const useV25 = isV25Enabled();
@@ -79,6 +82,68 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
   const personaMatch = useMemo(() => {
     return matchPersona(detectedPatterns);
   }, [detectedPatterns]);
+
+  // V2.5: Calculate share stats for personalized share card
+  const shareStats = useMemo<ShareStats | undefined>(() => {
+    if (!useV25 || !typeResult || !stats) return undefined;
+
+    // Extract top artist from attachment dimension evidence
+    const attachmentDim = typeResult.dimensions.find(d => d.category === 'attachment');
+    const topArtistExample = attachmentDim?.evidence?.topExamples?.find(
+      e => e.label.toLowerCase().includes('artist') || e.label.toLowerCase().includes('#1')
+    );
+    const topArtist = topArtistExample?.value?.split('\n')[0]?.replace(/^\d+\.\s*/, '') || undefined;
+
+    // Extract top song from processing dimension evidence
+    const processingDim = typeResult.dimensions.find(d => d.category === 'processing');
+    const topSongExample = processingDim?.evidence?.topExamples?.find(
+      e => e.label.toLowerCase().includes('most played') || e.label.toLowerCase().includes('top song')
+    );
+    let topSong: { name: string; plays: number } | undefined;
+    if (topSongExample?.value) {
+      const songName = topSongExample.value.split('\n')[0]?.replace(/^\d+\.\s*/, '');
+      // Try to extract play count from detail (e.g., "69 plays")
+      const playsMatch = topSongExample.detail?.match(/(\d+)\s*plays?/i);
+      const plays = playsMatch ? parseInt(playsMatch[1], 10) : 0;
+      if (songName && plays > 0) {
+        topSong = { name: songName, plays };
+      }
+    }
+
+    return {
+      topArtist,
+      totalPlays: stats.totalPlays,
+      topSong,
+      timePeriod: stats.dateRange,
+    };
+  }, [useV25, typeResult, stats]);
+
+  // V2.5: Scroll-spy to track active section
+  useEffect(() => {
+    if (!useV25) return;
+
+    const sectionIds = ['type', 'about', 'breakdown', 'when'];
+
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 150; // Offset for better UX
+
+      for (const sectionId of sectionIds) {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          const { offsetTop, offsetHeight } = element;
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveSection(sectionId);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Initial check
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [useV25]);
 
   // Define tabs (different for V2.5)
   const tabs = useMemo(() => {
@@ -445,86 +510,120 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
     );
   }
 
-  // V2.5 mode: Render type-based UI
+  // V2.5 mode: Render type-based UI with scrollable sections
   if (useV25 && typeResult) {
+    // Define sections for navigation
+    // Flow: Type reveal → Archetype (psychology) → Data Breakdown (evidence) → When
+    const sections = [
+      { id: 'type', label: 'Your Type', number: 1 },
+      { id: 'about', label: 'Your Archetype', number: 2 },
+      { id: 'breakdown', label: 'Data Breakdown', number: 3 },
+      { id: 'when', label: 'When You Listen', number: 4 },
+    ];
+
+    // Handle section navigation
+    const handleSectionClick = (sectionId: string) => {
+      if (sectionId === 'share') {
+        // Open share modal - for now scroll to type section where share button is
+        document.getElementById('type')?.scrollIntoView({ behavior: 'smooth' });
+        return;
+      }
+      if (sectionId === 'compare') {
+        // Navigate to compare page with user's type
+        window.location.href = `/compare?type=${typeResult.code}`;
+        return;
+      }
+      // Scroll to section
+      const element = document.getElementById(sectionId);
+      if (element) {
+        const offset = 80; // Account for mobile sticky nav
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - offset;
+        window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+      }
+    };
+
     return (
       <div className="min-h-screen bg-black text-white">
-        {/* Tab Navigation */}
-        <TabNavigation
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          tabs={tabs}
+        {/* Sticky Navigation */}
+        <StickyNav
+          sections={sections}
+          activeSection={activeSection}
+          onSectionClick={handleSectionClick}
+          typeCode={typeResult.code}
+          typeName={typeResult.description}
         />
 
-        {/* Tab Content */}
-        <div className="min-h-screen">
-          {activeTab === 'overview' && (
-            <>
-              <TypeReveal typeResult={typeResult} />
+        {/* Scrollable Content - All sections on one page */}
+        <div className="lg:pr-72"> {/* Make room for desktop sidebar */}
+          {/* Section 1: Your Type */}
+          <section id="type" className="scroll-mt-20">
+            <TypeReveal typeResult={typeResult} shareStats={shareStats} />
+          </section>
 
-              {/* Dimension Cards Grid */}
-              <div className="max-w-7xl mx-auto px-4 py-8">
-                <h2 className="text-3xl font-bold mb-6 text-center">The Four Dimensions</h2>
-                <div className="grid md:grid-cols-2 gap-6">
-                  {typeResult.dimensions.map((dimension, index) => (
-                    <DimensionCard key={`${dimension.code}-${index}`} dimension={dimension} />
-                  ))}
-                </div>
-              </div>
-            </>
-          )}
-
-          {activeTab === 'patterns' && (
-            <div className="max-w-7xl mx-auto px-4 py-12">
-              <h2 className="text-3xl font-bold mb-6">Deep Dive</h2>
-              <div className="grid md:grid-cols-2 gap-6">
-                {typeResult.dimensions.map((dimension, index) => (
-                  <DimensionCard key={`${dimension.code}-${index}-detail`} dimension={dimension} showDetails={true} />
-                ))}
-              </div>
-              <div className="mt-8 bg-zinc-900/50 border border-zinc-700 rounded-2xl p-6">
-                <p className="text-gray-300">
-                  More detailed metrics and visualizations coming soon!
+          {/* Section 2: Your Archetype (moved up for higher visibility) */}
+          <section id="about" className="scroll-mt-20 py-16 bg-zinc-950/50">
+            <div className="max-w-5xl mx-auto px-4">
+              <div className="text-center mb-10">
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
+                  Your Archetype
+                </h2>
+                <p className="text-gray-400 max-w-xl mx-auto">
+                  The psychological pattern behind your listening
                 </p>
               </div>
-            </div>
-          )}
-
-          {activeTab === 'when' && uploadedData && (
-            <TemporalTab plays={uploadedData} />
-          )}
-
-          {activeTab === 'persona' && (
-            <div className="max-w-5xl mx-auto px-4 py-12">
-              <h2 className="text-3xl font-bold mb-6">Behavioral Insights</h2>
               <PersonaTab
                 personaMatch={personaMatch}
                 psychologicalSummary={undefined}
               />
             </div>
-          )}
-        </div>
+          </section>
 
-        {/* Privacy Reminder */}
-        <section className="py-12 px-8 bg-zinc-950">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-6">
-              <h4 className="text-lg font-bold text-green-400 mb-2 flex items-center justify-center gap-2">
-                <span>🔒</span>
-                Private
-              </h4>
-              <p className="text-sm text-gray-300">
-                Everything happens in your browser. We never see your data.
-              </p>
+          {/* Section 3: Your Data Breakdown */}
+          <section id="breakdown" className="scroll-mt-20 py-16">
+            <div className="max-w-5xl mx-auto px-4">
+              <div className="text-center mb-10">
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
+                  Your Data Breakdown
+                </h2>
+                <p className="text-gray-400 max-w-xl mx-auto">
+                  The evidence behind each dimension of your type
+                </p>
+              </div>
+              <div className="space-y-6">
+                {typeResult.dimensions.map((dimension, index) => (
+                  <DimensionDetailCard key={`${dimension.code}-${index}`} dimension={dimension} />
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* NPS Widget */}
-        <NPSWidget />
+          {/* Section 4: When You Listen */}
+          <section id="when" className="scroll-mt-20 py-16 bg-zinc-950/50">
+            {uploadedData && <TemporalTab plays={uploadedData} />}
+          </section>
 
-        {/* Footer */}
-        <Footer />
+          {/* Privacy Reminder */}
+          <section className="py-12 px-8 bg-zinc-950">
+            <div className="max-w-4xl mx-auto text-center">
+              <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-6">
+                <h4 className="text-lg font-bold text-green-400 mb-2 flex items-center justify-center gap-2">
+                  <span>🔒</span>
+                  Private
+                </h4>
+                <p className="text-sm text-gray-300">
+                  Everything happens in your browser. We never see your data.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* NPS Widget */}
+          <NPSWidget />
+
+          {/* Footer */}
+          <Footer />
+        </div>
       </div>
     );
   }

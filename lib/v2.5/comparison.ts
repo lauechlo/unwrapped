@@ -86,6 +86,32 @@ export function getTypeFromUrl(): TypeCode | null {
 }
 
 // ============================================================================
+// Type Code Validation
+// ============================================================================
+
+const VALID_CHARS: Record<number, string[]> = {
+  0: ['D', 'N'], // Temporal: Diurnal/Nocturnal
+  1: ['L', 'S'], // Processing: Looper/Skimmer
+  2: ['E', 'R'], // Discovery: Explorer/Rooted
+  3: ['A', 'F'], // Attachment: Anchored/Fluid
+};
+
+/**
+ * Validate if a string is a valid 4-character type code
+ */
+export function isValidTypeCode(code: string): code is TypeCode {
+  if (!code || code.length !== 4) return false;
+
+  const upperCode = code.toUpperCase();
+  for (let i = 0; i < 4; i++) {
+    if (!VALID_CHARS[i].includes(upperCode[i])) {
+      return false;
+    }
+  }
+  return true;
+}
+
+// ============================================================================
 // Compatibility Calculation
 // ============================================================================
 

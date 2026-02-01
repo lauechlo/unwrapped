@@ -2,46 +2,34 @@
 
 import { forwardRef } from 'react';
 import type { TypeCode } from '@/lib/v2.5/typing';
-import { getTypeInfo, getRarityBadge, getFullDimensionString } from '@/lib/v2.5/typing/typeNames';
+import { getTypeInfo } from '@/lib/v2.5/typing/typeNames';
 
 interface ShareCardProps {
   typeCode: TypeCode;
-  format: 'story' | 'square';
-  platform: 'instagram' | 'twitter' | 'dm';
+  /** Optional: for comparison cards showing two types */
+  compareTypeCode?: TypeCode;
+  compatibilityScore?: number;
+  /** Personalization data */
+  topArtist?: string;
+  totalPlays?: number;
+  topSong?: { name: string; plays: number };
+  timePeriod?: string;
 }
 
 /**
- * Share card component for html2canvas generation
- * Implements P0.5 from SHARE_AND_COMPARISON_FLOW_SPEC
+ * Personalized share card inspired by Spotify Wrapped
+ * Shows type code + personal stats for social sharing
  *
- * Formats:
- * - Story: 1080x1920 (9:16 ratio, scaled down for preview)
- * - Square: 1080x1080 (1:1 ratio, scaled down for preview)
+ * All styles are inline for html2canvas compatibility
  */
 const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
-  ({ typeCode, format, platform }, ref) => {
+  ({ typeCode, compareTypeCode, compatibilityScore, topArtist, totalPlays, topSong, timePeriod }, ref) => {
     const typeInfo = getTypeInfo(typeCode);
-    const rarityBadge = getRarityBadge(typeCode);
-    const dimensionString = getFullDimensionString(typeCode);
+    const compareTypeInfo = compareTypeCode ? getTypeInfo(compareTypeCode) : null;
+    const isComparison = !!compareTypeCode;
 
-    // Dimensions for html2canvas (will be scaled down for preview)
-    const dimensions =
-      format === 'story'
-        ? { width: 540, height: 960 } // 1080x1920 scaled to 50%
-        : { width: 540, height: 540 }; // 1080x1080 scaled to 50%
-
-    const getRarityGradient = (color: 'gold' | 'purple' | 'blue' | null): string => {
-      switch (color) {
-        case 'gold':
-          return 'from-yellow-400 to-orange-400';
-        case 'purple':
-          return 'from-purple-500 to-pink-500';
-        case 'blue':
-          return 'from-blue-500 to-cyan-500';
-        default:
-          return 'from-gray-500 to-gray-400';
-      }
-    };
+    // Story format dimensions (9:16 ratio, scaled to 50% for preview)
+    const dimensions = { width: 540, height: 960 };
 
     return (
       <div
@@ -49,110 +37,311 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
         style={{
           width: `${dimensions.width}px`,
           height: `${dimensions.height}px`,
+          background: 'linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative',
+          overflow: 'hidden',
+          fontFamily: 'system-ui, -apple-system, sans-serif',
         }}
-        className="bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 flex flex-col items-center justify-center p-12 relative overflow-hidden"
       >
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0" style={{
-            backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
-            backgroundSize: '40px 40px',
-          }} />
-        </div>
+        {/* Ambient glow effects - simplified for html2canvas */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            width: '100%',
+            height: '50%',
+            background: 'radial-gradient(ellipse at 30% 0%, rgba(168, 85, 247, 0.2) 0%, transparent 50%)',
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '0',
+            right: '0',
+            width: '100%',
+            height: '50%',
+            background: 'radial-gradient(ellipse at 70% 100%, rgba(236, 72, 153, 0.2) 0%, transparent 50%)',
+          }}
+        />
 
-        {/* Content */}
-        <div className="relative z-10 flex flex-col items-center text-center space-y-6 w-full">
-          {/* Small Header */}
-          <div className="text-xs uppercase tracking-widest text-gray-300">
-            My Music Type
-          </div>
-
-          {/* Type Code - Large Display */}
-          <div>
-            <h1
-              className="font-black tracking-tight"
-              style={{ fontSize: format === 'story' ? '120px' : '100px' }}
-            >
-              <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
-                {typeCode}
-              </span>
-            </h1>
-          </div>
-
-          {/* Type Name */}
-          <div>
-            <h2
-              className="font-bold text-white"
-              style={{ fontSize: format === 'story' ? '32px' : '28px' }}
-            >
-              {typeInfo.name}
-            </h2>
-          </div>
-
-          {/* Tagline */}
-          {typeInfo.tagline && (
-            <div className="px-8">
-              <p
-                className="text-gray-300 italic"
-                style={{ fontSize: format === 'story' ? '20px' : '18px' }}
-              >
-                "{typeInfo.tagline}"
-              </p>
-            </div>
-          )}
-
-          {/* Rarity Badge */}
-          {rarityBadge && (
-            <div className="mt-4">
+        {/* Main content */}
+        <div
+          style={{
+            position: 'relative',
+            zIndex: 10,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textAlign: 'center',
+            padding: '48px',
+            width: '100%',
+          }}
+        >
+          {isComparison ? (
+            /* Comparison layout */
+            <>
+              {/* Compatibility score */}
               <div
-                className={`
-                  inline-flex items-center gap-2 px-6 py-2 rounded-full
-                  bg-gradient-to-r ${getRarityGradient(rarityBadge.color)}
-                  text-white font-bold
-                `}
-                style={{ fontSize: format === 'story' ? '16px' : '14px' }}
+                style={{
+                  fontSize: '18px',
+                  fontWeight: 600,
+                  color: '#9ca3af',
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                  marginBottom: '24px',
+                }}
               >
-                <span style={{ fontSize: format === 'story' ? '20px' : '18px' }}>✨</span>
-                <span>{rarityBadge.text}</span>
+                {compatibilityScore}% Compatible
               </div>
-            </div>
+
+              {/* Both type codes side by side */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '32px',
+                  marginBottom: '32px',
+                }}
+              >
+                {/* First type */}
+                <div style={{ textAlign: 'center' }}>
+                  <div
+                    style={{
+                      fontSize: '64px',
+                      fontWeight: 900,
+                      letterSpacing: '-0.02em',
+                      color: '#a855f7',
+                    }}
+                  >
+                    {typeCode}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: '16px',
+                      fontWeight: 600,
+                      color: '#e5e7eb',
+                      marginTop: '8px',
+                    }}
+                  >
+                    {typeInfo.name}
+                  </div>
+                </div>
+
+                {/* VS divider */}
+                <div
+                  style={{
+                    fontSize: '24px',
+                    fontWeight: 700,
+                    color: '#6b7280',
+                  }}
+                >
+                  ×
+                </div>
+
+                {/* Second type */}
+                <div style={{ textAlign: 'center' }}>
+                  <div
+                    style={{
+                      fontSize: '64px',
+                      fontWeight: 900,
+                      letterSpacing: '-0.02em',
+                      color: '#06b6d4',
+                    }}
+                  >
+                    {compareTypeCode}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: '16px',
+                      fontWeight: 600,
+                      color: '#e5e7eb',
+                      marginTop: '8px',
+                    }}
+                  >
+                    {compareTypeInfo?.name}
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : (
+            /* Single type layout - Spotify Wrapped inspired */
+            <>
+              {/* Small label */}
+              <div
+                style={{
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  color: '#6b7280',
+                  letterSpacing: '0.2em',
+                  textTransform: 'uppercase',
+                  marginBottom: '16px',
+                }}
+              >
+                My Music Type
+              </div>
+
+              {/* Type code - large, bold, colorful */}
+              <div
+                style={{
+                  fontSize: '100px',
+                  fontWeight: 900,
+                  letterSpacing: '-0.02em',
+                  lineHeight: 1,
+                  color: '#a855f7',
+                  marginBottom: '16px',
+                }}
+              >
+                {typeCode}
+              </div>
+
+              {/* Type name */}
+              <div
+                style={{
+                  fontSize: '28px',
+                  fontWeight: 700,
+                  color: '#ffffff',
+                  marginBottom: '12px',
+                }}
+              >
+                {typeInfo.name}
+              </div>
+
+              {/* Tagline */}
+              {typeInfo.tagline && (
+                <div
+                  style={{
+                    fontSize: '16px',
+                    fontWeight: 400,
+                    color: '#9ca3af',
+                    fontStyle: 'italic',
+                    marginBottom: '32px',
+                    maxWidth: '400px',
+                  }}
+                >
+                  "{typeInfo.tagline}"
+                </div>
+              )}
+
+              {/* Personal stats - Option B: Stacked stats box */}
+              {(topArtist || totalPlays || topSong) && (
+                <div
+                  style={{
+                    background: 'rgba(39, 39, 42, 0.8)',
+                    borderRadius: '16px',
+                    padding: '20px 28px',
+                    marginBottom: '24px',
+                    minWidth: '280px',
+                  }}
+                >
+                  {topArtist && (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      marginBottom: topSong || totalPlays ? '12px' : '0',
+                    }}>
+                      <span style={{ fontSize: '20px' }}>🎤</span>
+                      <div>
+                        <div style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                          #1 Artist
+                        </div>
+                        <div style={{ fontSize: '18px', fontWeight: 700, color: '#ffffff' }}>
+                          {topArtist}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {totalPlays && (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      marginBottom: topSong ? '12px' : '0',
+                    }}>
+                      <span style={{ fontSize: '20px' }}>🎵</span>
+                      <div>
+                        <div style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                          Total Plays
+                        </div>
+                        <div style={{ fontSize: '18px', fontWeight: 700, color: '#ffffff' }}>
+                          {totalPlays.toLocaleString()}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {topSong && (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                    }}>
+                      <span style={{ fontSize: '20px' }}>🔥</span>
+                      <div>
+                        <div style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                          Most Played
+                        </div>
+                        <div style={{ fontSize: '18px', fontWeight: 700, color: '#ffffff' }}>
+                          {topSong.name} <span style={{ color: '#a855f7' }}>({topSong.plays}x)</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Time period */}
+              {timePeriod && (
+                <div
+                  style={{
+                    fontSize: '14px',
+                    fontWeight: 500,
+                    color: '#6b7280',
+                    marginBottom: '24px',
+                  }}
+                >
+                  {timePeriod}
+                </div>
+              )}
+            </>
           )}
 
-          {/* Dimension Breakdown */}
-          <div className="mt-6 px-8">
-            <p
-              className="text-gray-300"
-              style={{ fontSize: format === 'story' ? '14px' : '12px' }}
-            >
-              {dimensionString}
-            </p>
+          {/* Divider */}
+          <div
+            style={{
+              width: '80px',
+              height: '2px',
+              background: 'linear-gradient(90deg, #a855f7, #ec4899)',
+              marginBottom: '32px',
+            }}
+          />
+
+          {/* CTA */}
+          <div
+            style={{
+              fontSize: '20px',
+              fontWeight: 500,
+              color: '#9ca3af',
+              marginBottom: '12px',
+            }}
+          >
+            what's yours?
           </div>
 
-          {/* Bottom Branding */}
-          <div className="mt-auto pt-8">
-            <div className="space-y-2">
-              <p
-                className="text-white font-bold"
-                style={{ fontSize: format === 'story' ? '18px' : '16px' }}
-              >
-                What's your Music Type?
-              </p>
-              <p
-                className="text-purple-400 font-bold"
-                style={{ fontSize: format === 'story' ? '20px' : '18px' }}
-              >
-                unwrapped.fm
-              </p>
-            </div>
+          {/* Branding */}
+          <div
+            style={{
+              fontSize: '24px',
+              fontWeight: 700,
+              color: '#a855f7',
+            }}
+          >
+            unwrapped.fm
           </div>
-        </div>
-
-        {/* Decorative Elements */}
-        <div className="absolute top-8 right-8 text-purple-500/20 text-6xl">
-          🎵
-        </div>
-        <div className="absolute bottom-8 left-8 text-pink-500/20 text-6xl">
-          🎧
         </div>
       </div>
     );

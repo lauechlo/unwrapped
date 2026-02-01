@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import type { TypeCode } from '@/lib/v2.5/typing';
 import { getTypeInfo } from '@/lib/v2.5/typing/typeNames';
 import { calculateCompatibility, generateComparisonLink } from '@/lib/v2.5/comparison';
+import ShareCard from './ShareCard';
 
 interface ComparisonResultsProps {
   userType: TypeCode;
@@ -12,10 +13,12 @@ interface ComparisonResultsProps {
 
 /**
  * Comparison results display showing compatibility between two types
- * Implements P1.2 from SHARE_AND_COMPARISON_FLOW_SPEC
+ * Now with shareable comparison card
  */
 export default function ComparisonResults({ userType, friendType }: ComparisonResultsProps) {
   const [copied, setCopied] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const comparisonCardRef = useRef<HTMLDivElement>(null);
   const userInfo = getTypeInfo(userType);
   const friendInfo = getTypeInfo(friendType);
   const compatibility = calculateCompatibility(userType, friendType);
@@ -25,6 +28,51 @@ export default function ComparisonResults({ userType, friendType }: ComparisonRe
     await navigator.clipboard.writeText(shareLink);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  // Share comparison card image
+  const handleShareMatch = async () => {
+    if (!comparisonCardRef.current) return;
+
+    setIsGenerating(true);
+    try {
+      const html2canvas = (await import('html2canvas')).default;
+
+      const canvas = await html2canvas(comparisonCardRef.current, {
+        backgroundColor: '#000000',
+        scale: 2,
+        logging: false,
+      } as Parameters<typeof html2canvas>[1]);
+
+      const blob = await new Promise<Blob | null>((resolve) => {
+        canvas.toBlob(resolve, 'image/png');
+      });
+
+      if (!blob) throw new Error('Failed to create blob');
+
+      const file = new File([blob], `unwrapped-match-${userType}-${friendType}.png`, { type: 'image/png' });
+
+      // Try native share first
+      if (navigator.share && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          title: `${compatibility.score}% Compatible`,
+          text: `we're ${compatibility.score}% compatible! ${userType} × ${friendType} 🎵\n\nwhat's yours? ${shareLink}`,
+          files: [file],
+        });
+      } else {
+        // Fallback: download
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = `unwrapped-match-${userType}-${friendType}.png`;
+        link.href = url;
+        link.click();
+        URL.revokeObjectURL(url);
+      }
+    } catch (error) {
+      console.log('Share cancelled or failed:', error);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   // Get color based on compatibility level
@@ -173,25 +221,27 @@ export default function ComparisonResults({ userType, friendType }: ComparisonRe
         </div>
       )}
 
-      {/* Share Your Type */}
+      {/* Share This Match */}
       <div className="text-center bg-zinc-900/50 border border-zinc-700 rounded-2xl p-8">
         <h3 className="text-2xl font-bold text-white mb-4">
-          Share your type with others
+          Share this match
         </h3>
         <p className="text-gray-400 mb-6">
-          See how compatible you are with your friends
+          Show off your compatibility or compare with more friends
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <button
-            onClick={handleCopyLink}
-            className={`
+            onClick={handleShareMatch}
+            disabled={isGenerating}
+            className="
               inline-flex items-center gap-2 px-8 py-4 rounded-full
-              font-bold text-lg transition-all duration-200
-              ${copied
-                ? 'bg-green-500 text-white'
-                : 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105'
-              }
-            `}
+              bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600
+              disabled:from-gray-600 disabled:to-gray-600
+              text-white font-bold text-lg
+              shadow-lg hover:shadow-xl
+              transition-all duration-200
+              transform hover:scale-105 disabled:scale-100
+            "
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -204,23 +254,49 @@ export default function ComparisonResults({ userType, friendType }: ComparisonRe
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
+                d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+              />
+            </svg>
+            <span>{isGenerating ? 'Preparing...' : 'Share This Match'}</span>
+          </button>
+          <button
+            onClick={handleCopyLink}
+            className={`
+              inline-flex items-center gap-2 px-6 py-3 rounded-full
+              font-medium transition-all duration-200
+              ${copied
+                ? 'bg-green-500 text-white'
+                : 'bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white'
+              }
+            `}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
                 d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
               />
             </svg>
-            <span>{copied ? 'Copied!' : 'Copy My Link'}</span>
+            <span>{copied ? 'Copied!' : 'Copy Link'}</span>
           </button>
-          <a
-            href="/extended"
-            className="
-              inline-flex items-center gap-2 px-6 py-3 rounded-full
-              bg-zinc-800 hover:bg-zinc-700 border border-zinc-700
-              text-white font-medium
-              transition-all duration-200
-            "
-          >
-            <span>Analyze New Data</span>
-          </a>
         </div>
+      </div>
+
+      {/* Hidden comparison card for image generation */}
+      <div className="fixed -left-[9999px] -top-[9999px]" aria-hidden="true">
+        <ShareCard
+          ref={comparisonCardRef}
+          typeCode={userType}
+          compareTypeCode={friendType}
+          compatibilityScore={compatibility.score}
+        />
       </div>
     </div>
   );

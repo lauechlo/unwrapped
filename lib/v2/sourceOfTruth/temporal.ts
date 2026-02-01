@@ -115,7 +115,22 @@ export function buildTemporalAggregates(
     }
   }
 
-  for (const [monthKey, month] of monthData) {
+  // Sort months chronologically and track new artists per month
+  const sortedMonths = Array.from(monthData.keys()).sort();
+  const seenArtistsForMonths = new Set<string>();
+
+  for (const monthKey of sortedMonths) {
+    const month = monthData.get(monthKey)!;
+
+    // Count new artists this month
+    let newArtistsCount = 0;
+    for (const artist of month.artistCounts.keys()) {
+      if (!seenArtistsForMonths.has(artist)) {
+        newArtistsCount++;
+        seenArtistsForMonths.add(artist);
+      }
+    }
+
     // Sort artists by play count
     const topArtists = Array.from(month.artistCounts.entries())
       .sort((a, b) => b[1] - a[1])
@@ -130,6 +145,7 @@ export function buildTemporalAggregates(
       monthKey,
       playCount: month.plays.length,
       artists: new Set(month.artistCounts.keys()),
+      newArtists: newArtistsCount,
       topArtists,
       skipRate: skipped / month.plays.length,
       avgMsPlayed: totalMs / month.plays.length,

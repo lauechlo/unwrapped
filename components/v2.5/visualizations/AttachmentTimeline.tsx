@@ -52,27 +52,35 @@ export default function AttachmentTimeline({
   });
 
   // Calculate "era" streaks (consecutive months with same artist)
-  const eras: Array<{ artist: string; start: number; end: number; months: number }> = [];
-  let currentEra: { artist: string; start: number; end: number } | null = null;
+  type Era = { artist: string; start: number; end: number; months: number };
+  const eras: Era[] = [];
 
-  sortedData.forEach((data, idx) => {
-    if (!currentEra || currentEra.artist !== data.artist) {
-      if (currentEra) {
+  let currentArtist: string | null = null;
+  let eraStart = 0;
+
+  for (let idx = 0; idx < sortedData.length; idx++) {
+    const data = sortedData[idx];
+    if (currentArtist !== data.artist) {
+      if (currentArtist !== null) {
         eras.push({
-          ...currentEra,
-          months: currentEra.end - currentEra.start + 1,
+          artist: currentArtist,
+          start: eraStart,
+          end: idx - 1,
+          months: idx - eraStart,
         });
       }
-      currentEra = { artist: data.artist, start: idx, end: idx };
-    } else {
-      currentEra.end = idx;
+      currentArtist = data.artist;
+      eraStart = idx;
     }
-  });
+  }
 
-  if (currentEra) {
+  // Push final era
+  if (currentArtist !== null) {
     eras.push({
-      ...currentEra,
-      months: currentEra.end - currentEra.start + 1,
+      artist: currentArtist,
+      start: eraStart,
+      end: sortedData.length - 1,
+      months: sortedData.length - eraStart,
     });
   }
 

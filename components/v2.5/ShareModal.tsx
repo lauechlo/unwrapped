@@ -54,10 +54,10 @@ what's yours? ${comparisonLink}`;
       const html2canvas = (await import('html2canvas')).default;
 
       const canvas = await html2canvas(hiddenCardRef.current, {
-        background: '#000000',
+        backgroundColor: '#000000',
         scale: 2,
         logging: false,
-      });
+      } as Parameters<typeof html2canvas>[1]);
 
       canvas.toBlob((blob) => {
         if (!blob) return;
@@ -85,10 +85,10 @@ what's yours? ${comparisonLink}`;
       const html2canvas = (await import('html2canvas')).default;
 
       const canvas = await html2canvas(hiddenCardRef.current, {
-        background: '#000000',
+        backgroundColor: '#000000',
         scale: 2,
         logging: false,
-      });
+      } as Parameters<typeof html2canvas>[1]);
 
       const blob = await new Promise<Blob | null>((resolve) => {
         canvas.toBlob(resolve, 'image/png');
@@ -135,10 +135,10 @@ what's yours? ${comparisonLink}`;
       const html2canvas = (await import('html2canvas')).default;
 
       const canvas = await html2canvas(hiddenCardRef.current, {
-        background: '#000000',
+        backgroundColor: '#000000',
         scale: 2,
         logging: false,
-      });
+      } as Parameters<typeof html2canvas>[1]);
 
       canvas.toBlob((blob) => {
         if (!blob) return;

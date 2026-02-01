@@ -168,8 +168,24 @@ export function getRarityBadge(typeCode: string): RarityBadge | null {
   // (Most explorers skim; most deep listeners are rooted)
   if (processing === 'L' && discovery === 'E') {
     return {
-      text: 'Rare combo: Deep listener who actively discovers',
+      text: 'Deep diver who discovers',
       color: 'purple',
+    };
+  }
+
+  // Nocturnal + Looper = "Night shift grinder"
+  if (temporal === 'N' && processing === 'L') {
+    return {
+      text: 'Late night replay machine',
+      color: 'purple',
+    };
+  }
+
+  // Explorer + Fluid = always finding new favorites
+  if (discovery === 'E' && attachment === 'F') {
+    return {
+      text: 'Musical chameleon',
+      color: 'gold',
     };
   }
 
@@ -177,7 +193,7 @@ export function getRarityBadge(typeCode: string): RarityBadge | null {
   // (Night listeners tend toward fluid attachments)
   if (temporal === 'N' && attachment === 'A') {
     return {
-      text: 'Unusual: Night owl with lasting attachments',
+      text: 'Night owl with forever favorites',
       color: 'blue',
     };
   }
@@ -186,7 +202,15 @@ export function getRarityBadge(typeCode: string): RarityBadge | null {
   // (Surface listeners usually rotate)
   if (processing === 'S' && attachment === 'A') {
     return {
-      text: 'Interesting: Casual listener with forever favorites',
+      text: 'Casual but loyal',
+      color: 'blue',
+    };
+  }
+
+  // Diurnal + Rooted + Anchored = maximum comfort zone
+  if (temporal === 'D' && discovery === 'R' && attachment === 'A') {
+    return {
+      text: 'Comfort zone champion',
       color: 'blue',
     };
   }
@@ -194,21 +218,28 @@ export function getRarityBadge(typeCode: string): RarityBadge | null {
   // Full chaos types (NSEF, DSEF)
   if (typeCode === 'NSEF' || typeCode === 'DSEF') {
     return {
-      text: 'Chaotic energy detected',
+      text: 'Chaotic energy',
       color: 'purple',
     };
   }
 
-  // Full stability types (DLRA, DSRA)
-  if (typeCode === 'DLRA') {
+  // Full stability types (DLRA, DSRA, NLRA, NSRA)
+  if (typeCode === 'DLRA' || typeCode === 'NLRA') {
     return {
-      text: 'Maximum comfort zone energy',
+      text: 'Peak stability',
       color: 'blue',
     };
   }
 
-  // No badge for types without genuinely rare combinations
-  // We don't label anyone as "common" or "basic"
+  // Skimmer + Explorer + Fluid = variety seeker
+  if (processing === 'S' && discovery === 'E' && attachment === 'F') {
+    return {
+      text: 'Variety seeker',
+      color: 'gold',
+    };
+  }
+
+  // No badge for types without genuinely interesting combinations
   return null;
 }
 

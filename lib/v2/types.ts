@@ -113,6 +113,7 @@ export interface MonthAggregate {
   monthKey: string;  // 'YYYY-MM'
   playCount: number;
   artists: Set<string>;
+  newArtists: number;  // Count of artists first seen this month
   topArtists: Array<{ name: string; plays: number }>;
   skipRate: number;
   avgMsPlayed: number;

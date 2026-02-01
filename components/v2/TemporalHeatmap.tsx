@@ -11,7 +11,7 @@ const HOURS = Array.from({ length: 24 }, (_, i) => i);
 
 export default function TemporalHeatmap({ uploadedData }: TemporalHeatmapProps) {
   // Calculate heat map data
-  const { heatmapData, maxPlays, totalPlays, peakHour, peakDay } = useMemo(() => {
+  const { heatmapData, maxPlays, totalPlays, peakHour, peakDay, punchyInsight } = useMemo(() => {
     // Create 2D array: [day][hour] = playCount
     const data: number[][] = Array.from({ length: 7 }, () => Array(24).fill(0));
     let max = 0;
@@ -41,12 +41,54 @@ export default function TemporalHeatmap({ uploadedData }: TemporalHeatmapProps) 
       }
     });
 
+    // Calculate punchy insight
+    let insight = '';
+
+    // Night owl check (9pm-4am)
+    let nightPlays = 0;
+    let dayPlays = 0;
+    for (let d = 0; d < 7; d++) {
+      for (let h = 0; h < 24; h++) {
+        if (h >= 21 || h < 5) {
+          nightPlays += data[d][h];
+        } else {
+          dayPlays += data[d][h];
+        }
+      }
+    }
+    const nightRatio = nightPlays / total;
+
+    // Weekend check
+    let weekendPlays = 0;
+    for (let h = 0; h < 24; h++) {
+      weekendPlays += data[0][h] + data[6][h]; // Sun + Sat
+    }
+    const weekendRatio = weekendPlays / total;
+
+    // Generate insight
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const peakPct = ((peakCount / total) * 100).toFixed(1);
+
+    if (nightRatio > 0.4) {
+      insight = `Night owl energy: ${Math.round(nightRatio * 100)}% of your listening happens after 9pm`;
+    } else if (weekendRatio > 0.4) {
+      insight = `Weekend warrior: ${Math.round(weekendRatio * 100)}% of listening on Sat/Sun`;
+    } else if (peakH >= 6 && peakH <= 9) {
+      insight = `Early bird vibes: Your peak listening is during the morning commute`;
+    } else if (peakH >= 17 && peakH <= 20) {
+      insight = `Wind-down hours: You listen most during the evening transition`;
+    } else {
+      const timeLabel = peakH === 0 ? '12am' : peakH < 12 ? `${peakH}am` : peakH === 12 ? '12pm' : `${peakH - 12}pm`;
+      insight = `${dayNames[peakD]} at ${timeLabel} = your most active slot (${peakPct}% of all listening)`;
+    }
+
     return {
       heatmapData: data,
       maxPlays: max,
       totalPlays: total,
       peakHour: peakH,
       peakDay: peakD,
+      punchyInsight: insight,
     };
   }, [uploadedData]);
 
@@ -166,6 +208,13 @@ export default function TemporalHeatmap({ uploadedData }: TemporalHeatmapProps) 
               </div>
               <span className="text-xs text-gray-500">More</span>
             </div>
+          </div>
+        </div>
+
+        {/* Punchy Insight Callout */}
+        <div className="mt-8 bg-purple-500/10 border border-purple-500/30 rounded-xl p-5 text-center">
+          <div className="text-lg md:text-xl font-semibold text-purple-300">
+            {punchyInsight}
           </div>
         </div>
       </div>
