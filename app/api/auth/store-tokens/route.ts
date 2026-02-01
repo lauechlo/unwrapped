@@ -16,8 +16,8 @@ export async function GET(request: NextRequest) {
 
   console.log('[Store Tokens] Storing tokens in cookies');
 
-  // Create redirect response
-  const response = NextResponse.redirect(new URL('/results', request.url));
+  // Create redirect response - V1 results page
+  const response = NextResponse.redirect(new URL('/v1/results', request.url));
 
   // Store tokens as cookies
   response.cookies.set('spotify_access_token', accessToken, {

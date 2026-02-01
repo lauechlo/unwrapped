@@ -2,36 +2,34 @@
 
 import { useState, useRef, useEffect } from 'react';
 import type { TypeCode } from '@/lib/v2.5/typing';
-import { getTypeInfo, getRarityBadge } from '@/lib/v2.5/typing/typeNames';
+import { getTypeInfo } from '@/lib/v2.5/typing/typeNames';
 import { generateComparisonLink } from '@/lib/v2.5/comparison';
 import ShareCard from './ShareCard';
+import type { ShareStats } from './TypeShareButton';
 
 interface ShareModalProps {
   isOpen: boolean;
   onClose: () => void;
   typeCode: TypeCode;
+  shareStats?: ShareStats;
 }
 
-type CardFormat = 'story' | 'square';
-
 /**
- * Simplified share modal with inline feedback and Web Share API
+ * DM-optimized share modal with casual text and neon card
  */
-export default function ShareModal({ isOpen, onClose, typeCode }: ShareModalProps) {
-  const [cardFormat, setCardFormat] = useState<CardFormat>('story');
+export default function ShareModal({ isOpen, onClose, typeCode, shareStats }: ShareModalProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+  const hiddenCardRef = useRef<HTMLDivElement>(null);
 
   const typeInfo = getTypeInfo(typeCode);
   const comparisonLink = generateComparisonLink(typeCode);
 
-  // Universal share text (no platform selection needed)
-  const shareText = `I'm a ${typeCode} — "${typeInfo.name}"
+  // Casual DM-friendly share text
+  const shareText = `im a ${typeCode} — ${typeInfo.name} 🎵
 
-${typeInfo.tagline}
-
-What's yours? ${comparisonLink}`;
+what's yours? ${comparisonLink}`;
 
   // Clear copied feedback after 2 seconds
   useEffect(() => {
@@ -49,14 +47,14 @@ What's yours? ${comparisonLink}`;
   };
 
   const handleDownload = async () => {
-    if (!cardRef.current) return;
+    if (!hiddenCardRef.current) return;
 
     setIsGenerating(true);
     try {
       const html2canvas = (await import('html2canvas')).default;
 
-      const canvas = await html2canvas(cardRef.current, {
-        backgroundColor: '#000000',
+      const canvas = await html2canvas(hiddenCardRef.current, {
+        background: '#000000',
         scale: 2,
         logging: false,
       });
@@ -66,7 +64,7 @@ What's yours? ${comparisonLink}`;
 
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
-        link.download = `unwrapped-${typeCode}-${cardFormat}.png`;
+        link.download = `unwrapped-${typeCode}.png`;
         link.href = url;
         link.click();
         URL.revokeObjectURL(url);
@@ -80,14 +78,14 @@ What's yours? ${comparisonLink}`;
 
   // Web Share API for native sharing on mobile
   const handleNativeShare = async () => {
-    if (!cardRef.current) return;
+    if (!hiddenCardRef.current) return;
 
     setIsGenerating(true);
     try {
       const html2canvas = (await import('html2canvas')).default;
 
-      const canvas = await html2canvas(cardRef.current, {
-        backgroundColor: '#000000',
+      const canvas = await html2canvas(hiddenCardRef.current, {
+        background: '#000000',
         scale: 2,
         logging: false,
       });
@@ -130,14 +128,14 @@ What's yours? ${comparisonLink}`;
 
   // Instagram Stories deep link (works on mobile with Instagram installed)
   const handleShareToStories = async () => {
-    if (!cardRef.current) return;
+    if (!hiddenCardRef.current) return;
 
     setIsGenerating(true);
     try {
       const html2canvas = (await import('html2canvas')).default;
 
-      const canvas = await html2canvas(cardRef.current, {
-        backgroundColor: '#000000',
+      const canvas = await html2canvas(hiddenCardRef.current, {
+        background: '#000000',
         scale: 2,
         logging: false,
       });
@@ -181,41 +179,46 @@ What's yours? ${comparisonLink}`;
 
         {/* Content */}
         <div className="p-5 space-y-5">
-          {/* Card Preview */}
+          {/* Card Preview - scaled for display */}
           <div>
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-medium text-gray-400">Preview</h3>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setCardFormat('story')}
-                  className={`px-3 py-1 text-xs rounded-full transition-all ${
-                    cardFormat === 'story'
-                      ? 'bg-purple-500 text-white'
-                      : 'bg-zinc-800 text-gray-400 hover:bg-zinc-700'
-                  }`}
+            <h3 className="text-sm font-medium text-gray-400 mb-3">Preview</h3>
+            <div className="flex justify-center bg-zinc-800/50 rounded-lg p-4 overflow-hidden">
+              {/* Container sized for scaled card: 540x960 * 0.35 = 189x336 + padding */}
+              <div className="relative" style={{ width: '200px', height: '350px' }}>
+                <div
+                  className="absolute top-0 left-1/2 origin-top"
+                  style={{ transform: 'translateX(-50%) scale(0.35)' }}
                 >
-                  Story
-                </button>
-                <button
-                  onClick={() => setCardFormat('square')}
-                  className={`px-3 py-1 text-xs rounded-full transition-all ${
-                    cardFormat === 'square'
-                      ? 'bg-purple-500 text-white'
-                      : 'bg-zinc-800 text-gray-400 hover:bg-zinc-700'
-                  }`}
-                >
-                  Square
-                </button>
+                  <ShareCard
+                    typeCode={typeCode}
+                    topArtist={shareStats?.topArtist}
+                    totalPlays={shareStats?.totalPlays}
+                    topSong={shareStats?.topSong}
+                    timePeriod={shareStats?.timePeriod}
+                  />
+                </div>
               </div>
             </div>
-            <div className="flex justify-center bg-zinc-800 rounded-lg p-4">
-              <ShareCard
-                ref={cardRef}
-                typeCode={typeCode}
-                format={cardFormat}
-                platform="instagram"
-              />
-            </div>
+          </div>
+
+          {/* Hidden full-size card for canvas capture - positioned off-screen but in DOM */}
+          <div
+            style={{
+              position: 'absolute',
+              left: '-9999px',
+              top: '0',
+              opacity: 1,
+              pointerEvents: 'none',
+            }}
+          >
+            <ShareCard
+              ref={hiddenCardRef}
+              typeCode={typeCode}
+              topArtist={shareStats?.topArtist}
+              totalPlays={shareStats?.totalPlays}
+              topSong={shareStats?.topSong}
+              timePeriod={shareStats?.timePeriod}
+            />
           </div>
 
           {/* Share Text + Link Combined */}
@@ -295,7 +298,16 @@ What's yours? ${comparisonLink}`;
                 disabled={isGenerating}
                 className="flex-1 px-4 py-3 rounded-lg bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 disabled:from-gray-600 disabled:to-gray-600 text-white font-medium text-sm transition-all"
               >
-                {copiedField === 'stories' ? 'Saved! Add to Stories' : 'Instagram Stories'}
+                {copiedField === 'stories' ? (
+                  <span className="flex items-center justify-center gap-1">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Saved! Open Instagram
+                  </span>
+                ) : (
+                  'Save for Stories'
+                )}
               </button>
 
               {/* Download (if native share is primary) */}

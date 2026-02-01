@@ -1,7 +1,7 @@
 'use client';
 
 import type { PersonaMatch } from '@/lib/v2/personas';
-import ShareButton from '@/components/ShareButton';
+// ShareButton removed - V2 is deprecated, use V2.5 TypeShareButton instead
 
 interface PersonaCardProps {
   personaMatch: PersonaMatch;
@@ -111,18 +111,7 @@ export default function PersonaCard({ personaMatch }: PersonaCardProps) {
         </div>
       </details>
 
-      {/* Share Button */}
-      <div className="mt-6 flex justify-center">
-        <ShareButton
-          cardId="persona-card"
-          cardTitle={`${persona.name} - ${persona.tagline}`}
-          cardType="persona"
-          onShare={() => {
-            // Track share analytics
-            console.log(`[Share] Persona: ${persona.name}`);
-          }}
-        />
-      </div>
+      {/* Share Button - V2 deprecated, share via V2.5 TypeShareButton */}
 
       {/* Footer Note */}
       <div className="mt-6 pt-4 border-t border-zinc-700">

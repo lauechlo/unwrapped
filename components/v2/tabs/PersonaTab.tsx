@@ -12,15 +12,7 @@ interface PersonaTabProps {
 export default function PersonaTab({ personaMatch, psychologicalSummary }: PersonaTabProps) {
   return (
     <div className="max-w-5xl mx-auto px-4 py-12 space-y-8">
-      {/* Header */}
-      <div className="text-center mb-12">
-        <h2 className="text-3xl md:text-4xl font-bold mb-3">People Like You</h2>
-        <p className="text-gray-300">
-          Based on your listening patterns, here's your archetype
-        </p>
-      </div>
-
-      {/* Persona Card */}
+      {/* Persona Card - Header removed since "Your Archetype" section already has one */}
       <PersonaCard personaMatch={personaMatch} />
 
       {/* Psychological Profile - CollapsiblePsychologicalSummary has its own header */}

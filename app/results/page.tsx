@@ -1,108 +1,248 @@
-/**
- * Results Page - V3 Viral Labels
- * Displays user analysis with viral, screenshot-worthy insights
- */
+'use client';
 
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
-import { fetchUserData } from '@/lib/spotify';
-import { runAllDetectors, type UserListeningData } from '@/lib/detectors';
-import { DataBreakdown } from '@/components/DataBreakdown';
-import { SynthesisClient } from '@/components/v1/SynthesisClient';
-import { Footer } from '@/components/Footer';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { buildSourceOfTruth } from '@/lib/v2/sourceOfTruth';
+import { detectExplorer } from '@/lib/v2/detectors/behavioral/explorer';
+import { detectLoyalist } from '@/lib/v2/detectors/behavioral/loyalist';
+import { detectSkipVelocity } from '@/lib/v2/detectors/behavioral/skipVelocity';
+import { detectSearcher } from '@/lib/v2/detectors/behavioral/searcher';
+import { detectLooper } from '@/lib/v2/detectors/behavioral/looper';
+import { detectCompletionLoyalist } from '@/lib/v2/detectors/behavioral/completionLoyalist';
+import { detectLifeEvent } from '@/lib/v2/detectors/temporal/lifeEvent';
+import { detectRitual } from '@/lib/v2/detectors/temporal/ritual';
+import { detectGhostTimeline } from '@/lib/v2/detectors/temporal/ghostTimeline';
+import { V2SynthesisClient } from '@/components/v2/V2SynthesisClient';
 
-export default async function ResultsPage() {
-  // Check authentication
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get('spotify_access_token')?.value;
+type DetectionResult = {
+  patternId: string;
+  patternName: string;
+  patternFamily: string;
+  confidence: number;
+  distinctiveness: number;
+  evidence: any[];
+  psychologicalBasis: string;
+};
 
-  if (!accessToken) {
-    redirect('/?error=not_authenticated');
+export default function ExtendedResultsPage() {
+  const router = useRouter();
+  const [status, setStatus] = useState<'loading' | 'analyzing' | 'complete' | 'error'>('loading');
+  const [patterns, setPatterns] = useState<DetectionResult[]>([]);
+  const [stats, setStats] = useState({
+    totalPlays: 0,
+    uniqueTracks: 0,
+    uniqueArtists: 0,
+    dateRange: '',
+  });
+  const [error, setError] = useState('');
+  const [sourceOfTruth, setSourceOfTruth] = useState<any>(null); // Store SOT for V2.5
+  const [uploadedData, setUploadedData] = useState<any[]>([]); // Store raw data for temporal viz
+
+  useEffect(() => {
+    const loadAndAnalyze = async () => {
+      try {
+        // Load data from sessionStorage (chunked to avoid quota errors)
+        const chunksStr = sessionStorage.getItem('v2_chunks');
+        if (!chunksStr) {
+          setError('No data found. Please upload your files first.');
+          setStatus('error');
+          return;
+        }
+
+        const chunks = parseInt(chunksStr);
+        let dataStr = '';
+
+        for (let i = 0; i < chunks; i++) {
+          const chunk = sessionStorage.getItem(`v2_chunk_${i}`);
+          if (chunk) {
+            dataStr += chunk;
+          }
+        }
+
+        if (!dataStr) {
+          setError('No data found. Please upload your files first.');
+          setStatus('error');
+          return;
+        }
+
+        const uploadedData = JSON.parse(dataStr);
+        if (!Array.isArray(uploadedData) || uploadedData.length === 0) {
+          setError('Invalid data format');
+          setStatus('error');
+          return;
+        }
+
+        // Clear sessionStorage after loading to free up space
+        sessionStorage.clear();
+
+        // Build SourceOfTruth
+        setStatus('analyzing');
+        const sot = buildSourceOfTruth(uploadedData);
+
+        // Store for V2.5
+        setSourceOfTruth(sot);
+        setUploadedData(uploadedData);
+
+        // Calculate stats
+        const timestamps = uploadedData
+          .map((p: any) => new Date(p.timestamp || p.ts || p.endTime))
+          .filter((d: Date) => !isNaN(d.getTime()))
+          .sort((a: Date, b: Date) => a.getTime() - b.getTime());
+
+        const firstDate = timestamps[0];
+        const lastDate = timestamps[timestamps.length - 1];
+
+        setStats({
+          totalPlays: sot.meta.totalPlays,
+          uniqueTracks: sot.tracks.size,
+          uniqueArtists: sot.artists.size,
+          dateRange: firstDate && lastDate
+            ? `${firstDate.toLocaleDateString()} - ${lastDate.toLocaleDateString()}`
+            : 'Unknown date range',
+        });
+
+        // Run all 9 V2 detectors
+        console.log('[V2 Detectors] Running all detectors...');
+        const explorerResults = detectExplorer(sot, 10);
+        const loyalistResults = detectLoyalist(sot, 10);
+        const skipVelocityResults = detectSkipVelocity(sot, 10);
+        const searcherResults = detectSearcher(sot, 10);
+        const looperResults = detectLooper(sot, 10);
+        const completionLoyalistResults = detectCompletionLoyalist(sot, 10);
+        const lifeEventResults = detectLifeEvent(sot, 10);
+        const ritualResults = detectRitual(sot, 10);
+        const ghostTimelineResults = detectGhostTimeline(sot, 10);
+
+        console.log('[V2 Detectors] Results:');
+        console.log(`  Explorer: ${explorerResults.length}`);
+        console.log(`  Loyalist: ${loyalistResults.length}`);
+        console.log(`  Skip Velocity: ${skipVelocityResults.length}`);
+        console.log(`  Searcher: ${searcherResults.length}`);
+        console.log(`  Looper: ${looperResults.length}`);
+        console.log(`  Completion Loyalist: ${completionLoyalistResults.length}`);
+        console.log(`  Life Event: ${lifeEventResults.length}`);
+        console.log(`  Ritual: ${ritualResults.length}`);
+        console.log(`  Ghost Timeline: ${ghostTimelineResults.length}`);
+        console.log(`  TOTAL: ${explorerResults.length + loyalistResults.length + skipVelocityResults.length + searcherResults.length + looperResults.length + completionLoyalistResults.length + lifeEventResults.length + ritualResults.length + ghostTimelineResults.length}`);
+
+        const allPatterns: DetectionResult[] = [
+          ...explorerResults,
+          ...loyalistResults,
+          ...skipVelocityResults,
+          ...searcherResults,
+          ...looperResults,
+          ...completionLoyalistResults,
+          ...lifeEventResults,
+          ...ritualResults,
+          ...ghostTimelineResults,
+        ];
+
+        // Map V2 pattern families to V1 psychological dimensions for UI consistency
+        const patternsWithDimensions = allPatterns.map(p => ({
+          ...p,
+          psychologicalDimension: mapFamilyToDimension(p.patternFamily),
+          category: p.patternFamily,
+        }));
+
+        // Sort by confidence * distinctiveness
+        patternsWithDimensions.sort((a, b) => {
+          const scoreA = a.confidence * a.distinctiveness;
+          const scoreB = b.confidence * b.distinctiveness;
+          return scoreB - scoreA;
+        });
+
+        console.log('[V2 Detectors] Top 10 patterns by score:');
+        patternsWithDimensions.slice(0, 10).forEach((p, i) => {
+          console.log(`  ${i + 1}. [${p.patternFamily}] ${p.patternName} - confidence: ${p.confidence.toFixed(2)}, distinctiveness: ${p.distinctiveness.toFixed(2)}, score: ${(p.confidence * p.distinctiveness).toFixed(3)}`);
+        });
+
+        setPatterns(patternsWithDimensions);
+        setStatus('complete');
+      } catch (err) {
+        console.error('Analysis error:', err);
+        setError(err instanceof Error ? err.message : 'Failed to analyze data');
+        setStatus('error');
+      }
+    };
+
+    loadAndAnalyze();
+  }, []);
+
+  // Map V2 pattern families to V1 psychological dimensions
+  function mapFamilyToDimension(family: string): string {
+    const mapping: Record<string, string> = {
+      'diversity': 'discovery and exploration',
+      'loyalty_retention': 'identity and attachment',
+      'engagement': 'attention and persistence',
+      'repetition': 'ritual and repetition',
+      'evolution': 'temporal patterns',
+      'temporal': 'temporal patterns',
+      'loyalty_dropoff': 'memory and avoidance',
+    };
+    return mapping[family] || 'cognitive patterns';
   }
 
-  // Fetch Spotify data
-  let userData;
-  try {
-    console.log('[Results] Fetching Spotify data...');
-    userData = await fetchUserData(accessToken);
-  } catch (error) {
-    console.error('[Results] Error fetching data:', error);
-    redirect('/?error=fetch_failed');
+  if (status === 'loading' || status === 'analyzing') {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4 animate-pulse">🎵</div>
+          <h2 className="text-3xl font-bold mb-2">
+            {status === 'loading' ? 'Loading...' : 'Finding patterns...'}
+          </h2>
+          <p className="text-gray-400">
+            This might take a moment
+          </p>
+        </div>
+      </div>
+    );
   }
 
-  // Run pattern detection
-  let detectedPatterns: Awaited<ReturnType<typeof runAllDetectors>> = [];
-  try {
-    console.log('[Results] Running pattern detection...');
-    const listeningData: UserListeningData = userData as UserListeningData;
-    detectedPatterns = await runAllDetectors(listeningData);
-    console.log(`[Results] Detected ${detectedPatterns.length} patterns`);
-  } catch (error) {
-    console.error('[Results] Pattern detection error:', error);
-    detectedPatterns = [];
+  if (status === 'error') {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="max-w-2xl mx-auto text-center p-8">
+          <div className="text-6xl mb-4">❌</div>
+          <h2 className="text-3xl font-bold mb-4 text-red-400">Analysis Failed</h2>
+          <p className="text-gray-400 mb-8">{error}</p>
+          <button
+            onClick={() => router.push('/')}
+            className="px-6 py-3 bg-zinc-700 hover:bg-zinc-600 rounded-lg transition-colors"
+          >
+            ← Back to Upload
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Pass patterns to V2 synthesis for narrative generation
+  if (patterns.length === 0) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="max-w-2xl mx-auto text-center p-8">
+          <div className="text-6xl mb-4">🔍</div>
+          <h2 className="text-3xl font-bold mb-4">Need More Data</h2>
+          <p className="text-gray-400 mb-8">
+            Not enough listening history to find patterns. Try uploading more files.
+          </p>
+          <button
+            onClick={() => router.push('/')}
+            className="px-6 py-3 bg-zinc-700 hover:bg-zinc-600 rounded-lg transition-colors"
+          >
+            ← Back to Upload
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* Synthesis with client-side caching */}
-      {detectedPatterns.length > 0 ? (
-        <SynthesisClient detectedPatterns={detectedPatterns} />
-      ) : (
-        <section className="min-h-screen flex items-center justify-center p-8">
-          <div className="max-w-2xl mx-auto text-center">
-            <h1 className="text-5xl font-bold mb-8">Not enough data yet</h1>
-            <p className="text-xl text-gray-400">
-              Keep listening to Spotify and come back later for your personalized insights!
-            </p>
-          </div>
-        </section>
-      )}
-
-      {/* Data Breakdown - Clean view of all analyzed data */}
-      <DataBreakdown
-        detectedPatterns={detectedPatterns}
-        topTracks={userData.topTracks}
-        topArtists={userData.topArtists}
-      />
-
-      {/* Footer */}
-      <Footer />
-
-      {/* Debug section - Hidden for production */}
-      {/* Uncomment for debugging: */}
-      {/* <section className="py-12 px-8 bg-zinc-950">
-        <div className="max-w-6xl mx-auto">
-          <details className="cursor-pointer">
-            <summary className="text-2xl font-semibold mb-4 text-gray-400 hover:text-white transition-colors">
-              🔍 Debug Info (Click to Expand)
-            </summary>
-
-            <div className="mt-6 space-y-4">
-              <div className="bg-zinc-900 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold mb-2 text-green-400">Patterns Detected: {detectedPatterns.length}</h3>
-                <div className="grid md:grid-cols-3 gap-2 text-sm">
-                  {detectedPatterns.map((p, i) => (
-                    <div key={i} className="bg-zinc-800 p-2 rounded">
-                      {p.patternName} ({Math.round(p.confidence * 100)}%)
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="bg-zinc-900 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold mb-2 text-blue-400">Top Tracks (4 weeks)</h3>
-                <div className="space-y-1 text-sm">
-                  {userData.topTracks.short.slice(0, 5).map((track: any, i: number) => (
-                    <div key={i} className="text-gray-400">
-                      {i + 1}. {track.name} - {track.artists[0].name}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </details>
-        </div>
-      </section> */}
-    </div>
+    <V2SynthesisClient
+      detectedPatterns={patterns}
+      stats={stats}
+      uploadedData={uploadedData}
+      sourceOfTruth={sourceOfTruth}
+    />
   );
 }

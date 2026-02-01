@@ -1,183 +1,310 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from 'react';
-import { canMakeRequest } from '@/lib/rateLimit';
-import { UsageLimitBanner } from '@/components/UsageLimitBanner';
-import { RateLimitModal } from '@/components/RateLimitModal';
-import { ExampleCardsSection } from '@/components/ExampleCardsSection';
+import { useState } from 'react';
+import FileUploader from '@/components/FileUploader';
+import { Footer } from '@/components/Footer';
+import ExtendedResultsComponent from './results/ExtendedResultsComponent';
 
-/**
- * Landing page with Spotify OAuth and rate limiting
- */
-export default function Home() {
-  const [showLimitModal, setShowLimitModal] = useState(false);
-  const [hasUsesLeft, setHasUsesLeft] = useState(true);
-  const [authError, setAuthError] = useState<string | null>(null);
+export default function ExtendedPage() {
+  const [uploadedData, setUploadedData] = useState<any>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  useEffect(() => {
-    setHasUsesLeft(canMakeRequest());
+  const handleUploadComplete = (data: any) => {
+    setUploadedData(data);
 
-    // Check for OAuth errors in URL params
-    const params = new URLSearchParams(window.location.search);
-    const error = params.get('error');
-    if (error) {
-      setAuthError(error);
-    }
-  }, []);
+    // Store metadata only (not the full data - too large for localStorage)
+    localStorage.setItem('v2_upload_timestamp', Date.now().toString());
+    localStorage.setItem('v2_upload_plays', data.length.toString());
+  };
 
-  const handleConnectClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (!hasUsesLeft) {
-      e.preventDefault();
-      setShowLimitModal(true);
+  const handleAnalyze = () => {
+    if (uploadedData) {
+      console.log('[Extended Upload] Analyze button clicked');
+      console.log(`[Extended Upload] Data size: ${uploadedData.length} plays`);
+      console.log('[Extended Upload] Transitioning to analysis...');
+
+      // Keep data in memory - no storage needed
+      setIsAnalyzing(true);
+    } else {
+      console.error('[Extended Upload] No data to analyze!');
     }
   };
 
+  // If analyzing, show results component with data
+  if (isAnalyzing && uploadedData) {
+    return <ExtendedResultsComponent uploadedData={uploadedData} />;
+  }
+
   return (
-    <>
-      {/* Structured Data for SEO */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebApplication",
-            "name": "Unwrapped",
-            "description": "Discover what your Spotify listening habits reveal about you. Get personalized insights and shareable cards.",
-            "url": "https://unwrapped.fm",
-            "applicationCategory": "MusicApplication",
-            "offers": {
-              "@type": "Offer",
-              "price": "0",
-              "priceCurrency": "USD"
-            },
-            "creator": {
-              "@type": "Person",
-              "name": "Chloe"
-            }
-          })
-        }}
-      />
-
-      <div className="min-h-screen bg-black text-white">
-        {/* Usage limit banner */}
-        <UsageLimitBanner />
-
-        {/* OAuth Error Banner - User not on allowlist */}
-        {authError && (
-          <div className="bg-pink-500/10 border-b border-pink-500/30 py-4 px-4">
-            <div className="max-w-4xl mx-auto text-center">
-              <div className="flex items-center justify-center gap-2 mb-3">
-                <span className="text-2xl">💔</span>
-                <h3 className="text-lg font-bold text-white">
-                  Spotify Unwrapped v1 is at capacity!
-                </h3>
-              </div>
-              <p className="text-sm text-gray-300 mb-4 max-w-2xl mx-auto">
-                This early version is limited to 25 beta testers while we use Spotify's development API.
-              </p>
-              <p className="text-sm text-pink-300 font-semibold mb-4">
-                ✨ Good news: v2 is launching soon with unlimited access, more insights, and new features!
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
-                <a
-                  href="https://forms.gle/djCs4NFUBnwFCLBr7"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold rounded-lg
-                           hover:opacity-90 transition-all shadow-lg hover:shadow-pink-500/50"
-                >
-                  🎉 Join the v2 Waitlist
-                </a>
-                <button
-                  onClick={() => {
-                    setAuthError(null);
-                    window.history.replaceState({}, '', '/');
-                  }}
-                  className="px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors"
-                >
-                  Dismiss
-                </button>
-              </div>
-              <p className="text-xs text-gray-500 mt-4">
-                Got sent here by a friend? Join the waitlist to be first in line when we launch!
-              </p>
-            </div>
+    <div className="min-h-screen bg-black text-white">
+      {/* Hero Section */}
+      <section className="py-20 px-8 bg-gradient-to-b from-purple-950/20 to-black">
+        <div className="max-w-6xl mx-auto text-center">
+          <div className="inline-block bg-purple-500/20 border border-purple-500/40 px-4 py-2 rounded-full text-sm mb-6">
+            Full Listening History
           </div>
-        )}
 
-      {/* Main content */}
-      <div className="flex items-center justify-center px-4 py-16 min-h-[calc(100vh-60px)]">
-        <div className="max-w-4xl w-full">
-          <div className="flex flex-col md:flex-row gap-8 md:gap-20 items-center">
-            {/* Left side - Text content */}
-            <div className="text-center md:text-left flex-1">
-              <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
-                Unwrapped
-              </h1>
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            Unwrapped
+          </h1>
 
-              <p className="text-lg md:text-xl text-gray-400 mb-8">
-                Spotify shows what you listen to. We show <span className="text-pink-400 font-semibold">who you are</span>.
-              </p>
+          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+            See what your <strong className="text-purple-400">Spotify history</strong> says about you
+          </p>
 
-              <a
-                href="/api/auth/spotify"
-                onClick={handleConnectClick}
-                className={`inline-block font-semibold px-8 py-4 rounded-full transition-all shadow-lg
-                  ${hasUsesLeft
-                    ? 'bg-green-500 hover:bg-green-600 text-black hover:shadow-green-500/50'
-                    : 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                  }`}
-              >
-                {hasUsesLeft ? 'Connect Spotify' : 'Limit Reached'}
-              </a>
-
-              {/* Feature cards */}
-              <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
-                <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
-                  <div className="text-pink-400 font-semibold mb-1">30+ Patterns</div>
-                  <div className="text-xs text-gray-500">Replay habits, comfort songs, listening rituals</div>
-                </div>
-                <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
-                  <div className="text-purple-400 font-semibold mb-1">Real Evidence</div>
-                  <div className="text-xs text-gray-500">Your actual songs and artists, with receipts</div>
-                </div>
-                <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
-                  <div className="text-blue-400 font-semibold mb-1">Share Cards</div>
-                  <div className="text-xs text-gray-500">Ready for Instagram Stories</div>
-                </div>
-              </div>
+          <div className="flex flex-wrap justify-center gap-4 mb-12">
+            <div className="bg-zinc-900/50 border border-zinc-700 px-6 py-3 rounded-lg">
+              <div className="text-sm text-gray-400">No Login Needed</div>
+              <div className="text-lg font-bold text-green-400">Just upload your files</div>
             </div>
-
-            {/* Right side - Mobile mockup (static, no animations) */}
-            <div className="hidden md:flex justify-center md:justify-end">
-              <img
-                src="/mockup.png"
-                alt="Mobile app preview showing callout feature"
-                className="w-64 h-auto drop-shadow-2xl"
-              />
+            <div className="bg-zinc-900/50 border border-zinc-700 px-6 py-3 rounded-lg">
+              <div className="text-sm text-gray-400">30+ Patterns</div>
+              <div className="text-lg font-bold text-purple-400">From your real data</div>
+            </div>
+            <div className="bg-zinc-900/50 border border-zinc-700 px-6 py-3 rounded-lg">
+              <div className="text-sm text-gray-400">Stays Private</div>
+              <div className="text-lg font-bold text-blue-400">Nothing leaves your browser</div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Example Cards Section */}
-      <ExampleCardsSection />
+      {/* Upload Section */}
+      <section className="py-16 px-8">
+        <div className="max-w-6xl mx-auto">
+          <FileUploader onUploadComplete={handleUploadComplete} />
 
-        {/* Rate limit modal */}
-        <RateLimitModal
-          isOpen={showLimitModal}
-          onClose={() => setShowLimitModal(false)}
-        />
+          {/* Analyze Button */}
+          {uploadedData && (
+            <div className="mt-8 text-center">
+              <button
+                onClick={handleAnalyze}
+                className="group relative px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600
+                         hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-xl
+                         transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/50
+                         text-lg"
+              >
+                <span className="relative z-10">Analyze My Listening History →</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 opacity-0
+                             group-hover:opacity-20 rounded-xl transition-opacity blur-xl" />
+              </button>
+            </div>
+          )}
+        </div>
+      </section>
 
-        {/* Footer */}
-        <footer className="py-8 text-center text-sm text-gray-600">
-          <a href="/privacy" className="hover:text-gray-400 transition-colors">
-            Privacy Policy
+      {/* Why Full History Section */}
+      <section className="py-16 px-8 bg-zinc-950">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center">
+            Your Full History = Better Insights
+          </h2>
+          <p className="text-gray-400 text-center mb-12 max-w-2xl mx-auto">
+            Spotify's data export includes everything—not just your top 50
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="bg-gradient-to-br from-purple-900/20 to-pink-900/20 border border-purple-500/40 rounded-xl p-6 text-center">
+              <div className="text-4xl mb-3">📊</div>
+              <h3 className="text-lg font-bold text-purple-400 mb-2">Every Play</h3>
+              <p className="text-sm text-gray-300">Years of listening data, not just recent favorites</p>
+            </div>
+            <div className="bg-gradient-to-br from-purple-900/20 to-pink-900/20 border border-purple-500/40 rounded-xl p-6 text-center">
+              <div className="text-4xl mb-3">⏭️</div>
+              <h3 className="text-lg font-bold text-purple-400 mb-2">Skip Behavior</h3>
+              <p className="text-sm text-gray-300">Songs you skip, songs you finish, songs you replay</p>
+            </div>
+            <div className="bg-gradient-to-br from-purple-900/20 to-pink-900/20 border border-purple-500/40 rounded-xl p-6 text-center">
+              <div className="text-4xl mb-3">🔍</div>
+              <h3 className="text-lg font-bold text-purple-400 mb-2">Search Intent</h3>
+              <p className="text-sm text-gray-300">Music you searched for vs. let autoplay</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How to Get Your Data */}
+      <section className="py-16 px-8">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">
+            How to Get Your Extended History
+          </h2>
+
+          <div className="bg-zinc-900/50 border border-zinc-700 rounded-xl p-8">
+            <ol className="space-y-6">
+              <li className="flex gap-4">
+                <span className="flex-shrink-0 w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center font-bold">
+                  1
+                </span>
+                <div>
+                  <h3 className="font-bold text-lg mb-2">Request Your Data</h3>
+                  <p className="text-gray-400">
+                    Go to{' '}
+                    <a
+                      href="https://www.spotify.com/account/privacy/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-purple-400 hover:underline"
+                    >
+                      spotify.com/account/privacy
+                    </a>{' '}
+                    and request your "Extended streaming history"
+                  </p>
+                </div>
+              </li>
+
+              <li className="flex gap-4">
+                <span className="flex-shrink-0 w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center font-bold">
+                  2
+                </span>
+                <div>
+                  <h3 className="font-bold text-lg mb-2">Wait ~30 Days</h3>
+                  <p className="text-gray-400">
+                    Spotify will email you when your data is ready (usually takes 2-4 weeks)
+                  </p>
+                </div>
+              </li>
+
+              <li className="flex gap-4">
+                <span className="flex-shrink-0 w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center font-bold">
+                  3
+                </span>
+                <div>
+                  <h3 className="font-bold text-lg mb-2">Download & Extract</h3>
+                  <p className="text-gray-400">
+                    Download the ZIP file and extract the <span className="font-mono text-purple-300">Streaming_History_Audio_*.json</span> files
+                  </p>
+                </div>
+              </li>
+
+              <li className="flex gap-4">
+                <span className="flex-shrink-0 w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center font-bold">
+                  4
+                </span>
+                <div>
+                  <h3 className="font-bold text-lg mb-2">Upload Here</h3>
+                  <p className="text-gray-400">
+                    Drag and drop all the JSON files into the uploader above
+                  </p>
+                </div>
+              </li>
+            </ol>
+          </div>
+
+          <div className="mt-6 bg-green-500/10 border border-green-500/30 rounded-xl p-6">
+            <h4 className="text-lg font-bold text-green-400 mb-2 flex items-center gap-2">
+              <span>🔒</span>
+              100% Private & Secure
+            </h4>
+            <p className="text-sm text-gray-300">
+              All processing happens in your browser. We never upload or store your data on any server.
+              Close this tab and your data is gone forever.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* V2 Detectors Preview */}
+      <section className="py-16 px-8 bg-zinc-950">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">
+            What We Look For
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {[
+              {
+                name: 'Discovery',
+                icon: '🔍',
+                description: 'Weeks when you found lots of new artists',
+                family: 'New music'
+              },
+              {
+                name: 'Loyalty',
+                icon: '💎',
+                description: 'Artists you keep coming back to',
+                family: 'Favorites'
+              },
+              {
+                name: 'Skips',
+                icon: '⚡',
+                description: 'Songs you skip within seconds',
+                family: 'Taste',
+                exclusive: true
+              },
+              {
+                name: 'Search',
+                icon: '🎯',
+                description: 'Music you looked for vs. let play',
+                family: 'Intent',
+                exclusive: true
+              },
+              {
+                name: 'Replays',
+                icon: '🔁',
+                description: 'Songs you play on repeat',
+                family: 'Comfort'
+              },
+              {
+                name: 'Completion',
+                icon: '✅',
+                description: 'How often you finish songs',
+                family: 'Attention',
+                exclusive: true
+              },
+            ].map((detector, i) => (
+              <div
+                key={i}
+                className={`
+                  p-6 rounded-xl border-2 transition-all hover:scale-105
+                  ${detector.exclusive
+                    ? 'bg-gradient-to-br from-purple-900/30 to-pink-900/30 border-purple-500/40'
+                    : 'bg-zinc-900/50 border-zinc-700'
+                  }
+                `}
+              >
+                <div className="flex items-start gap-4">
+                  <span className="text-4xl">{detector.icon}</span>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="font-bold text-lg">{detector.name}</h3>
+                      {detector.exclusive && (
+                        <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full border border-purple-500/40">
+                          Extended only
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-gray-400 mb-2">{detector.description}</p>
+                    <div className="text-xs text-gray-500">
+                      {detector.family}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-center text-gray-400 mt-8">
+            ...and more
+          </p>
+        </div>
+      </section>
+
+      {/* Try V1 Link */}
+      <section className="py-8 px-8 text-center">
+        <p className="text-gray-500 text-sm">
+          Have a Spotify account?{' '}
+          <a
+            href="/v1"
+            className="text-purple-400 hover:text-purple-300 underline underline-offset-2"
+          >
+            Try V1 (beta)
           </a>
-          <span className="mx-3">•</span>
-          <span>Made with ✨ by Chloe</span>
-        </footer>
-      </div>
-    </>
+          {' '}— instant results, no download needed
+        </p>
+      </section>
+
+      <Footer />
+    </div>
   );
 }

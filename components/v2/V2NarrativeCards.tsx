@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import type { PatternNarrative } from '@/lib/v2/synthesis/types';
 import LoopIntensityMeter from './LoopIntensityMeter';
 import TemporalDistribution from './TemporalDistribution';
-import ShareButton from '@/components/ShareButton';
+// ShareButton removed - V2 is deprecated, use V2.5 TypeShareButton instead
 import { trackNarrativeFeedback } from '@/lib/feedback';
 import { getTestVariant, trackABTestMetric } from '@/lib/abtest';
 
@@ -461,19 +461,7 @@ export default function V2NarrativeCards({ narratives }: V2NarrativeCardsProps) 
                                      group-hover:opacity-20 rounded-xl transition-opacity blur-xl" />
                       </button>
 
-                      {/* Share Button */}
-                      <div className="flex justify-end sm:justify-start">
-                        <ShareButton
-                          cardId={`narrative-card-${idx}`}
-                          cardTitle={narrative.title}
-                          cardType="narrative"
-                          onShare={() => {
-                            // Track share analytics
-                            console.log(`[Share] Narrative card ${idx}: ${narrative.title}`);
-                            setShareCount(c => c + 1);
-                          }}
-                        />
-                      </div>
+                      {/* Share Button - V2 deprecated, share via V2.5 TypeShareButton */}
                     </div>
 
                     {/* Feedback Buttons - Thumbs Up/Down */}
@@ -653,12 +641,7 @@ export default function V2NarrativeCards({ narratives }: V2NarrativeCardsProps) 
 
                             {/* Action Buttons */}
                             <div className="flex flex-wrap gap-3 mt-4">
-                              <ShareButton
-                                cardId={`narrative-card-${idx}`}
-                                cardTitle={narrative.title}
-                                cardType="narrative"
-                                onShare={() => setShareCount(c => c + 1)}
-                              />
+                              {/* ShareButton removed - V2 deprecated */}
                               <div className="flex gap-2">
                                 <button
                                   onClick={() => handleFeedback(idx, 'up')}

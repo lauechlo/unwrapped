@@ -22,13 +22,13 @@ export async function GET(request: NextRequest) {
 
   if (error) {
     return NextResponse.redirect(
-      new URL(`/?error=${error}`, request.url)
+      new URL(`/v1?error=${error}`, request.url)
     );
   }
 
   if (!code) {
     return NextResponse.redirect(
-      new URL('/?error=no_code', request.url)
+      new URL('/v1?error=no_code', request.url)
     );
   }
 
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
 
   if (!clientId || !clientSecret || !redirectUri) {
     return NextResponse.redirect(
-      new URL('/?error=server_config', request.url)
+      new URL('/v1?error=server_config', request.url)
     );
   }
 
@@ -75,7 +75,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('OAuth callback error:', error);
     return NextResponse.redirect(
-      new URL('/?error=token_exchange_failed', request.url)
+      new URL('/v1?error=token_exchange_failed', request.url)
     );
   }
 }
