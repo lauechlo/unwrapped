@@ -11,25 +11,19 @@ interface PersonaTabProps {
 
 export default function PersonaTab({ personaMatch, psychologicalSummary }: PersonaTabProps) {
   return (
-    <div className="max-w-5xl mx-auto px-4 py-12 space-y-8">
-      {/* Persona Card - Header removed since "Your Archetype" section already has one */}
+    <div className="max-w-5xl mx-auto px-4 space-y-6">
+      {/* Persona Card */}
       <PersonaCard personaMatch={personaMatch} />
 
-      {/* Psychological Profile - CollapsiblePsychologicalSummary has its own header */}
+      {/* AI Psychological Summary - only if available */}
       {psychologicalSummary && (
-        <div className="mt-12">
-          <CollapsiblePsychologicalSummary summary={psychologicalSummary} />
-        </div>
+        <CollapsiblePsychologicalSummary summary={psychologicalSummary} />
       )}
 
-      {/* Context Note */}
-      <div className="bg-zinc-900/50 border border-zinc-700 rounded-xl p-6 max-w-3xl mx-auto">
-        <h4 className="text-sm font-bold text-gray-300 mb-3 uppercase tracking-wide flex items-center gap-2">
-          <span>💡</span>
-          About Your Type
-        </h4>
-        <p className="text-sm text-gray-300 leading-relaxed">
-          This is based on patterns in your listening data. Most people don't fit one type perfectly—think of it as your dominant style, not a complete picture.
+      {/* Context Note - moved to bottom, more subtle */}
+      <div className="bg-zinc-800/30 border border-zinc-700/50 rounded-lg p-4 max-w-2xl mx-auto">
+        <p className="text-xs text-gray-500 text-center">
+          Based on patterns in your listening data. Most people don't fit one type perfectly—think of it as your dominant style.
         </p>
       </div>
     </div>

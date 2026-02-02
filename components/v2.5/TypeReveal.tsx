@@ -8,6 +8,10 @@ import TypeShareButton, { type ShareStats } from './TypeShareButton';
 interface TypeRevealProps {
   typeResult: TypeResult;
   shareStats?: ShareStats;
+  /** AI-generated personalized hero insight (optional, falls back to template) */
+  heroInsight?: string;
+  /** Whether AI insights are currently loading */
+  isAiLoading?: boolean;
 }
 
 // MBTI-style spectrum component for dimension display (16Personalities inspired)
@@ -117,7 +121,7 @@ function DimensionSpectrum({
   );
 }
 
-export default function TypeReveal({ typeResult, shareStats }: TypeRevealProps) {
+export default function TypeReveal({ typeResult, shareStats, heroInsight, isAiLoading }: TypeRevealProps) {
   const { code, dimensions, description } = typeResult;
 
   // Get dimension labels for display (e.g., "Nocturnal · Looper · Explorer · Anchored")
@@ -165,6 +169,19 @@ export default function TypeReveal({ typeResult, shareStats }: TypeRevealProps) 
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
             {description}
           </h2>
+          {/* AI Hero Insight - shows personalized insight when available */}
+          {heroInsight && (
+            <p className="text-base md:text-lg text-purple-300 mt-3 italic animate-fadeIn">
+              "{heroInsight}"
+            </p>
+          )}
+          {/* Loading indicator for AI insight */}
+          {isAiLoading && !heroInsight && (
+            <div className="flex items-center justify-center gap-2 mt-3 text-gray-400">
+              <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+              <span className="text-sm">Personalizing your insight...</span>
+            </div>
+          )}
         </div>
 
         {/* Tagline (Gen Z Slang) */}
@@ -278,6 +295,10 @@ export default function TypeReveal({ typeResult, shareStats }: TypeRevealProps) 
               : `${Math.round(dimensions[0].value * 100)}% of your listening happens after 9pm`}
             color="purple"
           />
+          {/* Peak Hour clarification note */}
+          <p className="text-xs text-gray-500 text-center -mt-2 mb-2 px-4">
+            Your type is based on overall listening distribution. Peak Hour shows your single most active hour, which can differ from your overall pattern.
+          </p>
 
           {/* Processing: S vs L */}
           {/* replayMultiplier: 1.0=baseline, 1.5=threshold. Map to 50-100 scale with diminishing returns */}

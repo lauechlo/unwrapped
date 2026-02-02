@@ -19,7 +19,10 @@ import type { TypeResult } from '@/lib/v2.5/typing';
 import TypeReveal from '@/components/v2.5/TypeReveal';
 import DimensionDetailCard from '@/components/v2.5/DimensionDetailCard';
 import StickyNav from '@/components/v2.5/StickyNav';
+import CrossPatternSynthesis from '@/components/v2.5/CrossPatternSynthesis';
 import type { ShareStats } from '@/components/v2.5/TypeShareButton';
+import type { ScopedAIOutput, SynthesizeResponse, SynthesizeError } from '@/lib/v2.5/ai/types';
+import { AI_INSIGHTS_CACHE_KEY, AI_INSIGHTS_CACHE_DURATION, type AIInsightsCache } from '@/lib/v2.5/ai/types';
 
 interface V2SynthesisClientProps {
   detectedPatterns: any[];
@@ -53,6 +56,11 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<TabId>('overview');
   const [activeSection, setActiveSection] = useState<string>('type'); // For V2.5 scroll-spy
+
+  // V2.5 AI insights state
+  const [aiInsights, setAiInsights] = useState<ScopedAIOutput | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
 
   // Check if V2.5 mode is enabled
   const useV25 = isV25Enabled();
@@ -144,6 +152,97 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, [useV25]);
+
+  // V2.5: Fetch AI insights when type is calculated
+  useEffect(() => {
+    if (!useV25 || !typeResult || !stats) return;
+
+    // Capture values for async function (TypeScript narrowing)
+    const currentTypeResult = typeResult;
+    const currentStats = stats;
+
+    async function fetchAIInsights() {
+      // Check localStorage cache first
+      const cached = localStorage.getItem(AI_INSIGHTS_CACHE_KEY);
+      if (cached) {
+        try {
+          const cacheEntry: AIInsightsCache = JSON.parse(cached);
+          const age = Date.now() - cacheEntry.timestamp;
+
+          // Use cache if fresh, type matches, and pattern count matches
+          if (
+            age < AI_INSIGHTS_CACHE_DURATION &&
+            cacheEntry.typeCode === currentTypeResult.code &&
+            cacheEntry.patternCount === detectedPatterns.length
+          ) {
+            console.log(`[V2.5 AI] Using cached insights (${Math.round(age / 1000 / 60)} min old)`);
+            setAiInsights(cacheEntry.insights);
+            return;
+          } else {
+            console.log('[V2.5 AI] Cache expired or data changed, fetching fresh...');
+            localStorage.removeItem(AI_INSIGHTS_CACHE_KEY);
+          }
+        } catch (e) {
+          console.error('[V2.5 AI] Cache parse error:', e);
+          localStorage.removeItem(AI_INSIGHTS_CACHE_KEY);
+        }
+      }
+
+      // Fetch fresh AI insights
+      setAiLoading(true);
+      setAiError(null);
+
+      try {
+        console.log('[V2.5 AI] Fetching AI insights...');
+
+        const response = await fetch('/api/v2.5/synthesize', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            typeResult: currentTypeResult,
+            patterns: detectedPatterns,
+            stats: {
+              totalPlays: currentStats.totalPlays,
+              uniqueArtists: currentStats.uniqueArtists,
+              uniqueTracks: currentStats.uniqueTracks,
+              dateRange: currentStats.dateRange,
+            },
+          }),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          const errorResult = result as SynthesizeError;
+          throw new Error(errorResult.message || errorResult.error || 'AI synthesis failed');
+        }
+
+        const successResult = result as SynthesizeResponse;
+        console.log('[V2.5 AI] Insights received:', successResult.data.heroInsight.substring(0, 50) + '...');
+
+        setAiInsights(successResult.data);
+
+        // Cache the result
+        const cacheEntry: AIInsightsCache = {
+          timestamp: Date.now(),
+          typeCode: currentTypeResult.code,
+          patternCount: detectedPatterns.length,
+          insights: successResult.data,
+        };
+        localStorage.setItem(AI_INSIGHTS_CACHE_KEY, JSON.stringify(cacheEntry));
+        console.log('[V2.5 AI] Insights cached for 24 hours');
+
+      } catch (err) {
+        console.error('[V2.5 AI] Error fetching insights:', err);
+        setAiError(err instanceof Error ? err.message : 'Failed to generate insights');
+        // Graceful degradation - app still works without AI insights
+      } finally {
+        setAiLoading(false);
+      }
+    }
+
+    fetchAIInsights();
+  }, [useV25, typeResult, detectedPatterns, stats]);
 
   // Define tabs (different for V2.5)
   const tabs = useMemo(() => {
@@ -392,13 +491,16 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
             )}
 
             {/* Navigation Controls: Arrows + Clickable Dots */}
-            <div className="flex items-center justify-center gap-6 mt-8">
+            <div className="flex items-center justify-center gap-4 mt-8">
               {/* Previous Arrow */}
               <button
+                type="button"
                 onClick={() => setLoadingScreen(Math.max(0, loadingScreen - 1))}
                 disabled={loadingScreen === 0}
-                className={`text-2xl transition-all ${
-                  loadingScreen === 0 ? 'text-gray-700 cursor-not-allowed' : 'text-gray-300 hover:text-white'
+                className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl transition-all border ${
+                  loadingScreen === 0
+                    ? 'text-gray-700 border-gray-800 cursor-not-allowed opacity-50'
+                    : 'text-gray-300 border-gray-600 hover:text-white hover:border-purple-500 hover:bg-purple-500/20 active:scale-95'
                 }`}
                 aria-label="Previous screen"
               >
@@ -406,15 +508,16 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
               </button>
 
               {/* Dots */}
-              <div className="flex gap-2">
+              <div className="flex gap-3 px-4">
                 {[0, 1, 2].map((screen) => (
                   <button
+                    type="button"
                     key={screen}
                     onClick={() => setLoadingScreen(screen)}
-                    className={`w-2 h-2 rounded-full transition-all ${
+                    className={`h-3 rounded-full transition-all ${
                       loadingScreen === screen
-                        ? 'bg-purple-500 w-6'
-                        : 'bg-gray-600 hover:bg-gray-400'
+                        ? 'bg-purple-500 w-8'
+                        : 'bg-gray-600 hover:bg-gray-400 w-3'
                     }`}
                     aria-label={`Go to screen ${screen + 1}`}
                   />
@@ -423,10 +526,13 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
 
               {/* Next Arrow */}
               <button
+                type="button"
                 onClick={() => setLoadingScreen(Math.min(2, loadingScreen + 1))}
                 disabled={loadingScreen === 2}
-                className={`text-2xl transition-all ${
-                  loadingScreen === 2 ? 'text-gray-700 cursor-not-allowed' : 'text-gray-300 hover:text-white'
+                className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl transition-all border ${
+                  loadingScreen === 2
+                    ? 'text-gray-700 border-gray-800 cursor-not-allowed opacity-50'
+                    : 'text-gray-300 border-gray-600 hover:text-white hover:border-purple-500 hover:bg-purple-500/20 active:scale-95'
                 }`}
                 aria-label="Next screen"
               >
@@ -513,10 +619,10 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
   // V2.5 mode: Render type-based UI with scrollable sections
   if (useV25 && typeResult) {
     // Define sections for navigation
-    // Flow: Type reveal → Archetype (psychology) → Data Breakdown (evidence) → When
+    // Flow: Type reveal → About You → Data Breakdown (evidence) → When
     const sections = [
       { id: 'type', label: 'Your Type', number: 1 },
-      { id: 'about', label: 'Your Archetype', number: 2 },
+      { id: 'about', label: 'About You', number: 2 },
       { id: 'breakdown', label: 'Data Breakdown', number: 3 },
       { id: 'when', label: 'When You Listen', number: 4 },
     ];
@@ -558,23 +664,33 @@ export function V2SynthesisClient({ detectedPatterns, stats, uploadedData, sourc
         <div className="lg:pr-72"> {/* Make room for desktop sidebar */}
           {/* Section 1: Your Type */}
           <section id="type" className="scroll-mt-20">
-            <TypeReveal typeResult={typeResult} shareStats={shareStats} />
+            <TypeReveal
+              typeResult={typeResult}
+              shareStats={shareStats}
+              heroInsight={aiInsights?.heroInsight}
+              isAiLoading={aiLoading}
+            />
+
+            {/* Cross-Pattern Synthesis - only shown when AI insights available */}
+            {aiInsights?.crossPatternSynthesis && (
+              <CrossPatternSynthesis synthesis={aiInsights.crossPatternSynthesis} />
+            )}
           </section>
 
-          {/* Section 2: Your Archetype (moved up for higher visibility) */}
+          {/* Section 2: About You */}
           <section id="about" className="scroll-mt-20 py-16 bg-zinc-950/50">
             <div className="max-w-5xl mx-auto px-4">
-              <div className="text-center mb-10">
+              <div className="text-center mb-8">
                 <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
-                  Your Archetype
+                  About You
                 </h2>
                 <p className="text-gray-400 max-w-xl mx-auto">
-                  The psychological pattern behind your listening
+                  Your listening personality and patterns
                 </p>
               </div>
               <PersonaTab
                 personaMatch={personaMatch}
-                psychologicalSummary={undefined}
+                psychologicalSummary={aiInsights?.psychologicalSummary}
               />
             </div>
           </section>
